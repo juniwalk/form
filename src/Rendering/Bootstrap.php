@@ -52,6 +52,8 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         // Standard classes which are the same for all layout modes
         $this->setWrapper('pair container', 'div class="form-group"');
         $this->setWrapper('pair .error', 'has-error');
+        $this->setWrapper('controls container', null);
+        $this->setWrapper('control container', null);
         $this->setWrapper('control description', 'span class="help-block"');
         $this->setWrapper('control errorcontainer', 'span class="help-block"');
 
@@ -203,8 +205,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
             ->setClass(null);
 
         // Set classes and elements for vertical layout rendering
-        $this->setWrapper('controls container', null);
-        $this->setWrapper('control container', null);
         $this->setWrapper('label container', 'span class="control-label"');
     }
 
@@ -219,7 +219,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
             ->setClass('form-horizontal');
 
         // Set classes and elements for horizontal layout rendering
-        $this->setWrapper('controls container', null);
         $this->setWrapper('control container', 'div class="col-sm-9"');
         $this->setWrapper('label container', 'div class="col-sm-3 control-label"');
     }
@@ -235,8 +234,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
             ->setClass('form-inline');
 
         // Set classes and elements for inline layout rendering
-        $this->setWrapper('controls container', null);
-        $this->setWrapper('control container', null);
         $this->setWrapper('label container', 'span class="sr-only"');
     }
 
