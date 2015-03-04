@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+bootstrap="vendor/autoload.php"
+colors="true"
+convertNoticesToExceptions="true"
+convertWarningsToExceptions="true"
+convertErrorsToExceptions="true"
+syntaxCheck="true"
+verbose="true"
+stderr="true"
+>
+	<testsuites>
+		<testsuite name="Test Suite">
+			<directory>./tests/</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
