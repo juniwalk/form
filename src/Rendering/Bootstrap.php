@@ -92,7 +92,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         $this->layout = $mode;
 
         // Append new method to beforeRender event to setup render mode classes
-        $this->onBeforeRender[] = function (self $self, Form $form) use ($method) {
+        $this->onBeforeRender[] = function(self $self, Form $form) use ($method) {
             // Call internal render method
             $this->$method($form);
         };
