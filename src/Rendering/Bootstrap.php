@@ -102,8 +102,8 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
 	/**
 	 * Provides complete form rendering.
-	 * @param  Form    $form  Form instance
-	 * @param  string  $mode  Part of the form to render
+	 * @param  Form         $form  Form instance
+	 * @param  string|null  $mode  Part of the form to render
 	 * @return string
 	 */
 	public function render(Form $form, $mode = null)
@@ -194,7 +194,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
     /**
      * Classess for vertical form.
-     * @return bool
      */
     protected function renderVertical(Form $form)
     {
@@ -211,7 +210,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
     /**
      * Classess for horizontal form.
-     * @return bool
      */
     protected function renderHorizontal(Form $form)
     {
@@ -228,7 +226,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
     /**
      * Classess for inline form.
-     * @return bool
      */
     protected function renderInline(Form $form)
     {
@@ -245,7 +242,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
 	/**
 	 * @param  string
-	 * @return Nette\Utils\Html
+	 * @return static
 	 */
 	protected function setWrapper($name, $value)
 	{
