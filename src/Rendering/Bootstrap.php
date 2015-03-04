@@ -139,9 +139,9 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
 
     /**
-    * Provides complete form rendering.
-    * @param IControl  $control  Control instance
-    */
+     * Provides complete form rendering.
+     * @param IControl  $control  Control instance
+     */
     protected function setup(IControl $control)
     {
         // Has the primary button been used?
