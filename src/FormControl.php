@@ -35,8 +35,9 @@ abstract class FormControl extends Control
 
     /**
      * Event - On successfull submit.
-     * @param Form       $form  Form instance
-     * @param ArrayHash  $data  Submited data
+     * @param  Form       $form  Form instance
+     * @param  ArrayHash  $data  Submited data
+     * @return null
      */
     abstract public function handleSuccess($form, $data);
 
@@ -50,7 +51,7 @@ abstract class FormControl extends Control
         // Create instance of Form
         $form = new Form;
         $form->setRenderer(new Bootstrap);
-        $form->onSuccess[] = $this->handleSuccess;
+        $form->onSuccess[] = [$this, 'handleSuccess'];
 
         // Enable CSRF protection into each form of this app
         $form->addProtection('Bezpečnostní klíč vypršel, odešlete prosím formulář znovu.');
