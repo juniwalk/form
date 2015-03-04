@@ -48,7 +48,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      * Set default render mode.
      */
     public function __construct()
-	{
+    {
         // Standard classes which are the same for all layout modes
         $this->setWrapper('pair container', 'div class="form-group"');
         $this->setWrapper('pair .error', 'has-error');
@@ -100,26 +100,26 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     }
 
 
-	/**
-	 * Provides complete form rendering.
-	 * @param  Form         $form  Form instance
-	 * @param  string|null  $mode  Part of the form to render
-	 * @return string
-	 */
-	public function render(Form $form, $mode = null)
-	{
-	    // Call before rendering event methods
-	    $this->onBeforeRender($this, $form);
+    /**
+     * Provides complete form rendering.
+     * @param  Form         $form  Form instance
+     * @param  string|null  $mode  Part of the form to render
+     * @return string
+     */
+    public function render(Form $form, $mode = null)
+    {
+        // Call before rendering event methods
+        $this->onBeforeRender($this, $form);
 
         // Call parent render method and return output
         return parent::render($form, $mode);
-	}
+    }
 
 
-	/**
-	 * Process form before rendering.
-	 * @param Form  $form  Form instance
-	 */
+    /**
+     * Process form before rendering.
+     * @param Form  $form  Form instance
+     */
     protected function process(Form $form)
     {
         // Get the list of all form controls
@@ -138,12 +138,13 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     }
 
 
-	/**
-	 * Provides complete form rendering.
-	 * @param IControl  $control  Control instance
-	 */
+    /**
+    * Provides complete form rendering.
+    * @param IControl  $control  Control instance
+    */
     protected function setup(IControl $control)
     {
+        // Has the primary button been used?
         static $primaryUsed = false;
 
         // Get the control prototype element
@@ -156,7 +157,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
             // Shall the button be marked?
             if ($control instanceof SubmitButton && !$primaryUsed) {
-            	$class = 'btn btn-primary';
+                $class = 'btn btn-primary';
                 $primaryUsed = true;
             }
 
@@ -240,19 +241,21 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     }
 
 
-	/**
-	 * @param  string
-	 * @return static
-	 */
-	protected function setWrapper($name, $value)
-	{
-	    // Get the name parts
-		$name = explode(' ', $name);
+    /**
+     * Set new value of the wrapper.
+     * @param  string       $name   Wrapper name
+     * @param  string|null  $value  New value
+     * @return static
+     */
+    protected function setWrapper($name, $value = null)
+    {
+        // Get the name parts
+        $name = explode(' ', $name);
 
         // Set new value of the wrapper
-		$this->wrappers[$name[0]][$name[1]] = $value;
+        $this->wrappers[$name[0]][$name[1]] = $value;
 
         // Chainable
         return $this;
-	}
+    }
 }
