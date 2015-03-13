@@ -36,6 +36,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      * @var array
      */
     public $onBeforeRender;
+    protected $rendered;
 
     /**
      * Layout rendering mode.
@@ -60,10 +61,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         $this->setWrapper('error container', 'div class="errors"');
         $this->setWrapper('error item', 'div class="alert alert-danger"');
 
-        // Append new method to beforeRender event to setup render mode classes
-        $this->onBeforeRender[] = function(self $self, Form $form) {
+        // Append new method to beforeRender event
+        $this->onBeforeRender[] = function() {
             // Call internal process method
-            $this->process($form);
+            $this->process();
         };
 
         // Set default layout to horizontal
@@ -90,10 +91,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         // Set layout mode
         $this->layout = $mode;
 
-        // Append new method to beforeRender event to setup render mode classes
-        $this->onBeforeRender[] = function(self $self, Form $form) use ($method) {
+        // Append new method to beforeRender event
+        $this->onBeforeRender[] = function() use ($method) {
             // Call internal render method
-            $this->$method($form);
+            $this->$method();
         };
 
         // Chainable
@@ -102,29 +103,54 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
 
 
     /**
-     * Provides complete form rendering.
-     * @param  Form         $form  Form instance
-     * @param  string|null  $mode  Part of the form to render
+     * Begin rendering.
      * @return string
      */
-    public function render(Form $form, $mode = null)
+    public function renderBegin()
     {
         // Call before rendering event methods
-        $this->onBeforeRender($this, $form);
+        $this->rendered || $this->onBeforeRender();
 
-        // Call parent render method and return output
-        return parent::render($form, $mode);
+        // Call parent method now
+        return parent::renderBegin();
+    }
+
+
+    /**
+     * End rendering.
+     * @return string
+     */
+    public function renderEnd()
+    {
+        // Call before rendering event methods
+        $this->rendered || $this->onBeforeRender();
+
+        // Call parent method now
+        return parent::renderEnd();
+    }
+
+
+    /**
+     * Render form body.
+     * @return string
+     */
+    public function renderBody()
+    {
+        // Call before rendering event methods
+        $this->rendered || $this->onBeforeRender();
+
+        // Call parent method now
+        return parent::renderBody();
     }
 
 
     /**
      * Process form before rendering.
-     * @param Form  $form  Form instance
      */
-    protected function process(Form $form)
+    protected function process()
     {
         // Get the list of all form controls
-        $controls = $form->getControls();
+        $controls = $this->form->getControls();
 
         // If there are no controls
         if (empty($controls)) {
@@ -136,6 +162,9 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
             // Set the control up
             $this->setup($control);
         }
+
+        // The form has been rendered
+        $this->rendered = true;
     }
 
 
@@ -197,10 +226,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     /**
      * Classess for vertical form.
      */
-    protected function renderVertical(Form $form)
+    protected function renderVertical()
     {
         // Set Form class into horizontal
-        $form->getElementPrototype()
+        $this->form->getElementPrototype()
             ->setClass(null);
 
         // Set classes and elements for vertical layout rendering
@@ -212,10 +241,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     /**
      * Classess for horizontal form.
      */
-    protected function renderHorizontal(Form $form)
+    protected function renderHorizontal()
     {
         // Set Form class into horizontal
-        $form->getElementPrototype()
+        $this->form->getElementPrototype()
             ->setClass('form-horizontal');
 
         // Set classes and elements for horizontal layout rendering
@@ -227,10 +256,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     /**
      * Classess for inline form.
      */
-    protected function renderInline(Form $form)
+    protected function renderInline()
     {
         // Set Form class into inline
-        $form->getElementPrototype()
+        $this->form->getElementPrototype()
             ->setClass('form-inline');
 
         // Set classes and elements for inline layout rendering
