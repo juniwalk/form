@@ -112,4 +112,24 @@ abstract class FormControl extends Control
         // Delegate redirect to the view to presenter
         $this->getPresenter()->redirect($view);
     }
+
+
+    /**
+     * Proxy - Restore previous request.
+     * @param string  $request  Request name
+     */
+    public function restoreRequest($request = null)
+    {
+        // Get the instance of the presenter
+        $presenter = $this->getPresenter();
+
+        // If there is no request and there is redirect pending
+        if (!isset($request) && isset($presenter->backlink)) {
+            // Get the backlink redirect
+            $request = $presenter->backlink;
+        }
+
+        // Delegate restoreRequest to Presenter
+        $presenter->restoreRequest($request);
+    }
 }
