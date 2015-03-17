@@ -28,7 +28,7 @@ abstract class ExampleForm extends \JuniWalk\Forms\FormControl
             ->setLayout('vertical');
 
         // Just standard text input asking for name
-        $name = $form->addText('name', 'Your name')
+        $form->addText('name', 'Your name')
             ->setDefaultValue('John Doe')
             ->setRequired('Your name is required to continue.');
 

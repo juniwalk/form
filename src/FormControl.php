@@ -18,7 +18,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
     /**
      * Prepare new form instance.
      * @param  string  $name  Component name
-     * @return Form
+     * @return \Nette\Application\UI\Form
      */
     public function createForm($name)
     {
@@ -82,7 +82,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
      * Proxy - Flash messages.
      * @param  string  $message  Message to send
      * @param  string  $type     Type of the message
-     * @return stdClass
+     * @return \stdClass
      */
     public function flashMessage($message, $type = 'info')
     {
@@ -143,7 +143,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
     /**
      * Build our Form component.
      * @param  string  $name  Component name
-     * @return Form
+     * @return \Nette\Application\UI\Form
      */
     final protected function createComponentForm($name)
     {
