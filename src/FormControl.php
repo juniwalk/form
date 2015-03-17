@@ -16,20 +16,22 @@ use Nette\Application\UI\Form;
 abstract class FormControl extends \Nette\Application\UI\Control
 {
     /**
-     * Render form component.
-     */
-    public function render()
-    {
-        // Just delegate render to a form
-        $this['form']->render();
-    }
-
-
-    /**
-     * Build our Form component.
+     * Prepare new form instance.
+     * @param  string  $name  Component name
      * @return Form
      */
-    abstract protected function createComponentForm();
+    public function createForm($name)
+    {
+        // Create instance of Form
+        $form = new Form($this, $name);
+        $form->setRenderer(new Bootstrap);
+        $form->onSuccess[] = [$this, 'handleSuccess'];
+
+        // Enable CSRF protection into each form of this app
+        $form->addProtection('Bezpečnostní klíč vypršel, odešlete prosím formulář znovu.');
+
+        return $form;
+    }
 
 
     /**
@@ -42,80 +44,73 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
     /**
-     * Prepare new form instance.
-     * @return Form
-     */
-    protected function createForm()
-    {
-        // Create instance of Form
-        $form = new Form;
-        $form->setRenderer(new Bootstrap);
-        $form->onSuccess[] = [$this, 'handleSuccess'];
-
-        // Enable CSRF protection into each form of this app
-        $form->addProtection('Bezpečnostní klíč vypršel, odešlete prosím formulář znovu.');
-
-        return $form;
-    }
-
-
-    /**
      * Disable whole Form component.
-     * @param Form  $form  Form to disbale
+     * @param  Form  $form  Form to disbale
+     * @return static
      */
-    protected function disableForm(Form $form)
+    public function disableForm()
     {
         // Get the list of form controls
-        $controls = $form->getComponents();
+        $controls = $this['form']->getComponents();
 
         // Iterate over Form's controls
         foreach ($controls as $control) {
             // Make the control disabled
             $control->setDisabled(true);
         }
+
+        // Chainable
+        return $this;
     }
 
 
     /**
      * Set autocomplete attribute on the form.
-     * @param Form   $form   Form instance
-     * @param mixed  $value  New value
+     * @param  Form   $form   Form instance
+     * @param  mixed  $value  New value
+     * @return static
      */
-    protected function setAutocomplete(Form $form, $value)
+    protected function setAutocomplete($value)
     {
         // Set the value of the autocomplete attribute
-        $form->getElementPrototype()->autocomplete = $value;
+        $this['form']->getElementPrototype()->autocomplete = $value;
+
+        // Chainable
+        return $this;
     }
 
 
     /**
      * Proxy - Flash messages.
-     * @param string  $message  Message to send
-     * @param string  $type     Type of the message
+     * @param  string  $message  Message to send
+     * @param  string  $type     Type of the message
+     * @return stdClass
      */
     public function flashMessage($message, $type = 'info')
     {
         // Delegate flash message to the presenter
-        $this->getPresenter()->flashMessage($message, $type);
+        return $this->getPresenter()->flashMessage($message, $type);
     }
 
 
     /**
      * Proxy - Redirect to desired page.
-     * @param string  $view  Presenter name
-     * @param mixed   $x     Not used
-     * @param mixed   $y     Not used
+     * @param  string  $view  Presenter name
+     * @param  mixed   $x     Not used
+     * @param  mixed   $y     Not used
+     * @return null
      */
     public function redirect($view, $x = null, $y = null)
     {
         // Delegate redirect to the view to presenter
-        $this->getPresenter()->redirect($view);
+        return $this->getPresenter()->redirect($view);
     }
 
 
     /**
      * Proxy - Restore previous request.
-     * @param string  $request  Request name
+     * @param  string  $request  Request name
+     * @return static
      */
     public function restoreRequest($request = null)
     {
@@ -130,5 +125,31 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
         // Delegate restoreRequest to Presenter
         $presenter->restoreRequest($request);
+
+        // Chainable
+        return $this;
+    }
+
+
+    /**
+     * Render form component.
+     * @return null
+     */
+    final public function render()
+    {
+        // Just delegate render to a form
+        return $this['form']->render();
+    }
+
+
+    /**
+     * Build our Form component.
+     * @param  string  $name  Component name
+     * @return Form
+     */
+    final protected function createComponentForm($name)
+    {
+        // Create new form instance
+        return $this->createForm($name);
     }
 }
