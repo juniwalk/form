@@ -45,7 +45,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
     /**
      * Disable whole Form component.
-     * @param  Form  $form  Form to disbale
      * @return static
      */
     public function disableForm()
@@ -66,7 +65,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
     /**
      * Set autocomplete attribute on the form.
-     * @param  Form   $form   Form instance
      * @param  mixed  $value  New value
      * @return static
      */
@@ -109,7 +107,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
     /**
      * Proxy - Restore previous request.
-     * @param  string  $request  Request name
+     * @param  string|null  $request  Request name
      * @return static
      */
     public function restoreRequest($request = null)
