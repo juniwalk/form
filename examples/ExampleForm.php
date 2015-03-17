@@ -15,7 +15,7 @@ abstract class ExampleForm extends \JuniWalk\Forms\FormControl
     /**
      * Prepare new form instance.
      * @param  string  $name  Component name
-     * @return Form
+     * @return \Nette\Application\UI\Form
      */
     public function createForm($name)
     {
