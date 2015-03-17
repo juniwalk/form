@@ -11,10 +11,9 @@
 namespace JuniWalk\Forms;
 
 use JuniWalk\Forms\Rendering\Bootstrap;
-use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 
-abstract class FormControl extends Control
+abstract class FormControl extends \Nette\Application\UI\Control
 {
     /**
      * Render form component.
