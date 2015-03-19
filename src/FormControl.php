@@ -93,15 +93,19 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
     /**
      * Proxy - Redirect to another presenter, action or signal.
-     * @param  string   destination in format "[//] [[[module:]presenter:]action | signal! | this] [#fragment]"
-     * @param  array|mixed
+	 * @param  int          $code         [optional] HTTP error code
+	 * @param  string       $destination  Destination in format "[//] [[[module:]presenter:]action | signal! | this] [#fragment]"
+	 * @param  array|mixed  $args
      * @return null
      * @throws Nette\Application\AbortException
      */
-    public function redirect($view, $args = array(), $x = null)
+    public function redirect($code, $destination = NULL, $args = array())
     {
         // Delegate redirect to the view to presenter
-        return $this->getPresenter()->redirect($view, $args);
+        return call_user_func_array(
+            [$this->getPresenter(), 'redirect'],
+            func_get_args()
+        );
     }
 
 
