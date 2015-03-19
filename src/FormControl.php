@@ -98,7 +98,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
      * @return null
      * @throws Nette\Application\AbortException
      */
-    public function redirect($view, $args = array())
+    public function redirect($view, $args = array(), $x = null)
     {
         // Delegate redirect to the view to presenter
         return $this->getPresenter()->redirect($view, $args);
