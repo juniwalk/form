@@ -219,6 +219,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
                 // Set proper class of the row to inline
                 $row->setClass($input->type.'-inline');
             }
+
         }
     }
 
