@@ -220,6 +220,8 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
                 $row->setClass($input->type.'-inline');
             }
 
+            // Add name of the choice group to the separator prefixed by mask
+            $row->addClass(sprintf($control::$idMask, $control->getName()));
         }
     }
 
