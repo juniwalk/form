@@ -32,6 +32,12 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     const INLINE = 'inline';
 
     /**
+     * List of primary controls.
+     * @var array
+     */
+    protected static $primaryUsed = [];
+
+    /**
      * Event - Before rendering.
      * @var array
      */
@@ -174,9 +180,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      */
     protected function setup(IControl $control)
     {
-        // Has the primary button been used?
-        static $primaryUsed = false;
-
         // Get the control prototype element
         $input = $control->getControlPrototype();
 
@@ -185,10 +188,17 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
             // Prepare default class name
             $class = 'btn btn-default';
 
-            // Shall the button be marked?
-            if ($control instanceof SubmitButton && !$primaryUsed) {
+            // Get Id hash of the Form control object
+            $guid = spl_object_hash($this->form);
+
+            // If this is instance of submit button and it has not been marked primary yet
+            if ($control instanceof SubmitButton && !isset($this::$primaryUsed[$guid])) {
+                // Switch the class to primary
                 $class = 'btn btn-primary';
-                $primaryUsed = true;
+
+                // Make sure we won't mark any other
+                // submit button with the primary color
+                $this::$primaryUsed[$guid] = true;
             }
 
             // Add class to the control prototype
