@@ -17,14 +17,19 @@ abstract class FormControl extends \Nette\Application\UI\Control
 {
     /**
      * Prepare new form instance.
-     * @param  string  $name  Component name
+     * @param  string  $name    Component name
+     * @param  string  $layout  Form layout
      * @return \Nette\Application\UI\Form
      */
-    public function createForm($name)
+    public function createForm($name, $layout = 'horizontal')
     {
+        // Create Bootstrap form renderer
+        $renderer = new Bootstrap;
+        $renderer->setLayout($layout);
+
         // Create instance of Form
         $form = new Form($this, $name);
-        $form->setRenderer(new Bootstrap);
+        $form->setRenderer($renderer);
         $form->onSuccess[] = [$this, 'handleSuccess'];
 
         // Enable CSRF protection into each form of this app
