@@ -287,7 +287,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      * @param  string|null  $value  New value
      * @return static
      */
-    protected function setWrapper($name, $value = null)
+    public function setWrapper($name, $value = null)
     {
         // Get the name parts
         $name = explode(' ', $name);
