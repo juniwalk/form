@@ -10,6 +10,7 @@
 
 namespace JuniWalk\Forms;
 
+use JuniWalk\Forms\Rendering\Bootstrap;
 use Nette\ComponentModel\IContainer;
 
 abstract class Form extends \Nette\Application\UI\Form
@@ -24,9 +25,8 @@ abstract class Form extends \Nette\Application\UI\Form
         // Call parent constructor with params
         parent::__construct($parent, $name);
 
-        // Set bootstrap renderer and subscribe internal
-        // onSuccess event handler into the manager
-        $this->setRenderer(new Rendering\Bootstrap);
+        // Set bootstrap renderer and subscribe to onSuccess event handler
+        $this->setRenderer(new Bootstrap)->setLayout(Bootstrap::HORIZONTAL);
         $this->onSuccess[] = function($form, $data) {
             $this->handleSuccess($form, $data);
         };
@@ -98,17 +98,29 @@ abstract class Form extends \Nette\Application\UI\Form
 
 
     /**
-     * Render form component.
-     * @param  string  $layout  Render layout
-     * @return null
+     * Render form component in vertical layout.
      */
-    final public function render($layout = null)
+    final public function renderVertical()
     {
-        if (isset($layout)) {
-            $this->setLayout($layout);
-        }
+        return $this->setLayout(Bootstrap::VERTICAL)->render();
+    }
 
-        return parent::render();
+
+    /**
+     * Render form component in horizontal layout.
+     */
+    final public function renderHorizontal()
+    {
+        return $this->setLayout(Bootstrap::HORIZONTAL)->render();
+    }
+
+
+    /**
+     * Render form component in inline layout.
+     */
+    final public function renderInline()
+    {
+        return $this->setLayout(Bootstrap::INLINE)->render();
     }
 
 
@@ -118,7 +130,7 @@ abstract class Form extends \Nette\Application\UI\Form
      * @param  mixed   $data  Submited data
      * @return null
      */
-    protected function handleSuccess(self $form, $data)
+    protected function handleSuccess($form, $data)
     {
         return null;
     }
