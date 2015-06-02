@@ -31,6 +31,7 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
     const HORIZONTAL = 'horizontal';
     const INLINE = 'inline';
 
+
     /**
      * List of primary controls.
      * @var array
