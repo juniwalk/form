@@ -67,14 +67,10 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         $this->setWrapper('error container', 'div class="errors"');
         $this->setWrapper('error item', 'div class="alert alert-danger"');
 
-        // Append new method to beforeRender event
+        $this->setLayout(static::HORIZONTAL);
         $this->onBeforeRender[] = function() {
-            // Call internal process method
             $this->process();
         };
-
-        // Set default layout to horizontal
-        $this->setLayout(static::HORIZONTAL);
     }
 
 
@@ -86,24 +82,17 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      */
     public function setLayout($mode)
     {
-        // Get the name of the render method
         $method = 'render'.$mode;
 
-        // If there is no such render mode
         if (!method_exists($this, $method)) {
             throw new \Exception('Unsupported render mode "'.$mode.'".');
         }
 
-        // Set layout mode
         $this->layout = $mode;
-
-        // Append new method to beforeRender event
         $this->onBeforeRender[] = function() use ($method) {
-            // Call internal render method
             $this->$method();
         };
 
-        // Chainable
         return $this;
     }
 
@@ -117,7 +106,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         // Call before rendering event methods
         $this->rendered || $this->onBeforeRender();
 
-        // Call parent method now
         return parent::renderBegin();
     }
 
@@ -131,7 +119,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         // Call before rendering event methods
         $this->rendered || $this->onBeforeRender();
 
-        // Call parent method now
         return parent::renderEnd();
     }
 
@@ -145,7 +132,6 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
         // Call before rendering event methods
         $this->rendered || $this->onBeforeRender();
 
-        // Call parent method now
         return parent::renderBody();
     }
 
@@ -155,21 +141,16 @@ class Bootstrap extends \Nette\Forms\Rendering\DefaultFormRenderer
      */
     protected function process()
     {
-        // Get the list of all form controls
         $controls = $this->form->getControls();
 
-        // If there are no controls
         if (empty($controls)) {
             return null;
         }
 
-        // Iterate over all form controls
         foreach ($controls as $control) {
-            // Set the control up
             $this->setup($control);
         }
 
-        // The form has been rendered
         $this->rendered = true;
     }
 
