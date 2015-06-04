@@ -10,7 +10,7 @@
 
 namespace JuniWalk\Forms;
 
-use JuniWalk\Forms\Rendering\Bootstrap;
+use JuniWalk\FormsRenderer\Bootstrap;
 use Nette\ComponentModel\IContainer;
 
 abstract class Form extends \Nette\Application\UI\Form
