@@ -15,11 +15,11 @@ use Nette\ComponentModel\IContainer;
 
 class Form extends \Nette\Application\UI\Form
 {
-	/**
-	 * Initialize new application form.
+    /**
+     * Initialize new application form.
      * @param IContainer  $parent  Parent container
      * @param string      $name    Component name
-	 */
+     */
     public function __construct(IContainer $parent = null, $name = null)
     {
         // Call parent constructor with params
