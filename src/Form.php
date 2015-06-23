@@ -13,7 +13,7 @@ namespace JuniWalk\Forms;
 use JuniWalk\FormsRenderer\Bootstrap;
 use Nette\ComponentModel\IContainer;
 
-abstract class Form extends \Nette\Application\UI\Form
+class Form extends \Nette\Application\UI\Form
 {
 	/**
 	 * Initialize new application form.
