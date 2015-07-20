@@ -22,9 +22,6 @@ class Form extends \Nette\Application\UI\Form
      */
     public function __construct(IContainer $parent = null, $name = null)
     {
-        // Call parent constructor with params
-        parent::__construct($parent, $name);
-
         // Set bootstrap renderer and subscribe to onSuccess event handler
         $this->setRenderer(new Bootstrap)->setLayout(Bootstrap::HORIZONTAL);
         $this->onSuccess[] = function($form, $data) {
@@ -33,6 +30,9 @@ class Form extends \Nette\Application\UI\Form
 
         // Enable CSRF protection into each form of this app
         $this->addProtection('Bezpečnostní klíč vypršel, odešlete prosím formulář znovu.');
+
+        // Call parent constructor with params
+        parent::__construct($parent, $name);
     }
 
 
