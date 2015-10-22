@@ -10,29 +10,40 @@
 
 namespace JuniWalk\Forms;
 
-use JuniWalk\FormsRenderer\Bootstrap;
 use Nette\ComponentModel\IContainer;
+use Nette\Localization\ITranslator;
 
 class Form extends \Nette\Application\UI\Form
 {
     /**
-     * Initialize new application form.
+     * Collect dependencies of the Form component.
      * @param IContainer  $parent  Parent container
      * @param string      $name    Component name
      */
-    public function __construct(IContainer $parent = null, $name = null)
+    public function __construct(IContainer $parent, $name)
     {
-        // Set bootstrap renderer and subscribe to onSuccess event handler
-        $this->setRenderer(new Bootstrap)->setLayout(Bootstrap::HORIZONTAL);
+        // Call parent constructor with params
+        parent::__construct($parent, $name);
+
+        // Add internal success handler into event listeners
         $this->onSuccess[] = function($form, $data) {
             $this->handleSuccess($form, $data);
         };
+    }
 
-        // Enable CSRF protection into each form of this app
-        $this->addProtection('Bezpečnostní klíč vypršel, odešlete prosím formulář znovu.');
 
-        // Call parent constructor with params
-        parent::__construct($parent, $name);
+    /**
+     * Adds global error message.
+     * @param string  $message  Error message
+     */
+    public function addError($message, array $params = [])
+    {
+        // If there is translator defined in the Form
+        if ($this->translator instanceof ITranslator) {
+            $message = $this->translator->translate($message, $params);
+        }
+
+        return parent::addError($message);
     }
 
 
@@ -57,7 +68,7 @@ class Form extends \Nette\Application\UI\Form
      * @param  mixed   $value  New value
      * @return static
      */
-    protected function setAttribute($key, $value)
+    public function setAttribute($key, $value)
     {
         $this->getElementPrototype()->setAttribute($key, $value);
         return $this;
@@ -69,58 +80,9 @@ class Form extends \Nette\Application\UI\Form
      * @param  string  $key  Attribute name
      * @return mixed
      */
-    protected function getAttribute($key)
+    public function getAttribute($key)
     {
         return $this->getElementPrototype()->getAttribute($key);
-    }
-
-
-    /**
-     * Set layout of the Bootstrap form.
-     * @param  string  $mode  Layout mode
-     * @return static
-     */
-    public function setLayout($mode)
-    {
-        $this->getRenderer()->setLayout($mode);
-        return $this;
-    }
-
-
-    /**
-     * Get layout mode of the form.
-     * @return string
-     */
-    public function getLayout()
-    {
-        return $this->getRenderer()->getLayout();
-    }
-
-
-    /**
-     * Render form component in vertical layout.
-     */
-    final public function renderVertical()
-    {
-        return $this->setLayout(Bootstrap::VERTICAL)->render();
-    }
-
-
-    /**
-     * Render form component in horizontal layout.
-     */
-    final public function renderHorizontal()
-    {
-        return $this->setLayout(Bootstrap::HORIZONTAL)->render();
-    }
-
-
-    /**
-     * Render form component in inline layout.
-     */
-    final public function renderInline()
-    {
-        return $this->setLayout(Bootstrap::INLINE)->render();
     }
 
 
@@ -132,6 +94,5 @@ class Form extends \Nette\Application\UI\Form
      */
     protected function handleSuccess($form, $data)
     {
-        return null;
     }
 }
