@@ -15,7 +15,6 @@
 		"issues": "https://github.com/juniwalk/forms/issues"
 	},
 	"require": {
-	    "juniwalk/forms-renderer": "~0.9",
         "nette/application": "~2.2",
         "nette/forms": "~2.2",
         "nette/di": "~2.2",
