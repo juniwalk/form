@@ -71,7 +71,7 @@ final class FormLocator
 	{
 		$name = sprintf('%s.%s', $this->name, $form);
 
-		if (func_num_args() > 2) {
+		if (func_num_args() > 1) {
 			$params = array_slice(func_get_args(), 1);
 		}
 
