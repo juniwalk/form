@@ -129,6 +129,18 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
+	 * Set defautl values of the Form.
+	 * @param  array  $values
+	 * @return static
+	 */
+	public function setDefaults(array $values)
+	{
+		$this->getForm()->setDefaults($values);
+		return $this;
+	}
+
+
+	/**
 	 * Adds global error message.
 	 * @param  object  $control  Control from the form
 	 * @param  string  $message  Error message
