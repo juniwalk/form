@@ -150,12 +150,25 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
+	 * Set custom template file for the form.
+	 * @param  string  $path  Path to template
+	 * @return static
+	 */
+	public function setTemplateFile($path = NULL)
+	{
+		$this->templateFile = $path;
+		return $this;
+	}
+
+
+	/**
 	 * Control renderer.
 	 */
 	public function render()
 	{
 		$template = $this->createTemplate();
-		$template->setFile(__DIR__.'/Form.latte');
+		$template->setTranslator($this->getTranslator());
+		$template->setFile($this->templateFile ?: __DIR__.'/Form.latte');
 
 		return $template->render();
 	}
@@ -168,19 +181,13 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	protected function createComponentForm($name)
 	{
-		// Create and setup the form control
 		$form = new Form($this, $name);
+		$form->onSuccess[] = function($form, $data) {
+			$this->handleSuccess($form, $data, $this);
+			$this->onSuccess($form, $data, $this);
+		};
+
 		$form->addProtection();
-
-		// Add primary onSuccess event listener
-		$form->onSuccess[] = function($form, $data) {
-			$this->handleSuccess($form, $data);
-		};
-
-		// Add onSuccess event listener delegator
-		$form->onSuccess[] = function($form, $data) {
-			$this->onSuccess($form, $data);
-		};
 
 		return $form;
 	}
@@ -188,11 +195,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 	/**
 	 * Handle onSuccess event of the form.
-	 * @param  Form   $form  Form instance
-	 * @param  mixed  $data  Submitted data
+	 * @param  Form    $form  Form instance
+	 * @param  mixed   $data  Submitted data
+     * @param  static  $self  Self instance
 	 * @return void
 	 */
-	protected function handleSuccess($form, $data)
+	protected function handleSuccess($form, $data, $self)
 	{
 	}
 }
