@@ -67,7 +67,7 @@ final class FormLocator
 	 * @return Form
 	 * @throws FormNotFound
 	 */
-	public function find($form, $params = NULL)
+	public function find($form, $params = [])
 	{
 		$name = sprintf('%s.%s', $this->name, $form);
 
@@ -92,7 +92,7 @@ final class FormLocator
 	 * @param  array   $params   Parameters
 	 * @return object
 	 */
-	private function create($service, array $params = NULL)
+	private function create($service, array $params = [])
 	{
 		if (!method_exists($service, 'create')) {
 			return $service;
