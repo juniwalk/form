@@ -109,7 +109,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public function setAttribute($key, $value)
 	{
-		$this->getForm()>getElementPrototype()
+		$this->getForm()->getElementPrototype()
 			->setAttribute($key, $value);
 
 		return $this;
@@ -204,12 +204,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		$form->addProtection();
 
 		// Primary onSuccess event, invokes internal handler
-		$form->onSuccess[] = function($form, $data) {
+		$form->onSuccess[] = function ($form, $data) {
 			$this->handleSuccess($form, $data);
 		};
 
 		// Secondary onSuccess event, invokes userland handlers
-		$form->onSuccess[] = function($form, $data) {
+		$form->onSuccess[] = function ($form, $data) {
 			$this->onSuccess($form, $data, $this);
 		};
 
