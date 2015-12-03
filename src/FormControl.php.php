@@ -150,6 +150,18 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
+	 * Control renderer.
+	 */
+	public function render()
+	{
+		$template = $this->createTemplate();
+		$template->setFile(__DIR__.'/Form.latte');
+
+		return $template->render();
+	}
+
+
+	/**
 	 * Create internal instance of the Form component.
 	 * @param  string  $name  Component name
 	 * @return Form
