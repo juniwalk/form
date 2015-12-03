@@ -149,13 +149,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	protected function createComponentForm($name)
 	{
-		// Create new instance of the Form control with protection
-		$form = (new Form($this, $name))->addProtection();
-
-		// Add default onSuccess event handler to the form
+		$form = new Form($this, $name);
 		$form->onSuccess[] = function($form, $data) {
 			$this->handleSuccess($form, $data);
 		};
+
+		$form->addProtection();
 
 		return $form;
 	}
