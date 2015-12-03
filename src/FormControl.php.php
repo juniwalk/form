@@ -189,7 +189,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	{
 		$form = new Form($this, $name);
 		$form->onSuccess[] = function($form, $data) {
-			$this->handleSuccess($form, $data, $this);
+			$this->handleSuccess($form, $data);
 			$this->onSuccess($form, $data, $this);
 		};
 
@@ -201,12 +201,11 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 	/**
 	 * Handle onSuccess event of the form.
-	 * @param  Form    $form  Form instance
-	 * @param  mixed   $data  Submitted data
-     * @param  static  $self  Self instance
+	 * @param  Form   $form  Form instance
+	 * @param  mixed  $data  Submitted data
 	 * @return void
 	 */
-	protected function handleSuccess($form, $data, $self)
+	protected function handleSuccess($form, $data)
 	{
 	}
 }
