@@ -10,6 +10,6 @@
 
 namespace JuniWalk\Forms\Exceptions;
 
-final class InvalidFormServiceException extends \Exception
+final class InvalidFormControl extends \RuntimeException
 {
 }

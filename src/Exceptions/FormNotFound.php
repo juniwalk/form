@@ -10,6 +10,6 @@
 
 namespace JuniWalk\Forms\Exceptions;
 
-final class FormNotFoundException extends \Exception
+final class FormNotFound extends \Exception
 {
 }
