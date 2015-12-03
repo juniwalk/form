@@ -18,6 +18,13 @@ use Nette\Localization\ITranslator;
 abstract class FormControl extends \Nette\Application\UI\Control
 {
 	/**
+	 * Form's onSuccess event.
+	 * @var callable[]
+	 */
+	public $onSuccess = [];
+
+
+	/**
 	 * Sets translate adapter.
 	 * @param  ITranslator  $translator  Translator instance
 	 * @return static
@@ -149,12 +156,19 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	protected function createComponentForm($name)
 	{
+		// Create and setup the form control
 		$form = new Form($this, $name);
+		$form->addProtection();
+
+		// Add primary onSuccess event listener
 		$form->onSuccess[] = function($form, $data) {
 			$this->handleSuccess($form, $data);
 		};
 
-		$form->addProtection();
+		// Add onSuccess event listener delegator
+		$form->onSuccess[] = function($form, $data) {
+			$this->onSuccess($form, $data);
+		};
 
 		return $form;
 	}
