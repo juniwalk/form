@@ -23,6 +23,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public $onSuccess = [];
 
+	/**
+	 * Path to a template file.
+	 * @var string
+	 */
+	protected $templateFile;
+
 
 	/**
 	 * Sets translate adapter.
