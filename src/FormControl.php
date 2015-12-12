@@ -18,6 +18,12 @@ use Nette\Localization\ITranslator;
 abstract class FormControl extends \Nette\Application\UI\Control
 {
 	/**
+	 * Form's onRender event.
+	 * @var callable[]
+	 */
+	public $onRender = [];
+
+	/**
 	 * Form's onSuccess event.
 	 * @var callable[]
 	 */
@@ -187,6 +193,10 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		$template = $this->createTemplate();
 		$template->setTranslator($this->getTranslator());
 		$template->setFile($this->templateFile ?: __DIR__.'/Form.latte');
+
+		if (!empty($this->onRender)) {
+			$this->onRender($this, $template);
+		}
 
 		return $template->render();
 	}
