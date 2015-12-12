@@ -193,6 +193,15 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
+	 * Separate renderer just for Form errors.
+	 */
+	public function renderErrors()
+	{
+		echo $this->getForm()->render('errors');
+	}
+
+
+	/**
 	 * Create internal instance of the Form component.
 	 * @param  string  $name  Component name
 	 * @return Form
