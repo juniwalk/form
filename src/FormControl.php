@@ -230,6 +230,10 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		// Secondary onSuccess event, invokes userland handlers
 		$form->onSuccess[] = function ($form, $data) {
 			$this->onSuccess($form, $data, $this);
+
+			if ($this->getPresenter()->isAjax()) {
+				$this->redrawControl('form');
+			}
 		};
 
 		return $form;
