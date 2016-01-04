@@ -212,24 +212,17 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Create internal instance of the Form component.
-	 * @param  string  $name  Component name
+	 * @param  string  $name
 	 * @return Form
 	 */
-	protected function createComponentForm($name)
+	protected function createForm($name)
 	{
-		// Prepare Form control instance
 		$form = new Form($this, $name);
 		$form->addProtection();
 
-		// Primary onSuccess event, invokes internal handler
 		$form->onSuccess[] = function ($form, $data) {
 			$this->handleSuccess($form, $data);
-		};
-
-		// Secondary onSuccess event, invokes userland handlers
-		$form->onSuccess[] = function ($form, $data) {
-			$this->onSuccess($form, $data, $this);
+			$this->onSuccess($form, $data);
 
 			if ($this->getPresenter()->isAjax()) {
 				$this->redrawControl('form');
@@ -237,6 +230,17 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		};
 
 		return $form;
+	}
+
+
+	/**
+	 * Create internal instance of the Form component.
+	 * @param  string  $name
+	 * @return Form
+	 */
+	protected function createComponentForm($name)
+	{
+		return $this->createForm($name);
 	}
 
 
