@@ -141,6 +141,8 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		$template->setTranslator($this->getTranslator());
 		$template->setFile($file);
 
+		$template->form = $this->getForm();
+
 		$this->onBeforeRender($this, $template);
 
 		$template->render();
@@ -164,6 +166,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		// Secondary event handler, proceed to presenter
 		$form->onSuccess[] = function ($form, $data) {
 			$this->onSuccess($form, $data);
+			$this->redrawControl('errors');
 			$this->redrawControl('form');
 		};
 
