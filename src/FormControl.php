@@ -222,11 +222,11 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 		$form->onSuccess[] = function ($form, $data) {
 			$this->handleSuccess($form, $data);
-			$this->onSuccess($form, $data);
+		};
 
-			if ($this->getPresenter()->isAjax()) {
-				$this->redrawControl('form');
-			}
+		$form->onSuccess[] = function ($form, $data) {
+			$this->onSuccess($form, $data);
+			$this->redrawControl('form');
 		};
 
 		return $form;
