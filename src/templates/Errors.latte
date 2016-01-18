@@ -1,0 +1,9 @@
+{snippet errors}
+{form form}
+
+	<div class="errors" n:if="$form->hasErrors()">
+		<div class="alert alert-danger" n:foreach="$form->getErrors() as $error">{$error}</div>
+	</div>
+
+{/form}
+{/snippet}

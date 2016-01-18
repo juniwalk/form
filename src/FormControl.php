@@ -10,7 +10,6 @@
 
 namespace JuniWalk\Forms;
 
-use JuniWalk\Forms\Exceptions\InvalidFormControl;
 use Nette\Application\UI\Form;
 use Nette\Forms\IFormRenderer;
 use Nette\Localization\ITranslator;
@@ -18,27 +17,28 @@ use Nette\Localization\ITranslator;
 abstract class FormControl extends \Nette\Application\UI\Control
 {
 	/**
-	 * Form's onRender event.
-	 * @var callable[]
+	 * Types of the template files.
+	 * @var string[]
 	 */
-	public $onRender = [];
+	const TPL_ERRORS = 'errors';
+	const TPL_FORM = 'form';
 
-	/**
-	 * Form's onSuccess event.
-	 * @var callable[]
-	 */
+
+	/** @var callable[] */
 	public $onSuccess = [];
 
-	/**
-	 * Path to a template file.
-	 * @var string
-	 */
-	protected $templateFile;
+	/** @var callable[] */
+	public $onBeforeRender = [];
+
+	/** @var string[] */
+	private $templateFile = [
+		self::TPL_ERRORS => NULL,
+		self::TPL_FORM => NULL,
+	];
 
 
 	/**
-	 * Sets translate adapter.
-	 * @param  ITranslator  $translator  Translator instance
+	 * @param  ITranslator  $translator
 	 * @return static
 	 */
 	public function setTranslator(ITranslator $translator = NULL)
@@ -49,7 +49,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Returns translate adapter.
 	 * @return ITranslator
 	 */
 	public function getTranslator()
@@ -59,8 +58,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Sets form renderer.
-	 * @param  IFormRenderer  $renderer  Renderer instance
+	 * @param  IFormRenderer  $renderer
 	 * @return static
 	 */
 	public function setRenderer(IFormRenderer $renderer = NULL)
@@ -71,7 +69,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Returns form renderer.
 	 * @return IFormRenderer
 	 */
 	public function getRenderer()
@@ -81,56 +78,11 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Get the instance of the Form.
 	 * @return Form
 	 */
 	public function getForm()
 	{
 		return $this->getComponent('form');
-	}
-
-
-	/**
-	 * Set each Form control as enabled or disabled.
-	 * @param  bool  $value  Disabled value
-	 * @return static
-	 */
-	public function setDisabled($value)
-	{
-		$form = $this->getForm();
-
-		foreach ($form->getComponents() as $control) {
-			$control->setDisabled($value);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Set attribute to the form element.
-	 * @param  string  $key    Attribute name
-	 * @param  mixed   $value  New value
-	 * @return static
-	 */
-	public function setAttribute($key, $value)
-	{
-		$this->getForm()->getElementPrototype()
-			->setAttribute($key, $value);
-
-		return $this;
-	}
-
-
-	/**
-	 * Get value of the form element attribute.
-	 * @param  string  $key  Attribute name
-	 * @return mixed
-	 */
-	public function getAttribute($key)
-	{
-		return $this->getForm()->getElementPrototype()
-			->getAttribute($key);
 	}
 
 
@@ -147,67 +99,51 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Adds global error message.
-	 * @param  object  $control  Control from the form
-	 * @param  string  $message  Error message
-	 * @param  array   $params   Message parameters
-	 * @return void
-	 * @throws InvalidFormControl
-	 */
-	public function addError($control, $message, array $params = [])
-	{
-		// If the control is not object or there is no addError method to be used
-		if (!is_object($control) || !method_exists($control, 'addError')) {
-			throw new InvalidFormControl;
-		}
-
-		// Get the instance of the translator
-		$translator = $this->getTranslator();
-
-		// If there is translator available
-		if ($translator && $translator instanceof ITranslator) {
-			$message = $translator->translate($message, $params);
-		}
-
-		return $control->addError($message);
-	}
-
-
-	/**
-	 * Set custom template file for the form.
-	 * @param  string  $path  Path to template
+	 * @param  string  $path
+	 * @param  string  $type
 	 * @return static
+	 * @throws InvalidArgumentException
 	 */
-	public function setTemplateFile($path = NULL)
+	public function setTemplateFile($path = NULL, $type = self::TPL_FORM)
 	{
-		$this->templateFile = $path;
+		if (!array_key_exists($type, $this->templateFile)) {
+			throw new \InvalidArgumentException($type);
+		}
+
+		$this->templateFile[$type] = $path;
 		return $this;
 	}
 
 
-	/**
-	 * Control renderer.
-	 */
 	public function render()
 	{
-		$template = $this->createTemplate();
-		$template->setTranslator($this->getTranslator());
-		$template->setFile($this->templateFile ?: __DIR__.'/Form.latte');
-
-		if (!empty($this->onRender)) {
-			$this->onRender($this, $template);
+		if (!$file = $this->templateFile[self::TPL_FORM]) {
+			$file = __DIR__.'/templates/Form.latte';
 		}
 
-		return $template->render();
+		$template = $this->createTemplate();
+		$template->setTranslator($this->getTranslator());
+		$template->setFile($file);
+
+		$this->onBeforeRender($this, $template);
+
+		$template->render();
 	}
 
 
-	/**
-	 * Separate renderer just for Form errors.
-	 */
 	public function renderErrors()
 	{
-		echo $this->getForm()->render('errors');
+		if (!$file = $this->templateFile[self::TPL_ERRORS]) {
+			$file = __DIR__.'/templates/Errors.latte';
+		}
+
+		$template = $this->createTemplate();
+		$template->setTranslator($this->getTranslator());
+		$template->setFile($file);
+
+		$this->onBeforeRender($this, $template);
+
+		$template->render();
 	}
 
 
@@ -215,15 +151,17 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 * @param  string  $name
 	 * @return Form
 	 */
-	protected function createForm($name)
+	final protected function createForm($name)
 	{
 		$form = new Form($this, $name);
 		$form->addProtection();
 
+		// Primary event handler, called internally
 		$form->onSuccess[] = function ($form, $data) {
 			$this->handleSuccess($form, $data);
 		};
 
+		// Secondary event handler, proceed to presenter
 		$form->onSuccess[] = function ($form, $data) {
 			$this->onSuccess($form, $data);
 			$this->redrawControl('form');
@@ -234,23 +172,16 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * Create internal instance of the Form component.
 	 * @param  string  $name
 	 * @return Form
 	 */
-	protected function createComponentForm($name)
-	{
-		return $this->createForm($name);
-	}
+	abstract protected function createComponentForm($name);
 
 
 	/**
-	 * Handle onSuccess event of the form.
-	 * @param  Form   $form  Form instance
-	 * @param  mixed  $data  Submitted data
+	 * @param  Form       $form
+	 * @param  ArrayHash  $data
 	 * @return void
 	 */
-	protected function handleSuccess($form, $data)
-	{
-	}
+	abstract protected function handleSuccess($form, $data);
 }
