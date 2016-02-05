@@ -4,33 +4,29 @@
 	"description": "Nette Forms as component.",
 	"keywords": ["nette","nettefw","forms"],
 	"license": "MIT",
-	"authors": [
-		{
-			"name": "Martin Procházka",
-			"email": "juniwalk@outlook.cz",
-			"role": "Developer"
-		}
-	],
+
+	"authors": [{
+		"name": "Martin Procházka",
+		"email": "juniwalk@outlook.cz",
+		"role": "Developer"
+	}],
+
 	"support": {
 		"issues": "https://github.com/juniwalk/forms/issues"
 	},
+
 	"require": {
-        "php": ">=5.4.0",
-        "nette/application": "~2.2",
-        "nette/forms": "~2.2",
-        "nette/di": "~2.2"
+		"php": ">=5.5",
+		"nette/application": "~2.0",
+		"nette/forms": "~2.0",
+		"nette/di": "~2.0"
 	},
-    "suggest": {
-        "juniwalk/forms-renderer": "Render Forms using Bootstrap 3."
-    },
+
 	"autoload": {
-		"psr-4": {
-			"JuniWalk\\Forms\\": "src/"
-		}
+		"psr-4": {"JuniWalk\\Forms\\": "src/"}
 	},
+
 	"autoload-dev": {
-		"psr-4": {
-			"JuniWalk\\Forms\\Tests\\": "tests/"
-		}
+		"psr-4": {"JuniWalk\\Tests\\": "tests/"}
 	}
 }
