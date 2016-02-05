@@ -1,7 +1,7 @@
 {snippet errors}
 
 	<div class="alerts text-left" n:if="$form->hasErrors()">
-		<div class="alert alert-danger" n:foreach="$form->getErrors() as $error">{$error}</div>
+		<div class="alert alert-danger" n:foreach="$form->getErrors() as $error">{_$error}</div>
 	</div>
 
 {/snippet}
