@@ -2,26 +2,23 @@
 
 /**
  * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Forms
- * @link      https://github.com/juniwalk/forms
+ * @package   Form
+ * @link      https://github.com/juniwalk/form
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
 
-namespace JuniWalk\Forms\DI;
+namespace JuniWalk\Form\DI;
 
 use Nette\Forms\IFormRenderer;
 use Nette\Localization\ITranslator;
 
-final class FormsExtension extends \Nette\DI\CompilerExtension
+final class FormExtension extends \Nette\DI\CompilerExtension
 {
 	/** @var ServiceDefinition[] */
 	private $forms = [];
 
 
-	/**
-	 * Register extension into DI container.
-	 */
 	public function loadConfiguration()
 	{
 		$builder = $this->getContainerBuilder();
@@ -33,9 +30,6 @@ final class FormsExtension extends \Nette\DI\CompilerExtension
 	}
 
 
-	/**
-	 * Inject translator and renderer.
-	 */
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();

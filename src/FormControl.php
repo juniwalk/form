@@ -2,13 +2,13 @@
 
 /**
  * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Forms
- * @link      https://github.com/juniwalk/forms
+ * @package   Form
+ * @link      https://github.com/juniwalk/form
  * @copyright Martin Procházka (c) 2015
  * @license   MIT License
  */
 
-namespace JuniWalk\Forms;
+namespace JuniWalk\Form;
 
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;

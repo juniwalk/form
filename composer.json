@@ -12,7 +12,7 @@
 	}],
 
 	"support": {
-		"issues": "https://github.com/juniwalk/forms/issues"
+		"issues": "https://github.com/juniwalk/form/issues"
 	},
 
 	"require": {
@@ -23,7 +23,7 @@
 	},
 
 	"autoload": {
-		"psr-4": {"JuniWalk\\Forms\\": "src/"}
+		"psr-4": {"JuniWalk\\Form\\": "src/"}
 	},
 
 	"autoload-dev": {
