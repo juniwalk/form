@@ -1,7 +1,7 @@
 {
-	"name": "juniwalk/forms",
+	"name": "juniwalk/form",
+	"description": "Helper to use nette/forms as a components.",
 	"type": "library",
-	"description": "Nette Forms as component.",
 	"keywords": ["nette","nettefw","forms"],
 	"license": "MIT",
 
