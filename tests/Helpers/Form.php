@@ -11,7 +11,7 @@
 namespace JuniWalk\Tests\Helpers;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Nette\Forms\Form;
+use Nette\Forms\Form as NetteForm;
 use Nette\Http\Request;
 
 final class Form extends \JuniWalk\Form\FormControl
@@ -56,7 +56,7 @@ final class Form extends \JuniWalk\Form\FormControl
 
 	public function disableProtection()
 	{
-		unset($this['form'][Form::PROTECTOR_ID]);
+		unset($this['form'][NetteForm::PROTECTOR_ID]);
 	}
 
 
