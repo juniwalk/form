@@ -17,29 +17,25 @@ use Nette\Localization\ITranslator;
 
 /**
  * @method void onSuccess(Form $form, ArrayHash $data)
+ * @method void onError(Form $form)
  * @method void onBeforeRender(self $self, ITemplate $template)
  */
 abstract class FormControl extends \Nette\Application\UI\Control
 {
-	/**
-	 * Types of the template files.
-	 * @var string[]
-	 */
-	const TPL_ERRORS = 'errors';
-	const TPL_FORM = 'form';
-
-
 	/** @var callable[] */
 	public $onSuccess = [];
 
 	/** @var callable[] */
+	public $onError = [];
+
+	/** @var callable[] */
 	public $onBeforeRender = [];
 
-	/** @var string[] */
-	private $templateFile = [
-		self::TPL_ERRORS => NULL,
-		self::TPL_FORM => NULL,
-	];
+	/** @var string */
+	private $errorTemplate;
+
+	/** @var string */
+	private $formTemplate;
 
 
 	/**
@@ -93,17 +89,24 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 	/**
 	 * @param  string  $path
-	 * @param  string  $type
 	 * @return static
 	 * @throws InvalidArgumentException
 	 */
-	public function setTemplateFile($path = NULL, $type = self::TPL_FORM)
+	public function setFormTemplate($path = NULL)
 	{
-		if (!array_key_exists($type, $this->templateFile)) {
-			throw new \InvalidArgumentException($type);
-		}
+		$this->formTemplate = $path;
+		return $this;
+	}
 
-		$this->templateFile[$type] = $path;
+
+	/**
+	 * @param  string  $path
+	 * @return static
+	 * @throws InvalidArgumentException
+	 */
+	public function setErrorTemplate($path = NULL)
+	{
+		$this->errorTemplate = $path;
 		return $this;
 	}
 
@@ -111,12 +114,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	public function render()
 	{
 		$template = $this->createTemplate();
+		$template->setFile($this->formTemplate ?: __DIR__.'/templates/form.latte');
 
-		if (!$file = $this->templateFile[self::TPL_FORM]) {
-			$file = __DIR__.'/templates/form.latte';
+		if ($this->onBeforeRender) {
+			$this->onBeforeRender($this, $template);
 		}
 
-		$template->setFile($file);
 		$template->render();
 	}
 
@@ -124,12 +127,12 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	public function renderErrors()
 	{
 		$template = $this->createTemplate();
+		$template->setFile($this->errorTemplate ?: __DIR__.'/templates/errors.latte');
 
-		if (!$file = $this->templateFile[self::TPL_ERRORS]) {
-			$file = __DIR__.'/templates/errors.latte';
+		if ($this->onBeforeRender) {
+			$this->onBeforeRender($this, $template);
 		}
 
-		$template->setFile($file);
 		$template->render();
 	}
 
@@ -142,10 +145,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		$template = parent::createTemplate();
 		$template->setTranslator($this->getTranslator());
 
-		if ($this->onBeforeRender) {
-			$this->onBeforeRender($this, $template);
-		}
-
 		$template->add('form', $this->getForm());
 
 		return $template;
@@ -154,22 +153,25 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 	/**
 	 * @param  string  $name
+	 * @param  string  $csrfMessage
 	 * @return Form
 	 */
-	final protected function createForm($name)
+	final protected function createForm($name, $csrfMessage = NULL)
 	{
 		$form = new Form($this, $name);
-		$form->addProtection();
+		$form->addProtection($csrfMessage);
 
-		// Primary event handler, called internally
+		$form->onError[] = function ($form) {
+			$this->onError($form);
+			$this->redrawControl('errors');
+		};
+
 		$form->onSuccess[] = function ($form, $data) {
 			$this->handleSuccess($form, $data);
 		};
 
-		// Secondary event handler, proceed to presenter
 		$form->onSuccess[] = function ($form, $data) {
 			$this->onSuccess($form, $data);
-			$this->redrawControl('errors');
 			$this->redrawControl('form');
 		};
 
