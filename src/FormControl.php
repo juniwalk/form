@@ -115,11 +115,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	{
 		$template = $this->createTemplate();
 		$template->setFile($this->formTemplate ?: __DIR__.'/templates/form.latte');
-
-		if ($this->onBeforeRender) {
-			$this->onBeforeRender($this, $template);
-		}
-
 		$template->render();
 	}
 
@@ -128,11 +123,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	{
 		$template = $this->createTemplate();
 		$template->setFile($this->errorTemplate ?: __DIR__.'/templates/errors.latte');
-
-		if ($this->onBeforeRender) {
-			$this->onBeforeRender($this, $template);
-		}
-
 		$template->render();
 	}
 
@@ -146,6 +136,10 @@ abstract class FormControl extends \Nette\Application\UI\Control
 		$template->setTranslator($this->getTranslator());
 
 		$template->add('form', $this->getForm());
+
+		if (!empty($this->onBeforeRender)) {
+			$this->onBeforeRender($this, $template);
+		}
 
 		return $template;
 	}
