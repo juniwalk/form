@@ -8,17 +8,14 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Tests\Helpers;
+namespace JuniWalk\Tests\Files;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Nette\Forms\Form as NetteForm;
 use Nette\Http\Request;
+use Tester\Assert;
 
 final class Form extends \JuniWalk\Form\FormControl
 {
-	/** @var TestCase */
-	private $test;
-
 	/** @var Request */
 	private $request;
 
@@ -27,9 +24,8 @@ final class Form extends \JuniWalk\Form\FormControl
 	 * @param TestCase  $test
 	 * @param Request   $request
 	 */
-	public function __construct(TestCase $test, Request $request)
+	public function __construct(Request $request)
 	{
-		$this->test = $test;
 		$this->request = $request;
 	}
 
@@ -81,6 +77,6 @@ final class Form extends \JuniWalk\Form\FormControl
 	 */
 	protected function handleSuccess($form, $data)
 	{
-		$this->test->assertTrue(TRUE);
+		Assert::true(TRUE);
 	}
 }

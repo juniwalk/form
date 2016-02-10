@@ -8,15 +8,12 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Tests\Helpers;
+namespace JuniWalk\Tests\Files;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use Tester\Assert;
 
 final class Translator implements \Nette\Localization\ITranslator
 {
-	/** @var TestCase */
-	private $test;
-
 	/** @var string[] */
 	private $messages = [
 		'test.form.csrf' => 'Token has expired, submit form again.',
@@ -26,22 +23,13 @@ final class Translator implements \Nette\Localization\ITranslator
 
 
 	/**
-	 * @param TestCase  $test
-	 */
-	public function __construct(TestCase $test)
-	{
-		$this->test = $test;
-	}
-
-
-	/**
 	 * @param  string  $message
 	 * @param  int     $count
 	 * @return string
 	 */
 	function translate($message, $count = NULL)
 	{
-		$this->test->assertArrayHasKey($message, $this->messages);
+		Assert::true(isset($this->messages[$message]));
 
 		if (!$this->messages[$message]) {
 			return $message;

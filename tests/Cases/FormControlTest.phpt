@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * TEST: Basic functionality of FormControl.
+ * @testCase
+ *
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
@@ -10,12 +13,15 @@
 
 namespace JuniWalk\Tests;
 
-use JuniWalk\Tests\Helpers\Form;
-use JuniWalk\Tests\Helpers\Translator;
+use JuniWalk\Tests\Files\Form;
+use JuniWalk\Tests\Files\Translator;
 use Nette\Forms\Rendering\DefaultFormRenderer;
 use Nette\Http\RequestFactory;
+use Tester\Assert;
 
-final class FormControlTest extends \PHPUnit_Framework_TestCase
+require __DIR__.'/../bootstrap.php';
+
+final class FormControlTest extends \Tester\TestCase
 {
 	/** @var Nette\Http\Request */
 	private $request;
@@ -25,9 +31,9 @@ final class FormControlTest extends \PHPUnit_Framework_TestCase
 	{
 		$form = $this->createForm();
 
-		$this->assertInstanceOf('Nette\Forms\Form', $form->getForm());
-		$this->assertInstanceOf('Nette\Forms\IFormRenderer', $form->getRenderer());
-		$this->assertInstanceOf('Nette\Localization\ITranslator', $form->getTranslator());
+		Assert::type('Nette\Forms\Form', $form->getForm());
+		Assert::type('Nette\Forms\IFormRenderer', $form->getRenderer());
+		Assert::type('Nette\Localization\ITranslator', $form->getTranslator());
 	}
 
 
@@ -35,8 +41,8 @@ final class FormControlTest extends \PHPUnit_Framework_TestCase
 	{
 		$form = $this->createForm()->setDefaults('Martin');
 		$form->onSuccess[] = function ($form, $data) {
-			$this->assertArrayHasKey('name', $form);
-			$this->assertSame('Martin', $data->name);
+			Assert::same('Martin', $data->name);
+			Assert::true(isset($form['name']));
 		};
 
 		$form->fireEvents();
@@ -47,8 +53,8 @@ final class FormControlTest extends \PHPUnit_Framework_TestCase
 	{
 		$form = $this->createForm(TRUE);
 		$form->onError[] = function ($form) {
-			$this->assertArrayHasKey('name', $form);
-			$this->assertNotEmpty($form->getErrors());
+			Assert::false(empty($form->getErrors()));
+			Assert::true(isset($form['name']));
 		};
 
 		$form->fireEvents();
@@ -68,8 +74,8 @@ final class FormControlTest extends \PHPUnit_Framework_TestCase
 	 */
 	private function createForm($protected = FALSE)
 	{
-		$form = new Form($this, $this->request);
-		$form->setTranslator(new Translator($this));
+		$form = new Form($this->request);
+		$form->setTranslator(new Translator);
 		$form->setRenderer(new DefaultFormRenderer);
 
 		if (!$protected) {
@@ -79,3 +85,5 @@ final class FormControlTest extends \PHPUnit_Framework_TestCase
 		return $form;
 	}
 }
+
+(new FormControlTest)->run();
