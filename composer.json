@@ -16,6 +16,10 @@
 	},
 
 
+	"autoload": {
+		"psr-4": {"JuniWalk\\Form\\": "src/"}
+	},
+
 	"require": {
 		"php": ">=5.5",
 		"nette/application": "~2.0",
@@ -23,16 +27,13 @@
 		"nette/di": "~2.0"
 	},
 
-	"autoload": {
-		"psr-4": {"JuniWalk\\Form\\": "src/"}
-	},
-
-
-	"require-dev": {
-		"nette/tester": "~1.0"
-	},
 
 	"autoload-dev": {
-		"psr-4": {"JuniWalk\\Tests\\": "tests/"}
+		"psr-4": {"JuniWalk\\Form\\Tests\\": "tests/"}
+	},
+
+	"require-dev": {
+		"nette/tester": "~1.0",
+		"latte/latte": "~2.0"
 	}
 }

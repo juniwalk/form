@@ -11,76 +11,48 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Tests;
+namespace JuniWalk\Form\Tests\Cases;
 
-use JuniWalk\Tests\Files\Form;
-use JuniWalk\Tests\Files\Translator;
-use Nette\Forms\Rendering\DefaultFormRenderer;
-use Nette\Http\RequestFactory;
+use JuniWalk\Form\Tests\Files;
 use Tester\Assert;
 
 require __DIR__.'/../bootstrap.php';
 
 final class FormControlTest extends \Tester\TestCase
 {
-	/** @var Nette\Http\Request */
-	private $request;
-
-
 	public function testIntegrity()
 	{
-		$form = $this->createForm();
-
-		Assert::type('Nette\Forms\Form', $form->getForm());
-		Assert::type('Nette\Forms\IFormRenderer', $form->getRenderer());
+		$form = $this->createForm()->getForm();
 		Assert::type('Nette\Localization\ITranslator', $form->getTranslator());
+		Assert::type('Nette\Forms\IFormRenderer', $form->getRenderer());
 	}
 
 
-	public function testSubmitSuccess()
+	public function testEventHandler()
 	{
 		$form = $this->createForm()->setDefaults('Martin');
 		$form->onSuccess[] = function ($form, $data) {
 			Assert::same('Martin', $data->name);
-			Assert::true(isset($form['name']));
+			$form->addError('test.form.csrf');
 		};
 
-		$form->fireEvents();
-	}
-
-
-	public function testSubmitError()
-	{
-		$form = $this->createForm(TRUE);
 		$form->onError[] = function ($form) {
 			Assert::false(empty($form->getErrors()));
-			Assert::true(isset($form['name']));
 		};
 
 		$form->fireEvents();
-	}
-
-
-	protected function setUp()
-	{
-		$this->request = (new RequestFactory)->createHttpRequest();
-		$_SERVER['REQUEST_METHOD'] = 'POST';
 	}
 
 
 	/**
-	 * @param  bool  $protected
 	 * @return Form
 	 */
-	private function createForm($protected = FALSE)
+	private function createForm()
 	{
-		$form = new Form($this->request);
-		$form->setTranslator(new Translator);
-		$form->setRenderer(new DefaultFormRenderer);
-
-		if (!$protected) {
-			$form->disableProtection();
-		}
+		$form = new Files\Form;
+		$form->setTranslator(new Files\Translator);
+		$form->setRenderer(new Files\Renderer);
+		$form->disableProtection();
 
 		return $form;
 	}

@@ -8,11 +8,11 @@
  * @license   MIT License
  */
 
-namespace JuniWalk\Tests\Files;
+namespace JuniWalk\Form\Tests\Files;
 
-use Tester\Assert;
+use Nette;
 
-final class Translator implements \Nette\Localization\ITranslator
+final class Translator implements Nette\Localization\ITranslator
 {
 	/** @var string[] */
 	private $messages = [
@@ -29,8 +29,6 @@ final class Translator implements \Nette\Localization\ITranslator
 	 */
 	function translate($message, $count = NULL)
 	{
-		Assert::true(isset($this->messages[$message]));
-
 		if (!$this->messages[$message]) {
 			return $message;
 		}
