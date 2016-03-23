@@ -53,14 +53,4 @@ final class Form extends \JuniWalk\Form\FormControl
 
 		return $form;
 	}
-
-
-	/**
-	 * @param  Form       $form
-	 * @param  ArrayHash  $data
-	 */
-	protected function handleSuccess($form, $data)
-	{
-		// Internal onSuccess handler
-	}
 }

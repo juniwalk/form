@@ -1,0 +1,23 @@
+
+php:
+	date.timezone: Europe/Prague
+
+session:
+	autoStart: FALSE
+
+application:
+	scanDirs: FALSE
+
+services:
+	cacheStorage: Nette\Caching\Storages\MemoryStorage
+	- JuniWalk\Form\Tests\Files\Renderer
+	- JuniWalk\Form\Tests\Files\Translator
+
+
+extensions:
+	form: JuniWalk\Form\DI\FormExtension
+
+
+# JuniWalk \ Form
+form:
+	- JuniWalk\Form\Tests\Files\IFormFactory

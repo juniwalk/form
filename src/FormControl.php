@@ -181,9 +181,11 @@ abstract class FormControl extends \Nette\Application\UI\Control
 
 
 	/**
-	 * @param  Form       $form
-	 * @param  ArrayHash  $data
-	 * @return void
+	 * @param Form       $form
+	 * @param ArrayHash  $data
 	 */
-	abstract protected function handleSuccess($form, $data);
+	protected function handleSuccess($form, $data)
+	{
+
+	}
 }

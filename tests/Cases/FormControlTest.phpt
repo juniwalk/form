@@ -13,16 +13,20 @@
 
 namespace JuniWalk\Form\Tests\Cases;
 
-use JuniWalk\Form\Tests\Files;
+use JuniWalk\Form\Tests\Files\IFormFactory;
 use Tester\Assert;
 
 require __DIR__.'/../bootstrap.php';
 
 final class FormControlTest extends \Tester\TestCase
 {
+	/** @var Form */
+	private $form;
+
+
 	public function testIntegrity()
 	{
-		$form = $this->createForm()->getForm();
+		$form = $this->createForm();
 		Assert::type('Nette\Localization\ITranslator', $form->getTranslator());
 		Assert::type('Nette\Forms\IFormRenderer', $form->getRenderer());
 	}
@@ -30,7 +34,10 @@ final class FormControlTest extends \Tester\TestCase
 
 	public function testEventHandler()
 	{
-		$form = $this->createForm()->setDefaults('Martin');
+		$form = $this->createForm();
+		$form->disableProtection();
+		$form->setDefaults('Martin');
+
 		$form->onSuccess[] = function ($form, $data) {
 			Assert::same('Martin', $data->name);
 			$form->addError('test.form.csrf');
@@ -49,12 +56,13 @@ final class FormControlTest extends \Tester\TestCase
 	 */
 	private function createForm()
 	{
-		$form = new Files\Form;
-		$form->setTranslator(new Files\Translator);
-		$form->setRenderer(new Files\Renderer);
-		$form->disableProtection();
+		if (isset($this->form)) {
+			return $this->form;
+		}
 
-		return $form;
+		return $this->form = createContainer()
+			->getByType(IFormFactory::class)
+			->create();
 	}
 }
 
