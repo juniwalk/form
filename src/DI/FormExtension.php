@@ -10,8 +10,11 @@
 
 namespace JuniWalk\Form\DI;
 
+use JuniWalk\Form\Controls;
+use Nette\Forms\Container;
 use Nette\Forms\IFormRenderer;
 use Nette\Localization\ITranslator;
+use Nette\PhpGenerator\ClassType;
 
 final class FormExtension extends \Nette\DI\CompilerExtension
 {
@@ -46,5 +49,23 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 			$form->addSetup('setTranslator', [$translator]);
 			$form->addSetup('setRenderer', [$renderer]);
 		}
+	}
+
+
+	/**
+	 * @param ClassType  $class
+	 */
+	public function afterCompile(ClassType $class)
+	{
+		$init = $class->getMethods()['initialize'];
+		$init->addBody(__CLASS__.'::registerControls();');
+	}
+
+
+	public static function registerControls()
+	{
+		Container::extensionMethod('addDateTime', function (Container $container, $name, $label = NULL) {
+			return $container[$name] = new Controls\DateTimePicker($label);
+		});
 	}
 }
