@@ -28,7 +28,6 @@ final class FormControlTest extends \Tester\TestCase
 	{
 		$form = $this->createForm();
 		Assert::type('Nette\Localization\ITranslator', $form->getTranslator());
-		Assert::type('Nette\Forms\IFormRenderer', $form->getRenderer());
 	}
 
 
