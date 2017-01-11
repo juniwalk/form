@@ -47,7 +47,6 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public function setTranslator(ITranslator $translator = NULL)
 	{
-		//$this->getForm()->setTranslator($translator);
 		$this->translator = $translator;
 		return $this;
 	}
@@ -58,28 +57,7 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public function getTranslator()
 	{
-		//return $this->getForm()->getTranslator();
 		return $this->translator;
-	}
-
-
-	/**
-	 * @param  IFormRenderer  $renderer
-	 * @return static
-	 */
-	public function setRenderer(IFormRenderer $renderer = NULL)
-	{
-		$this->getForm()->setRenderer($renderer);
-		return $this;
-	}
-
-
-	/**
-	 * @return IFormRenderer
-	 */
-	public function getRenderer()
-	{
-		return $this->getForm()->getRenderer();
 	}
 
 

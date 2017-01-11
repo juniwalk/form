@@ -12,7 +12,6 @@ namespace JuniWalk\Form\DI;
 
 use JuniWalk\Form\Controls;
 use Nette\Forms\Container;
-use Nette\Forms\IFormRenderer;
 use Nette\Localization\ITranslator;
 use Nette\PhpGenerator\ClassType;
 
@@ -41,13 +40,8 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 			$translator = '@'.$translator;
 		}
 
-		if ($renderer = $builder->getByType(IFormRenderer::class)) {
-			$renderer = '@'.$renderer;
-		}
-
 		foreach ($this->forms as $form) {
 			$form->addSetup('setTranslator', [$translator]);
-			$form->addSetup('setRenderer', [$renderer]);
 		}
 	}
 
