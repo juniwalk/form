@@ -31,6 +31,9 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	/** @var callable[] */
 	public $onBeforeRender = [];
 
+	/** @var ITranslator */
+	private $translator;
+
 	/** @var string */
 	private $errorTemplate;
 
@@ -44,7 +47,8 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public function setTranslator(ITranslator $translator = NULL)
 	{
-		$this->getForm()->setTranslator($translator);
+		//$this->getForm()->setTranslator($translator);
+		$this->translator = $translator;
 		return $this;
 	}
 
@@ -54,7 +58,8 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	 */
 	public function getTranslator()
 	{
-		return $this->getForm()->getTranslator();
+		//return $this->getForm()->getTranslator();
+		return $this->translator;
 	}
 
 
@@ -133,9 +138,10 @@ abstract class FormControl extends \Nette\Application\UI\Control
 	protected function createTemplate()
 	{
 		$template = parent::createTemplate();
-		$template->setTranslator($this->getTranslator());
+		$template->setTranslator($translator = $this->getTranslator());
 
-		$template->add('form', $this->getForm());
+		$template->add('form', $form = $this->getForm());
+		$form->setTranslator($translator);
 
 		if (!empty($this->onBeforeRender)) {
 			$this->onBeforeRender($this, $template);
