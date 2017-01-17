@@ -10,7 +10,10 @@
 
 namespace JuniWalk\Form\Tests\Files;
 
-final class Form extends \JuniWalk\Form\FormControl
+use Nette\Application\UI\Form as NetteForm;
+use Nette\Utils\ArrayHash;
+
+final class Form extends \JuniWalk\Form\AbstractForm
 {
 	/**
 	 * @param  string  $name
@@ -43,12 +46,13 @@ final class Form extends \JuniWalk\Form\FormControl
 
 	/**
 	 * @param  string  $name
-	 * @return Form
+	 * @return NetteForm
 	 */
-	protected function createComponentForm($name)
+	protected function createComponentForm(string $name) : NetteForm
 	{
-		$form = $this->createForm($name, 'test.form.csrf');
+		$form = parent::createComponentForm($name);
 		$form->addText('name', 'test.form.name');
+
 		$form->addSubmit('submit', 'test.form.submit');
 
 		return $form;

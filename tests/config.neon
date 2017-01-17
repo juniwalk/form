@@ -10,14 +10,9 @@ application:
 
 services:
 	cacheStorage: Nette\Caching\Storages\MemoryStorage
-	- JuniWalk\Form\Tests\Files\Renderer
-	- JuniWalk\Form\Tests\Files\Translator
 
+	- JuniWalk\Form\Tests\Files\FormFactory
+	- JuniWalk\Form\Tests\Files\Translator
 
 extensions:
 	form: JuniWalk\Form\DI\FormExtension
-
-
-# JuniWalk \ Form
-form:
-	- JuniWalk\Form\Tests\Files\IFormFactory

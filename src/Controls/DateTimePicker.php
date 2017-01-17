@@ -4,17 +4,20 @@
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
 namespace JuniWalk\Form\Controls;
 
 use Nette\Utils\DateTime;
+use Nette\Utils\Html;
 
 final class DateTimePicker extends \Nette\Forms\Controls\TextBase
 {
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	private $format = 'Y-m-d H:i:s';
 
 
@@ -22,7 +25,7 @@ final class DateTimePicker extends \Nette\Forms\Controls\TextBase
 	 * @param  string  $format
 	 * @return static
 	 */
-	public function setFormat($format)
+	public function setFormat(string $format) : self
 	{
 		$this->format = $format;
 		return $this;
@@ -32,14 +35,14 @@ final class DateTimePicker extends \Nette\Forms\Controls\TextBase
 	/**
 	 * @return string
 	 */
-	public function getFormat()
+	public function getFormat() : string
 	{
 		return $this->format;
 	}
 
 
 	/**
-	 * @return Nette\Utils\Html
+	 * @return Html
 	 */
 	public function getControl()
 	{

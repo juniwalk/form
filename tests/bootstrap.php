@@ -2,9 +2,9 @@
 
 /**
  * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Dispatcher
- * @link      https://github.com/juniwalk/Dispatcher
- * @copyright Martin Procházka (c) 2015
+ * @package   Form
+ * @link      https://github.com/juniwalk/form
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
@@ -48,7 +48,7 @@ $_SERVER = array_intersect_key($_SERVER, array_flip([
  */
 function createContainer($config = NULL)
 {
-	$builder = new Nette\Configurator();
+	$builder = new Nette\Configurator;
 	$builder->addConfig(__DIR__.'/config.neon');
 	$builder->setTempDirectory(TEMP_DIR);
 

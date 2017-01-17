@@ -4,44 +4,28 @@
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
 namespace JuniWalk\Form\DI;
 
+use JuniWalk\Form\AbstractForm;
 use JuniWalk\Form\Controls;
-use Nette\Forms\Container;
-use Nette\Localization\ITranslator;
+use JuniWalk\Form\FormFactory;
+use Nette\Forms\Container as Form;
 use Nette\PhpGenerator\ClassType;
 
 final class FormExtension extends \Nette\DI\CompilerExtension
 {
-	/** @var ServiceDefinition[] */
-	private $forms = [];
-
-
-	public function loadConfiguration()
-	{
-		$builder = $this->getContainerBuilder();
-
-		foreach ($this->getConfig() as $name => $interface) {
-			$this->forms[$name] = $builder->addDefinition($this->prefix($name))
-				->setImplement($interface);
-		}
-	}
-
-
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
+		$builder->addDefinition($this->prefix('formFactory'))
+			->setClass(FormFactory::class);
 
-		if ($translator = $builder->getByType(ITranslator::class)) {
-			$translator = '@'.$translator;
-		}
-
-		foreach ($this->forms as $form) {
-			$form->addSetup('setTranslator', [$translator]);
+		foreach ($this->findByType(AbstractForm::class) as $def) {
+			$def->addSetup('setFormFactory');
 		}
 	}
 
@@ -58,8 +42,23 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 
 	public static function registerControls()
 	{
-		Container::extensionMethod('addDateTime', function (Container $container, $name, $label = NULL) {
-			return $container[$name] = new Controls\DateTimePicker($label);
+		Form::extensionMethod('addDateTime', function (Form $form, string $name, string $label = NULL) {
+			return $form[$name] = new Controls\DateTimePicker($label);
+		});
+	}
+
+
+	/**
+	 * @param  string  $type
+	 * @return ServiceDefinition[]
+	 */
+	private function findByType(string $type) : array
+	{
+		$builder = $this->getContainerBuilder();
+		$type = ltrim($type, '\\');
+
+		return array_filter($builder->getDefinitions(), function ($def) use ($type) {
+			return is_a($def->getClass(), $type, TRUE) || is_a($def->getImplement(), $type, TRUE);
 		});
 	}
 }

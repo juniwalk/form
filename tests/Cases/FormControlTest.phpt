@@ -7,13 +7,14 @@
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
 namespace JuniWalk\Form\Tests\Cases;
 
-use JuniWalk\Form\Tests\Files\IFormFactory;
+use JuniWalk\Form\Tests\Files\FormFactory;
+use Nette\Localization\ITranslator;
 use Tester\Assert;
 
 require __DIR__.'/../bootstrap.php';
@@ -27,7 +28,7 @@ final class FormControlTest extends \Tester\TestCase
 	public function testIntegrity()
 	{
 		$form = $this->createForm();
-		Assert::type('Nette\Localization\ITranslator', $form->getTranslator());
+		Assert::type(ITranslator::class, $form->getTranslator());
 	}
 
 
@@ -60,7 +61,7 @@ final class FormControlTest extends \Tester\TestCase
 		}
 
 		return $this->form = createContainer()
-			->getByType(IFormFactory::class)
+			->getByType(FormFactory::class)
 			->create();
 	}
 }
