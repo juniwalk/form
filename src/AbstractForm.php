@@ -94,6 +94,8 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 			$template->setFile($this->templateFile);
 		}
 
+		$template->add('form', $this->getForm());
+
 		if (!empty($this->onBeforeRender)) {
 			$this->onBeforeRender($this, $template);
 		}
