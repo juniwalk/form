@@ -120,6 +120,9 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 
 		$form->onSuccess[] = function (Form $form, ArrayHash $data) {
 			$this->handleSuccess($form, $data);
+		};
+
+		$form->onSuccess[] = function (Form $form, ArrayHash $data) {
 			$this->onSuccess($form, $data);
 			$this->redrawControl('form');
 		};
