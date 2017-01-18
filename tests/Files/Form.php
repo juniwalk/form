@@ -4,7 +4,7 @@
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
@@ -16,16 +16,13 @@ use Nette\Utils\ArrayHash;
 final class Form extends \JuniWalk\Form\AbstractForm
 {
 	/**
-	 * @param  string  $name
-	 * @return static
+	 * @param string  $name
 	 */
-	public function setDefaults($name)
+	public function setDefaults(string $name)
 	{
 		$this->getForm()->setDefaults([
 			'name' => $name,
 		]);
-
-		return $this;
 	}
 
 

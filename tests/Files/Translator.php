@@ -4,15 +4,13 @@
  * @author    Martin Procházka <juniwalk@outlook.cz>
  * @package   Form
  * @link      https://github.com/juniwalk/form
- * @copyright Martin Procházka (c) 2015
+ * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
 namespace JuniWalk\Form\Tests\Files;
 
-use Nette;
-
-final class Translator implements Nette\Localization\ITranslator
+final class Translator implements \Nette\Localization\ITranslator
 {
 	/** @var string[] */
 	private $messages = [
