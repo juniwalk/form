@@ -67,9 +67,9 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 
 
 	/**
-	 * @return ITranslator
+	 * @return ITranslator|NULL
 	 */
-	public function getTranslator() : ITranslator
+	public function getTranslator()
 	{
 		return $this->formFactory->getTranslator();
 	}

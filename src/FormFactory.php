@@ -16,24 +16,24 @@ use Nette\Localization\ITranslator;
 final class FormFactory
 {
     /**
-     * @var ITranslator
+     * @var ITranslator|NULL
      */
     private $translator;
 
 
 	/**
-	 * @param ITranslator  $translator
+	 * @param ITranslator|NULL  $translator
 	 */
-    public function __construct(ITranslator $translator)
+    public function __construct(ITranslator $translator = NULL)
     {
         $this->translator = $translator;
     }
 
 
 	/**
-	 * @return ITranslator
+	 * @return ITranslator|NULL
 	 */
-	public function getTranslator() : ITranslator
+	public function getTranslator()
 	{
 		return $this->translator;
 	}
