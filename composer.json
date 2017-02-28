@@ -15,15 +15,17 @@
 		"issues": "https://github.com/juniwalk/form/issues"
 	},
 
+	"minimum-stability": "dev",
+
 	"require": {
-		"php": "^7.0",
-		"nette/application": "^2.0",
-		"nette/forms": "^2.0",
-		"nette/di": "^2.0"
+		"php": "^7.1",
+		"nette/application": "^3.0",
+		"nette/forms": "^3.0",
+		"nette/di": "^3.0"
 	},
 
 	"require-dev": {
-		"nette/bootstrap": "^2.0",
+		"nette/bootstrap": "^3.0",
 		"nette/tester": "^1.0"
 	},
 

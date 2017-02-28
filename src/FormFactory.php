@@ -33,7 +33,7 @@ final class FormFactory
 	/**
 	 * @return ITranslator|NULL
 	 */
-	public function getTranslator()
+	public function getTranslator() : ?ITranslator
 	{
 		return $this->translator;
 	}

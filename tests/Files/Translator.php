@@ -12,7 +12,9 @@ namespace JuniWalk\Form\Tests\Files;
 
 final class Translator implements \Nette\Localization\ITranslator
 {
-	/** @var string[] */
+	/**
+	 * @var string[]
+	 */
 	private $messages = [
 		'test.form.csrf' => 'Token has expired, submit form again.',
 		'test.form.name' => 'Name',
@@ -22,15 +24,11 @@ final class Translator implements \Nette\Localization\ITranslator
 
 	/**
 	 * @param  string  $message
-	 * @param  int     $count
+	 * @param  int|NULL  $count
 	 * @return string
 	 */
-	function translate($message, $count = NULL)
+	function translate($message, ?int $count = NULL) : string
 	{
-		if (!$this->messages[$message]) {
-			return $message;
-		}
-
-		return $this->messages[$message];
+		return $this->messages[$message] ?? $message;
 	}
 }

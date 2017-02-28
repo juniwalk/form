@@ -9,8 +9,6 @@ application:
 	scanDirs: FALSE
 
 services:
-	cacheStorage: Nette\Caching\Storages\MemoryStorage
-
 	- JuniWalk\Form\Tests\Files\FormFactory
 	- JuniWalk\Form\Tests\Files\Translator
 

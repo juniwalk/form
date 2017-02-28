@@ -74,7 +74,7 @@ final class DateTimePicker extends \Nette\Forms\Controls\TextBase
 	/**
 	 * @return DateTime|NULL
 	 */
-	public function getValue()
+	public function getValue() : ?DateTime
 	{
 		if (!$value = $this->value) {
 			return NULL;
