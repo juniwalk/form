@@ -19,13 +19,13 @@
 
 	"require": {
 		"php": "^7.1",
-		"nette/application": "^3.0",
-		"nette/forms": "^3.0",
-		"nette/di": "^3.0"
+		"nette/application": ">=2.4",
+		"nette/forms": ">=2.4",
+		"nette/di": ">=2.4"
 	},
 
 	"require-dev": {
-		"nette/bootstrap": "^3.0",
+		"nette/bootstrap": ">=2.4",
 		"nette/tester": "^1.0"
 	},
 
