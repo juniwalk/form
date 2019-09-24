@@ -1,15 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Form
- * @link      https://github.com/juniwalk/form
  * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
 
 namespace JuniWalk\Form;
 
+use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
 use Nette\Localization\ITranslator;
@@ -20,31 +18,21 @@ use Nette\Utils\ArrayHash;
  * @method void onSuccess(Form $form, ArrayHash $data)
  * @method void onError(Form $form)
  */
-abstract class AbstractForm extends \Nette\Application\UI\Control
+abstract class AbstractForm extends Control
 {
-	/**
-	 * @var FormFactory
-	 */
+	/** @var FormFactory */
 	private $formFactory;
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $templateFile;
 
-	/**
-	 * @var callable[]
-	 */
+	/** @var callable[] */
 	public $onBeforeRender = [];
 
-	/**
-	 * @var callable[]
-	 */
+	/** @var callable[] */
 	public $onSuccess = [];
 
-	/**
-	 * @var callable[]
-	 */
+	/** @var callable[] */
 	public $onError = [];
 
 
@@ -60,25 +48,26 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 	/**
 	 * @return Form
 	 */
-	public function getForm() : Form
+	public function getForm(): Form
 	{
 		return $this->getComponent('form');
 	}
 
 
 	/**
-	 * @return ITranslator|NULL
+	 * @return ITranslator|null
 	 */
-	public function getTranslator() : ?ITranslator
+	public function getTranslator(): ?ITranslator
 	{
 		return $this->formFactory->getTranslator();
 	}
 
 
 	/**
-	 * @param string|NULL  $file
+	 * @param  string|null  $file
+	 * @return void
 	 */
-	public function setTemplateFile(string $file = NULL)
+	public function setTemplateFile(string $file = null): void
 	{
 		$this->templateFile = $file;
 	}
@@ -108,7 +97,7 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 	 * @param  string  $name
 	 * @return Form
 	 */
-	protected function createComponentForm(string $name) : Form
+	protected function createComponentForm(string $name): Form
 	{
 		$form = $this->formFactory->create();
 		$form->addProtection();
@@ -132,11 +121,11 @@ abstract class AbstractForm extends \Nette\Application\UI\Control
 
 
 	/**
-	 * @param Form  $form
-	 * @param ArrayHash  $data
+	 * @param  Form  $form
+	 * @param  ArrayHash  $data
+	 * @return void
 	 */
-	protected function handleSuccess(Form $form, ArrayHash $data)
+	protected function handleSuccess(Form $form, ArrayHash $data): void
 	{
-
 	}
 }

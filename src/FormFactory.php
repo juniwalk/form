@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Form
- * @link      https://github.com/juniwalk/form
  * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
@@ -15,25 +12,23 @@ use Nette\Localization\ITranslator;
 
 final class FormFactory
 {
-    /**
-     * @var ITranslator|NULL
-     */
+    /** @var ITranslator|null */
     private $translator;
 
 
 	/**
-	 * @param ITranslator|NULL  $translator
+	 * @param ITranslator|null  $translator
 	 */
-    public function __construct(ITranslator $translator = NULL)
+    public function __construct(ITranslator $translator = null)
     {
         $this->translator = $translator;
     }
 
 
 	/**
-	 * @return ITranslator|NULL
+	 * @return ITranslator|null
 	 */
-	public function getTranslator() : ?ITranslator
+	public function getTranslator(): ?ITranslator
 	{
 		return $this->translator;
 	}
@@ -42,7 +37,7 @@ final class FormFactory
 	/**
 	 * @return Form
 	 */
-    public function create() : Form
+    public function create(): Form
     {
         $form = new Form;
         $form->setTranslator($this->translator);

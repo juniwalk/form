@@ -1,9 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
- * @author    Martin Procházka <juniwalk@outlook.cz>
- * @package   Form
- * @link      https://github.com/juniwalk/form
  * @copyright Martin Procházka (c) 2016
  * @license   MIT License
  */
@@ -13,10 +10,13 @@ namespace JuniWalk\Form\DI;
 use JuniWalk\Form\AbstractForm;
 use JuniWalk\Form\Controls;
 use JuniWalk\Form\FormFactory;
+use Nette\DI\CompilerExtension;
+use Nette\DI\Definitions\Definition;
+use Nette\DI\Definitions\FactoryDefinition;
 use Nette\Forms\Container as Form;
 use Nette\PhpGenerator\ClassType;
 
-final class FormExtension extends \Nette\DI\CompilerExtension
+final class FormExtension extends CompilerExtension
 {
 	public function beforeCompile()
 	{
@@ -25,6 +25,10 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 			->setClass(FormFactory::class);
 
 		foreach ($this->findByType(AbstractForm::class) as $def) {
+			if ($def instanceof FactoryDefinition) {
+				$def = $def->getResultDefinition();
+			}
+
 			$def->addSetup('setFormFactory');
 		}
 	}
@@ -42,7 +46,7 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 
 	public static function registerControls()
 	{
-		Form::extensionMethod('addDateTime', function (Form $form, string $name, string $label = NULL) {
+		Form::extensionMethod('addDateTime', function(Form $form, string $name, string $label = null) {
 			return $form[$name] = new Controls\DateTimePicker($label);
 		});
 	}
@@ -50,15 +54,15 @@ final class FormExtension extends \Nette\DI\CompilerExtension
 
 	/**
 	 * @param  string  $type
-	 * @return ServiceDefinition[]
+	 * @return Definition[]
 	 */
-	private function findByType(string $type) : array
+	private function findByType(string $type): iterable
 	{
-		$builder = $this->getContainerBuilder();
-		$type = ltrim($type, '\\');
+		$definitions = $this->getContainerBuilder()
+			->getDefinitions();
 
-		return array_filter($builder->getDefinitions(), function ($def) use ($type) {
-			return is_a($def->getClass(), $type, TRUE) || is_a($def->getImplement(), $type, TRUE);
+		return array_filter($definitions, function(Definition $def) use ($type): bool {
+			return is_a($def->getType(), $type, true) || ($def instanceof FactoryDefinition && is_a($def->getResultType(), $type, true));
 		});
 	}
 }
