@@ -75,7 +75,7 @@ final class DateTimePicker extends TextBase
 	public function getValue(): ?DateTime
 	{
 		if (!$value = $this->value) {
-			return NULL;
+			return null;
 		}
 
 		if ($value instanceof DateTimeInterface || is_int($value)) {

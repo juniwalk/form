@@ -61,7 +61,7 @@ final class FormExtension extends CompilerExtension
 		$definitions = $this->getContainerBuilder()
 			->getDefinitions();
 
-		return array_filter($definitions, function(Definition $def) use ($type): bool {
+		return array_filter($definitions, function($def) use ($type): bool {
 			return is_a($def->getType(), $type, true) || ($def instanceof FactoryDefinition && is_a($def->getResultType(), $type, true));
 		});
 	}
