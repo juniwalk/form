@@ -1,0 +1,53 @@
+{default $color = 'secondary'}
+{default $size = null}
+
+<div class="modal fade" id="{$control->getName()}" data-backdrop="static">
+<form n:name="form" n:class="modal-dialog, modal-dialog-centered, $size">
+
+	<div class="modal-content">
+
+		<div class="modal-header bg-{$color}">
+			<h5 class="modal-title">{include #title}</h5>
+			<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+		</div>
+
+		<div class="alerts text-left" n:if="$form->hasErrors()" n:snippet="errors">
+			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
+		</div>
+
+		<div class="modal-body" n:ifset="#content">
+
+			{include #content}
+
+		</div>
+
+		<div class="modal-body">
+
+			{ifset #controls-modal}
+				{include #controls-modal}
+			{else}
+				{include #controls}
+			{/ifset}
+
+		</div>
+
+		<div class="modal-footer bg-light">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">{_web.button.close|noescape}</button>
+
+			{ifset #buttons-modal}
+				{include #buttons-modal}
+			{elseifset #buttons}
+				{include #buttons}
+			{/ifset}
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript" n:ifcontent n:inner-foreach="$form->getControls() as $input">
+		{continueIf !$input->hasErrors()}
+		document.getElementById({$input->getHtmlId()}).classList.add('is-invalid')
+	</script>
+
+</form>
+</div>
