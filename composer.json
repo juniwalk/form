@@ -24,16 +24,7 @@
 		"nette/di": ">=2.4"
 	},
 
-	"require-dev": {
-		"nette/bootstrap": ">=2.4",
-		"nette/tester": "^1.0"
-	},
-
 	"autoload": {
 		"psr-4": {"JuniWalk\\Form\\": "src/"}
-	},
-
-	"autoload-dev": {
-		"psr-4": {"JuniWalk\\Form\\Tests\\": "tests/"}
 	}
 }
