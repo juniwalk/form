@@ -53,9 +53,9 @@ abstract class AbstractForm extends Control
 	 * @return void
 	 */
 	public function setTranslator(ITranslator $translator = null): void
-    {
-        $this->translator = $translator;
-    }
+	{
+		$this->translator = $translator;
+	}
 
 
 	/**
@@ -142,6 +142,7 @@ abstract class AbstractForm extends Control
 	protected function createComponentForm(string $name): Form
 	{
 		$form = new Form;
+		$form->setTranslator($this->translator);
 		$form->addProtection();
 
 		$form->onError[] = function(Form $form) {
