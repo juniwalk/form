@@ -42,7 +42,7 @@ final class DateTimePicker extends TextBase
 	/**
 	 * @return Html
 	 */
-	public function getControl()
+	public function getControl(): Html
 	{
 		$control = parent::getControl();
 		$value = $this->getValue();
