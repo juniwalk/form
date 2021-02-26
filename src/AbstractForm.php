@@ -16,6 +16,7 @@ use Nette\InvalidStateException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Callback;
+use ReflectionClass;
 
 /**
  * @method void onBeforeRender(self $self, ITemplate $template)
@@ -137,9 +138,7 @@ abstract class AbstractForm extends Control
 	 */
 	public function render(): void
 	{
-		$template = $this->createTemplate();
-		$template->setTranslator($this->translator);
-		$template->setFile($this->templateFile);
+		$template = $this->getTemplate();
 		$template->add('layout', $this->layout);
 		$template->add('form', $this->getForm());
 
@@ -185,6 +184,28 @@ abstract class AbstractForm extends Control
 				'more' => !empty($items),
 			],
 		]);
+	}
+
+
+	/**
+	 * @return ITemplate
+	 */
+	protected function createTemplate(): ITemplate
+	{
+		if (!isset($this->templateFile)) {
+			$rc = new ReflectionClass($this);
+			$this->templateFile = sprintf(
+				'%s/templates/%s.latte',
+				dirname($rc->getFilename()),
+				$rc->getShortName()
+			);
+		}
+
+		$template = parent::createTemplate();
+		$template->setTranslator($this->translator);
+		$template->setFile($this->templateFile);
+
+		return $template;
 	}
 
 
