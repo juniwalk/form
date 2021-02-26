@@ -10,8 +10,12 @@ namespace JuniWalk\Form;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
+use Nette\Http\IRequest as HttpRequest;
+use Nette\InvalidArgumentException;
+use Nette\InvalidStateException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Callback;
 
 /**
  * @method void onBeforeRender(self $self, ITemplate $template)
@@ -22,6 +26,9 @@ abstract class AbstractForm extends Control
 {
 	/** @var ITranslator|null */
 	private $translator;
+
+	/** @var HttpRequest|null */
+	private $httpRequest;
 
 	/** @var string */
 	private $templateFile;
@@ -45,6 +52,25 @@ abstract class AbstractForm extends Control
 	public function getForm(): Form
 	{
 		return $this->getComponent('form');
+	}
+
+
+	/**
+	 * @param  HttpRequest  $httpRequest
+	 * @return void
+	 */
+	public function setHttpRequest(HttpRequest $httpRequest): void
+	{
+		$this->httpRequest = $httpRequest;
+	}
+
+
+	/**
+	 * @return HttpRequest|null
+	 */
+	public function getHttpRequest(): ?HttpRequest
+	{
+		return $this->httpRequest;
 	}
 
 
@@ -132,6 +158,30 @@ abstract class AbstractForm extends Control
 	{
 		$this->setLayout('modal');
 		$this->render();
+	}
+
+
+	/**
+	 * @param  string  $type
+	 * @return void
+	 * @throws InvalidArgumentException
+	 * @throws InvalidStateException
+	 */
+	public function handleSearch(string $type): void
+	{
+		if (!$this->httpRequest) {
+			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
+		}
+
+		$term = $this->httpRequest->getQuery('term') ?? '';
+		$page = $this->httpRequest->getQuery('page') ?? 0;
+
+		$callback = Callback::check([$this, 'search'.$type]);
+	
+		$json = ['results' => [],'pagination' => ['more' => true]];
+		$json['results'] = $callback((string) $term, (int) $page);
+
+		$this->getPresenter()->sendJson($json);
 	}
 
 

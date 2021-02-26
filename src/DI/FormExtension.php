@@ -27,6 +27,7 @@ final class FormExtension extends CompilerExtension
 				$def = $def->getResultDefinition();
 			}
 
+			$def->addSetup('setHttpRequest');
 			$def->addSetup('setTranslator');
 		}
 	}
