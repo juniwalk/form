@@ -177,11 +177,14 @@ abstract class AbstractForm extends Control
 		$page = $this->httpRequest->getQuery('page') ?? 0;
 
 		$callback = Callback::check([$this, 'search'.$type]);
-	
-		$json = ['results' => [],'pagination' => ['more' => true]];
-		$json['results'] = $callback((string) $term, (int) $page);
+		$items = $callback((string) $term, (int) $page);
 
-		$this->getPresenter()->sendJson($json);
+		$this->getPresenter()->sendJson([
+			'results' => array_values($items),
+			'pagination' => [
+				'more' => !empty($items),
+			],
+		]);
 	}
 
 
