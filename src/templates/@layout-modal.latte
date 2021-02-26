@@ -9,6 +9,7 @@
 		<div class="modal-header bg-{$color}">
 			<h5 class="modal-title">{include #title}</h5>
 			<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+			{ifset #tools}{include #tools}{/ifset}
 		</div>
 
 		<div class="alerts text-left" n:if="$form->hasErrors()" n:snippet="errors">

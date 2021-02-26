@@ -6,6 +6,7 @@
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
 		<h3 class="card-title">{include #title|noescape}</h3>
+		{ifset #tools}{include #tools}{/ifset}
 	</div>
 
 	<div class="card-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
