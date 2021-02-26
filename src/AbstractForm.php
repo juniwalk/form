@@ -25,16 +25,16 @@ use Nette\Utils\Callback;
 abstract class AbstractForm extends Control
 {
 	/** @var ITranslator|null */
-	private $translator;
+	protected $translator;
 
 	/** @var HttpRequest|null */
-	private $httpRequest;
+	protected $httpRequest;
 
 	/** @var string */
-	private $templateFile;
+	protected $templateFile;
 
 	/** @var string */
-	private $layout = 'card';
+	protected $layout = 'card';
 
 	/** @var callable[] */
 	public $onBeforeRender = [];
