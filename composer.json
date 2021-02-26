@@ -18,22 +18,13 @@
 	"minimum-stability": "dev",
 
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.3",
 		"nette/application": ">=2.4",
 		"nette/forms": ">=2.4",
 		"nette/di": ">=2.4"
 	},
 
-	"require-dev": {
-		"nette/bootstrap": ">=2.4",
-		"nette/tester": "^1.0"
-	},
-
 	"autoload": {
 		"psr-4": {"JuniWalk\\Form\\": "src/"}
-	},
-
-	"autoload-dev": {
-		"psr-4": {"JuniWalk\\Form\\Tests\\": "tests/"}
 	}
 }

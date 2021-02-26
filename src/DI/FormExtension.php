@@ -9,7 +9,6 @@ namespace JuniWalk\Form\DI;
 
 use JuniWalk\Form\AbstractForm;
 use JuniWalk\Form\Controls;
-use JuniWalk\Form\FormFactory;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Definition;
 use Nette\DI\Definitions\FactoryDefinition;
@@ -18,33 +17,36 @@ use Nette\PhpGenerator\ClassType;
 
 final class FormExtension extends CompilerExtension
 {
-	public function beforeCompile()
+	/**
+	 * @return void
+	 */
+	public function beforeCompile(): void
 	{
-		$builder = $this->getContainerBuilder();
-		$builder->addDefinition($this->prefix('formFactory'))
-			->setClass(FormFactory::class);
-
 		foreach ($this->findByType(AbstractForm::class) as $def) {
 			if ($def instanceof FactoryDefinition) {
 				$def = $def->getResultDefinition();
 			}
 
-			$def->addSetup('setFormFactory');
+			$def->addSetup('setTranslator');
 		}
 	}
 
 
 	/**
-	 * @param ClassType  $class
+	 * @param  ClassType  $class
+	 * @return void
 	 */
-	public function afterCompile(ClassType $class)
+	public function afterCompile(ClassType $class): void
 	{
 		$init = $class->getMethods()['initialize'];
 		$init->addBody(__CLASS__.'::registerControls();');
 	}
 
 
-	public static function registerControls()
+	/**
+	 * @return void
+	 */
+	public static function registerControls(): void
 	{
 		Form::extensionMethod('addDateTime', function(Form $form, string $name, string $label = null) {
 			return $form[$name] = new Controls\DateTimePicker($label);

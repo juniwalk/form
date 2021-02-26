@@ -1,0 +1,47 @@
+{default $color = 'secondary'}
+{default $headColor = null}
+
+<section n:class="card, 'card-'.$color, !isset($headColor) ? card-outline" n:snippet="form">
+<form n:name="form">
+
+	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
+		<h3 class="card-title">{include #title|noescape}</h3>
+	</div>
+
+	<div class="card-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
+	</div>
+
+	<div class="card-body" n:ifset="#content">
+
+		{include #content}
+
+	</div>
+
+	<div class="card-body">
+
+		{ifset #controls-card}
+			{include #controls-card}
+		{else}
+			{include #controls}
+		{/ifset}
+
+	</div>
+
+	<div class="card-footer" n:ifcontent>
+
+		{ifset #buttons-card}
+			{include #buttons-card}
+		{else}
+			{include #buttons}
+		{/ifset}
+
+	</div>
+
+	<script type="text/javascript" n:ifcontent n:inner-foreach="$form->getControls() as $input">
+		{continueIf !$input->hasErrors()}
+		document.getElementById({$input->getHtmlId()}).classList.add('is-invalid')
+	</script>
+
+</form>
+</section>
