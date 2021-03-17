@@ -1,4 +1,5 @@
 {default $color = 'secondary'}
+{default $contentClass = null}
 {default $headColor = null}
 
 <section n:class="card, 'card-'.$color, !isset($headColor) ? card-outline" n:snippet="form">
@@ -13,7 +14,7 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div class="card-body" n:ifset="#content">
+	<div n:class="card-body, $contentClass" n: n:ifset="#content">
 
 		{include #content}
 

@@ -1,4 +1,5 @@
 {default $color = 'secondary'}
+{default $contentClass = null}
 {default $size = null}
 
 <div class="modal fade" id="{$control->getName()}" data-backdrop="static">
@@ -16,7 +17,7 @@
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div class="modal-body" n:ifset="#content">
+		<div n:class="modal-body, $contentClass" n:ifset="#content">
 
 			{include #content}
 
