@@ -2,7 +2,7 @@
 {default $contentClass = null}
 {default $headColor = null}
 
-<section n:class="card, 'card-'.$color, !isset($headColor) ? card-outline" n:snippet="form">
+<section n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline" n:snippet="form">
 <form n:name="form">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
