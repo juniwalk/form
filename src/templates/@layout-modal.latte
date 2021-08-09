@@ -17,7 +17,7 @@
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div n:class="modal-body, $contentClass" n:ifset="#content">
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content">
 
 			{include #content}
 
