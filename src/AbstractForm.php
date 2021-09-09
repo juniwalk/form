@@ -138,7 +138,7 @@ abstract class AbstractForm extends Control
 	 */
 	public function render(): void
 	{
-		$template = $this->getTemplate();
+		$template = $this->createTemplate();
 		$template->add('layout', $this->layout);
 		$template->add('form', $this->getForm());
 
