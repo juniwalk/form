@@ -211,10 +211,29 @@ abstract class AbstractForm extends Control
 
 	/**
 	 * @param  string  $name
+	 * @return Form
+	 */
+	protected function createComponentForm(string $name): Form
+	{
+		return $this->createForm();
+	}
+
+
+	/**
+	 * @param  Form  $form
+	 * @param  ArrayHash  $data
+	 * @return void
+	 */
+	protected function handleSuccess(Form $form, ArrayHash $data): void
+	{
+	}
+
+
+	/**
 	 * @param  string  $class
 	 * @return Form
 	 */
-	protected function createComponentForm(string $name, string $class = Form::class): Form
+	protected function createForm(string $class = Form::class): Form
 	{
 		$form = new $class;
 		$form->setTranslator($this->translator);
@@ -235,15 +254,5 @@ abstract class AbstractForm extends Control
 		};
 
 		return $form;
-	}
-
-
-	/**
-	 * @param  Form  $form
-	 * @param  ArrayHash  $data
-	 * @return void
-	 */
-	protected function handleSuccess(Form $form, ArrayHash $data): void
-	{
 	}
 }
