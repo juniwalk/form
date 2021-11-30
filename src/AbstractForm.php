@@ -211,11 +211,12 @@ abstract class AbstractForm extends Control
 
 	/**
 	 * @param  string  $name
+	 * @param  string  $class
 	 * @return Form
 	 */
-	protected function createComponentForm(string $name): Form
+	protected function createComponentForm(string $name, string $class = Form::class): Form
 	{
-		$form = new Form;
+		$form = new $class;
 		$form->setTranslator($this->translator);
 		$form->addProtection();
 
