@@ -1,5 +1,6 @@
 {default $color = 'secondary'}
 {default $contentClass = null}
+{default $contentPos = 'top'}
 {default $size = null}
 
 <div class="modal fade" id="{$control->getName()}" data-backdrop="static">
@@ -17,7 +18,7 @@
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content">
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
 
 			{include #content}
 
@@ -30,6 +31,12 @@
 			{else}
 				{include #controls}
 			{/ifset}
+
+		</div>
+
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
+
+			{include #content}
 
 		</div>
 
