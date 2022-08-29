@@ -49,8 +49,23 @@ final class FormExtension extends CompilerExtension
 	 */
 	public static function registerControls(): void
 	{
-		Form::extensionMethod('addDateTime', function(Form $form, string $name, string $label = null) {
+		Form::extensionMethod('addDateTime', function(
+			Form $form,
+			string $name,
+			string $label = null
+		) {
 			return $form[$name] = new Controls\DateTimePicker($label);
+		});
+
+		Form::extensionMethod('addSelectEnum', function(
+			Form $form,
+			string $name,
+			string $label = null,
+			?array $items = null,
+			?int $size = null
+		) {
+			return $form[$name] = (new Controls\SelectBoxEnum($label, $items))
+				->setHtmlAttribute('size', $size > 1 ? $size : null);;
 		});
 	}
 

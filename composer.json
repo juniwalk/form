@@ -11,20 +11,15 @@
 		"role": "Developer"
 	}],
 
-	"support": {
-		"issues": "https://github.com/juniwalk/form/issues"
+	"autoload": {
+		"psr-4": {"JuniWalk\\Form\\": "src/"}
 	},
 
-	"minimum-stability": "dev",
-
 	"require": {
-		"php": ">=7.3",
+		"php": ">=8.0",
+		"juniwalk/utils": "^1.0",
 		"nette/application": ">=2.4",
 		"nette/forms": ">=2.4",
 		"nette/di": ">=2.4"
-	},
-
-	"autoload": {
-		"psr-4": {"JuniWalk\\Form\\": "src/"}
 	}
 }
