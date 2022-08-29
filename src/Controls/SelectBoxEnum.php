@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
 /**
- * @copyright Martin Procházka (c) 2016
+ * @copyright Martin Procházka (c) 2022
  * @license   MIT License
  */
 
 namespace JuniWalk\Form\Controls;
 
-use BackedEnum;
 use JuniWalk\Utils\Enums\LabelledEnum;
 use Nette\Forms\Controls\SelectBox;
+use InvalidArgumentException;
 
 final class SelectBoxEnum extends SelectBox
 {
@@ -21,35 +21,47 @@ final class SelectBoxEnum extends SelectBox
 	 * @param  iterable  $items
 	 * @param  bool  $useKeys
 	 * @return static
+	 * @throws InvalidArgumentException
 	 */
-	public function setItems(array $items, bool $useKeys = true): self
+	public function setItems(array $enums, bool $useKeys = true): self
 	{
-		$enums = [];
+		$class = null;
+		$items = [];
 
-		foreach ($items as $item) {
-			if (!$item instanceof LabelledEnum || !$item instanceof BackedEnum) {
-				continue;
+		foreach ($enums as $enum) {
+			if (!$enum instanceof LabelledEnum) {
+				throw new InvalidArgumentException('Enum has to implement '.LabelledEnum::class);
 			}
 
-			if ($this->backedEnum && !$item instanceof $this->backedEnum) {
-				continue;
+			if ($class && !$enum instanceof $class) {
+				throw new InvalidArgumentException('Enum does not match items of type '.$class);
 			}
 
-			$enums[$item->value] = $item->label();
-			$this->backedEnum = get_class($item);
+			$items[$enum->value] = $enum->label();
+			$class = get_class($enum);
 		}
 
-		return parent::setItems($enums, $useKeys);
+		$this->backedEnum = $class;
+		return parent::setItems($items, $useKeys);
 	}
 
 
 	/**
-	 * @param  LabelledEnum|null  $item
+	 * @param  LabelledEnum|null  $value
 	 * @return static
+	 * @throws InvalidArgumentException
 	 */
-	public function setValue(LabelledEnum $item = null)
+	public function setValue($value): self
 	{
-		return parent::setValue($item->value);
+		if ($value && !$value instanceof LabelledEnum) {
+			throw new InvalidArgumentException('Enum has to implement '.LabelledEnum::class);
+		}
+
+		if ($value && !$value instanceof $this->backedEnum) {
+			throw new InvalidArgumentException('Enum does not match items of type '.$this->backedEnum);
+		}
+
+		return parent::setValue($value->value ?? null);
 	}
 
 
