@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Enums\LabelledEnum;
+use JuniWalk\Utils\Enums\LabeledEnum;
 use Nette\Forms\Controls\SelectBox;
 use InvalidArgumentException;
 
@@ -29,8 +29,8 @@ final class SelectBoxEnum extends SelectBox
 		$items = [];
 
 		foreach ($enums as $enum) {
-			if (!$enum instanceof LabelledEnum) {
-				throw new InvalidArgumentException('Enum has to implement '.LabelledEnum::class);
+			if (!$enum instanceof LabeledEnum) {
+				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 			}
 
 			if ($class && !$enum instanceof $class) {
@@ -47,14 +47,14 @@ final class SelectBoxEnum extends SelectBox
 
 
 	/**
-	 * @param  LabelledEnum|null  $value
+	 * @param  LabeledEnum|null  $value
 	 * @return static
 	 * @throws InvalidArgumentException
 	 */
 	public function setValue($value): self
 	{
-		if ($value && !$value instanceof LabelledEnum) {
-			throw new InvalidArgumentException('Enum has to implement '.LabelledEnum::class);
+		if ($value && !$value instanceof LabeledEnum) {
+			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 		}
 
 		if ($value && !$value instanceof $this->backedEnum) {
@@ -66,10 +66,10 @@ final class SelectBoxEnum extends SelectBox
 
 
 	/**
-	 * @return LabelledEnum|null
+	 * @return LabeledEnum|null
 	 */
-	public function getValue(): ?LabelledEnum
+	public function getValue(): ?LabeledEnum
 	{
-		return $this->backedEnum::tryFrom($this->value);
+		return $this->backedEnum::tryMake($this->value);
 	}
 }
