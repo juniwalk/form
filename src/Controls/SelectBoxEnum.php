@@ -61,7 +61,7 @@ final class SelectBoxEnum extends SelectBox
 			throw new InvalidArgumentException('Enum does not match items of type '.$this->backedEnum);
 		}
 
-		return parent::setValue($value->value ?? null);
+		return parent::setValue($value?->value ?? null);
 	}
 
 
@@ -71,5 +71,22 @@ final class SelectBoxEnum extends SelectBox
 	public function getValue(): ?LabeledEnum
 	{
 		return $this->backedEnum::tryMake($this->value);
+	}
+
+
+	/**
+	 * Disables or enables control or items.
+	 * @param  bool|array  $value
+	 * @return static
+	 */
+	public function setDisabled($value = true)
+	{
+		if (is_array($value)) {
+			foreach ($value as $key => $item) {
+				$value[$key] = $item->value;
+			}
+		}
+
+		return parent::setDisabled($value);
 	}
 }
