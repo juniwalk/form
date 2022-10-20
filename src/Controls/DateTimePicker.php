@@ -15,14 +15,9 @@ use Nette\Utils\Html;
 
 final class DateTimePicker extends TextBase
 {
-	/** @var string */
-	private $format = 'Y-m-d H:i:s';
+	private string $format = 'Y-m-d H:i:s';
 
 
-	/**
-	 * @param  string  $format
-	 * @return static
-	 */
 	public function setFormat(string $format): self
 	{
 		$this->format = $format;
@@ -30,18 +25,12 @@ final class DateTimePicker extends TextBase
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getFormat(): string
 	{
 		return $this->format;
 	}
 
 
-	/**
-	 * @return Html
-	 */
 	public function getControl(): Html
 	{
 		$control = parent::getControl();
@@ -55,11 +44,7 @@ final class DateTimePicker extends TextBase
 	}
 
 
-	/**
-	 * @param  DateTimeInterface|string|null  $value
-	 * @return static
-	 */
-	public function setValue($value = null)
+	public function setValue(/*DateTimeInterface|string*/ $value = null)// : self
 	{
 		if ($value instanceof DateTimeInterface) {
 			$value = $value->format($this->format);
@@ -69,9 +54,6 @@ final class DateTimePicker extends TextBase
 	}
 
 
-	/**
-	 * @return DateTime|null
-	 */
 	public function getValue(): ?DateTime
 	{
 		if (!$value = $this->value) {
@@ -85,10 +67,10 @@ final class DateTimePicker extends TextBase
 		try {
 			return DateTime::createFromFormat($this->format, $this->value);
 
-		} catch (Exception $e) { }
+		} catch (Exception) {}
 
 		if ($time = strtotime($value)) {
-			return DateTime::from($value);
+			return DateTime::from($time);
 		}
 
 		return null;

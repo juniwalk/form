@@ -10,16 +10,12 @@ namespace JuniWalk\Form\DI;
 use JuniWalk\Form\AbstractForm;
 use JuniWalk\Form\Controls;
 use Nette\DI\CompilerExtension;
-use Nette\DI\Definitions\Definition;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\Forms\Container as Form;
 use Nette\PhpGenerator\ClassType;
 
 final class FormExtension extends CompilerExtension
 {
-	/**
-	 * @return void
-	 */
 	public function beforeCompile(): void
 	{
 		foreach ($this->findByType(AbstractForm::class) as $def) {
@@ -33,10 +29,6 @@ final class FormExtension extends CompilerExtension
 	}
 
 
-	/**
-	 * @param  ClassType  $class
-	 * @return void
-	 */
 	public function afterCompile(ClassType $class): void
 	{
 		$init = $class->getMethods()['initialize'];
@@ -44,9 +36,6 @@ final class FormExtension extends CompilerExtension
 	}
 
 
-	/**
-	 * @return void
-	 */
 	public static function registerControls(): void
 	{
 		Form::extensionMethod('addDateTime', function(
@@ -70,11 +59,7 @@ final class FormExtension extends CompilerExtension
 	}
 
 
-	/**
-	 * @param  string  $type
-	 * @return Definition[]
-	 */
-	private function findByType(string $type): iterable
+	private function findByType(string $type): array
 	{
 		$definitions = $this->getContainerBuilder()
 			->getDefinitions();

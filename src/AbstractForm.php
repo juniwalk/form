@@ -25,117 +25,71 @@ use ReflectionClass;
  */
 abstract class AbstractForm extends Control
 {
-	/** @var ITranslator|null */
-	protected $translator;
-
-	/** @var HttpRequest|null */
-	protected $httpRequest;
-
-	/** @var string */
-	protected $templateFile;
-
-	/** @var string */
-	protected $layout = 'card';
+	protected ?ITranslator $translator;
+	protected ?HttpRequest $httpRequest;
+	protected string $templateFile;
+	protected string $layout = 'card';
 
 	/** @var callable[] */
-	public $onBeforeRender = [];
-
-	/** @var callable[] */
-	public $onSuccess = [];
-
-	/** @var callable[] */
-	public $onError = [];
+	public array $onBeforeRender = [];
+	public array $onSuccess = [];
+	public array $onError = [];
 
 
-	/**
-	 * @return Form
-	 */
 	public function getForm(): Form
 	{
 		return $this->getComponent('form');
 	}
 
 
-	/**
-	 * @param  HttpRequest  $httpRequest
-	 * @return void
-	 */
 	public function setHttpRequest(HttpRequest $httpRequest): void
 	{
 		$this->httpRequest = $httpRequest;
 	}
 
 
-	/**
-	 * @return HttpRequest|null
-	 */
 	public function getHttpRequest(): ?HttpRequest
 	{
 		return $this->httpRequest;
 	}
 
 
-	/**
-	 * @param  ITranslator|null  $translator
-	 * @return void
-	 */
 	public function setTranslator(ITranslator $translator = null): void
 	{
 		$this->translator = $translator;
 	}
 
 
-	/**
-	 * @return ITranslator|null
-	 */
 	public function getTranslator(): ?ITranslator
 	{
 		return $this->translator;
 	}
 
 
-	/**
-	 * @param  string  $layout
-	 * @return void
-	 */
 	public function setLayout(string $layout): void
 	{
 		$this->layout = $layout;
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getLayout(): string
 	{
 		return $this->layout;
 	}
 
 
-	/**
-	 * @return string
-	 * @internal
-	 */
 	public function getLayoutPath(): string
 	{
 		return __DIR__.'/templates/@layout-'.$this->layout.'.latte';
 	}
 
 
-	/**
-	 * @param  string  $file
-	 * @return void
-	 */
 	public function setTemplateFile(string $file): void
 	{
 		$this->templateFile = $file;
 	}
 
 
-	/**
-	 * @return void
-	 */
 	public function render(): void
 	{
 		$template = $this->createTemplate();
@@ -150,9 +104,6 @@ abstract class AbstractForm extends Control
 	}
 
 
-	/**
-	 * @return void
-	 */
 	public function renderModal(): void
 	{
 		$this->setLayout('modal');
@@ -161,8 +112,6 @@ abstract class AbstractForm extends Control
 
 
 	/**
-	 * @param  string  $type
-	 * @return void
 	 * @throws InvalidArgumentException
 	 * @throws InvalidStateException
 	 */
@@ -187,9 +136,6 @@ abstract class AbstractForm extends Control
 	}
 
 
-	/**
-	 * @return ITemplate
-	 */
 	protected function createTemplate(): ITemplate
 	{
 		if (!isset($this->templateFile)) {
@@ -209,30 +155,17 @@ abstract class AbstractForm extends Control
 	}
 
 
-	/**
-	 * @param  string  $name
-	 * @return Form
-	 */
 	protected function createComponentForm(string $name): Form
 	{
 		return $this->createForm();
 	}
 
 
-	/**
-	 * @param  Form  $form
-	 * @param  ArrayHash  $data
-	 * @return void
-	 */
 	protected function handleSuccess(Form $form, ArrayHash $data): void
 	{
 	}
 
 
-	/**
-	 * @param  string  $class
-	 * @return Form
-	 */
 	protected function createForm(string $class = Form::class): Form
 	{
 		$form = new $class;

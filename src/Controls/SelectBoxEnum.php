@@ -13,14 +13,10 @@ use InvalidArgumentException;
 
 final class SelectBoxEnum extends SelectBox
 {
-	/** @var string */
-	private $backedEnum;
+	private string $backedEnum;
 
 
 	/**
-	 * @param  iterable  $items
-	 * @param  bool  $useKeys
-	 * @return static
 	 * @throws InvalidArgumentException
 	 */
 	public function setItems(array $enums, bool $useKeys = true): self
@@ -47,11 +43,9 @@ final class SelectBoxEnum extends SelectBox
 
 
 	/**
-	 * @param  LabeledEnum|null  $value
-	 * @return static
 	 * @throws InvalidArgumentException
 	 */
-	public function setValue($value): self
+	public function setValue(/*?LabeledEnum*/ $value): self
 	{
 		if ($value && !$value instanceof LabeledEnum) {
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
@@ -65,21 +59,13 @@ final class SelectBoxEnum extends SelectBox
 	}
 
 
-	/**
-	 * @return LabeledEnum|null
-	 */
 	public function getValue(): ?LabeledEnum
 	{
 		return $this->backedEnum::tryMake($this->value);
 	}
 
 
-	/**
-	 * Disables or enables control or items.
-	 * @param  bool|array  $value
-	 * @return static
-	 */
-	public function setDisabled($value = true)
+	public function setDisabled(/*bool|array*/ $value = true)//: self
 	{
 		if (is_array($value)) {
 			foreach ($value as $key => $item) {
