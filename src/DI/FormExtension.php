@@ -41,7 +41,7 @@ final class FormExtension extends CompilerExtension
 		Form::extensionMethod('addDateTime', function(
 			Form $form,
 			string $name,
-			string $label = null
+			string $label = null,
 		) {
 			return $form[$name] = new Controls\DateTimePicker($label);
 		});
@@ -51,10 +51,19 @@ final class FormExtension extends CompilerExtension
 			string $name,
 			string $label = null,
 			?array $items = null,
-			?int $size = null
+			?int $size = null,
 		) {
 			return $form[$name] = (new Controls\SelectBoxEnum($label, $items))
-				->setHtmlAttribute('size', $size > 1 ? $size : null);;
+				->setHtmlAttribute('size', $size > 1 ? $size : null);
+		});
+
+		Form::extensionMethod('addRadioEnum', function(
+			Form $form,
+			string $name,
+			string $label = null,
+			?array $items = null,
+		) {
+			return $form[$name] = new Controls\RadioListEnum($label, $items);
 		});
 	}
 
