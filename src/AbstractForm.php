@@ -10,6 +10,7 @@ namespace JuniWalk\Form;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
@@ -87,6 +88,30 @@ abstract class AbstractForm extends Control
 	public function setTemplateFile(string $file): void
 	{
 		$this->templateFile = $file;
+	}
+
+
+	public function findRedirectPage(array $pages, string $default = 'default'): string
+	{
+		$form = $this->getForm();
+
+		foreach ($pages as $control => $page) {
+			if (!$button = $form->getComponent($control, false)) {
+				continue;
+			}
+
+			if (!$button instanceof SubmitButton) {
+				continue;
+			}
+
+			if (!$button->isSubmittedBy()) {
+				continue;
+			}
+
+			return $page;
+		}
+
+		return $default;
 	}
 
 
