@@ -48,7 +48,11 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function setValue(/*?LabeledEnum*/ $values): self
 	{
-		$values = Arrays::map($values, function($value, $key) {
+		if (!is_iterable($values)) {
+			return parent::setValue(null);
+		}
+
+		$values = Arrays::map($values, function($value) {
 			if ($value && !$value instanceof LabeledEnum) {
 				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 			}
@@ -60,7 +64,7 @@ final class CheckboxListEnum extends CheckboxList
 			return $value?->value;
 		});
 
-		return parent::setValue($values ?? null);
+		return parent::setValue($values);
 	}
 
 
