@@ -65,6 +65,15 @@ final class FormExtension extends CompilerExtension
 		) {
 			return $form[$name] = new Controls\RadioListEnum($label, $items);
 		});
+
+		Form::extensionMethod('addCheckboxEnum', function(
+			Form $form,
+			string $name,
+			string $label = null,
+			?array $items = null,
+		) {
+			return $form[$name] = new Controls\CheckboxListEnum($label, $items);
+		});
 	}
 
 
