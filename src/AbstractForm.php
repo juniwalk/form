@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Form;
 
+use JuniWalk\Form\Enums\Layout;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
@@ -28,8 +29,8 @@ abstract class AbstractForm extends Control
 {
 	protected ?ITranslator $translator;
 	protected ?HttpRequest $httpRequest;
+	protected Layout $layout = Layout::Card;
 	protected string $templateFile;
-	protected string $layout = 'card';
 
 	/** @var callable[] */
 	public array $onBeforeRender = [];
@@ -67,13 +68,13 @@ abstract class AbstractForm extends Control
 	}
 
 
-	public function setLayout(string $layout): void
+	public function setLayout(Layout $layout): void
 	{
 		$this->layout = $layout;
 	}
 
 
-	public function getLayout(): string
+	public function getLayout(): Layout
 	{
 		return $this->layout;
 	}
@@ -81,7 +82,7 @@ abstract class AbstractForm extends Control
 
 	public function getLayoutPath(): string
 	{
-		return __DIR__.'/templates/@layout-'.$this->layout.'.latte';
+		return __DIR__.'/templates/@layout-'.$this->layout->value.'.latte';
 	}
 
 
@@ -131,7 +132,7 @@ abstract class AbstractForm extends Control
 
 	public function renderModal(): void
 	{
-		$this->setLayout('modal');
+		$this->setLayout(Layout::Modal);
 		$this->render();
 	}
 
@@ -180,7 +181,7 @@ abstract class AbstractForm extends Control
 	}
 
 
-	protected function createComponentForm(string $name): Form
+	protected function createComponentForm(): Form
 	{
 		return $this->createForm();
 	}
