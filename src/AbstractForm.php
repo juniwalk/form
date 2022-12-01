@@ -197,18 +197,15 @@ abstract class AbstractForm extends Control
 		$form->setTranslator($this->translator);
 		$form->addProtection();
 
-		$form->onError[] = function(Form $form) {
-			$this->onError($form);
-			$this->redrawControl('errors');
-		};
-
-		$form->onSuccess[] = function(Form $form, ArrayHash $data) {
-			$this->handleSuccess($form, $data);
-		};
-
+		$form->onSuccess[] = $this->handleSuccess(...);
 		$form->onSuccess[] = function(Form $form, ArrayHash $data) {
 			$this->onSuccess($form, $data);
 			$this->redrawControl('form');
+		};
+
+		$form->onError[] = function(Form $form) {
+			$this->onError($form);
+			$this->redrawControl('errors');
 		};
 
 		return $form;
