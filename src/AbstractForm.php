@@ -201,6 +201,7 @@ abstract class AbstractForm extends Control
 		$form->onSuccess[] = function(Form $form, ArrayHash $data) {
 			$this->onSuccess($form, $data);
 			$this->redrawControl('form');
+			$form->reset();
 		};
 
 		$form->onError[] = function(Form $form) {
