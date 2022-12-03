@@ -8,6 +8,7 @@
 namespace JuniWalk\Form;
 
 use JuniWalk\Form\Enums\Layout;
+use JuniWalk\Utils\Html;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
@@ -95,8 +96,6 @@ abstract class AbstractForm extends Control
 	public function findRedirectPage(array $pages, string $default = 'default'): string
 	{
 		$form = $this->getForm();
-
-		// $this->getComponents(true, Control::class)
 
 		foreach ($pages as $control => $page) {
 			if (!$button = $form->getComponent($control, false)) {
