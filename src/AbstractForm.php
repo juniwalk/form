@@ -21,7 +21,7 @@ use Nette\Utils\Callback;
 use ReflectionClass;
 
 /**
- * @method void onBeforeRender(self $self, ITemplate $template)
+ * @method void onRender(self $self, ITemplate $template)
  * @method void onSuccess(Form $form, ArrayHash $data)
  * @method void onError(Form $form)
  */
@@ -33,7 +33,7 @@ abstract class AbstractForm extends Control
 	protected string $templateFile;
 
 	/** @var callable[] */
-	public array $onBeforeRender = [];
+	public array $onRender = [];
 	public array $onSuccess = [];
 	public array $onError = [];
 
@@ -96,6 +96,8 @@ abstract class AbstractForm extends Control
 	{
 		$form = $this->getForm();
 
+		// $this->getComponents(true, Control::class)
+
 		foreach ($pages as $control => $page) {
 			if (!$button = $form->getComponent($control, false)) {
 				continue;
@@ -122,8 +124,8 @@ abstract class AbstractForm extends Control
 		$template->add('layout', $this->layout);
 		$template->add('form', $this->getForm());
 
-		if (!empty($this->onBeforeRender)) {
-			$this->onBeforeRender($this, $template);
+		if (!empty($this->onRender)) {
+			$this->onRender($this, $template);
 		}
 
 		$template->render();
