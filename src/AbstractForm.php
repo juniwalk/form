@@ -155,6 +155,19 @@ abstract class AbstractForm extends Control
 		$callback = Callback::check([$this, 'search'.$type]);
 		$items = $callback((string) $term, (int) $page);
 
+		foreach ($items as $key => $item) {
+			if (!$item instanceof Html || $item->getName() <> 'option') {
+				continue;
+			}
+
+			$items[$key] = [
+				'id' => $item->getValue(),
+				'text' => $item->getText(),
+				'content' => $item->{'data-content'},
+				'icon' => $item->{'data-icon'},
+			];
+		}
+
 		$this->getPresenter()->sendJson([
 			'results' => array_values($items),
 			'pagination' => [
