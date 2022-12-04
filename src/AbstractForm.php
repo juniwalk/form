@@ -149,10 +149,10 @@ abstract class AbstractForm extends Control
 		}
 
 		$term = $this->httpRequest->getQuery('term') ?? '';
-		$page = $this->httpRequest->getQuery('page') ?? 0;
+		$page = $this->httpRequest->getQuery('page') ?? 1;
 
 		$callback = Callback::check([$this, 'search'.$type]);
-		$items = $callback((string) $term, (int) $page);
+		$items = $callback((string) $term, ((int) $page) - 1);
 
 		foreach ($items as $key => $item) {
 			if (!$item instanceof Html || $item->getName() <> 'option') {
