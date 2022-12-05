@@ -8,7 +8,7 @@
 namespace JuniWalk\Form;
 
 use JuniWalk\Form\Enums\Layout;
-use JuniWalk\Utils\ORM\Interfaces\HtmlOption;
+use JuniWalk\ORM\Interfaces\HtmlOption;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
