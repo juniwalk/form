@@ -17,7 +17,7 @@
 
 	"require": {
 		"php": ">=8.1",
-		"juniwalk/utils": ">=1.1.0",
+		"juniwalk/utils": ">=1.2.38",
 		"nette/application": "~3.0",
 		"nette/forms": "~3.0",
 		"nette/di": "~3.0"

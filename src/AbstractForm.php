@@ -8,7 +8,7 @@
 namespace JuniWalk\Form;
 
 use JuniWalk\Form\Enums\Layout;
-use JuniWalk\Utils\Html;
+use JuniWalk\Utils\ORM\Interfaces\HtmlOption;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
@@ -19,6 +19,7 @@ use Nette\InvalidStateException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Callback;
+use Nette\Utils\Html;
 use ReflectionClass;
 
 /**
@@ -155,6 +156,10 @@ abstract class AbstractForm extends Control
 		$items = $callback((string) $term, ((int) $page) - 1);
 
 		foreach ($items as $key => $item) {
+			if ($item instanceof HtmlOption) {
+				$item = $item->createOption();
+			}
+
 			if (!$item instanceof Html || $item->getName() <> 'option') {
 				continue;
 			}
