@@ -8,7 +8,8 @@
 namespace JuniWalk\Form;
 
 use JuniWalk\Form\Enums\Layout;
-use JuniWalk\ORM\Interfaces\HtmlOption;
+use JuniWalk\Form\Tools\SearchPayload;
+use JuniWalk\Utils\Strings;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
@@ -18,8 +19,6 @@ use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Callback;
-use Nette\Utils\Html;
 use ReflectionClass;
 
 /**
@@ -145,39 +144,24 @@ abstract class AbstractForm extends Control
 	 */
 	public function handleSearch(string $type): void
 	{
+		$search = 'search'.Strings::firstUpper($type);
+
 		if (!$this->httpRequest) {
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		$term = $this->httpRequest->getQuery('term') ?? '';
-		$page = $this->httpRequest->getQuery('page') ?? 1;
+		$query = $this->httpRequest->getQuery('term') ?? '';
+		$page = (int) $this->httpRequest->getQuery('page') ?? 1;
 
-		$callback = Callback::check([$this, 'search'.$type]);
-		$items = $callback((string) $term, ((int) $page) - 1);
-
-		foreach ($items as $key => $item) {
-			if ($item instanceof HtmlOption) {
-				$item = $item->createOption();
-			}
-
-			if (!$item instanceof Html || $item->getName() <> 'option') {
-				continue;
-			}
-
-			$items[$key] = [
-				'id' => $item->getValue(),
-				'text' => $item->getText(),
-				'content' => $item->{'data-content'},
-				'icon' => $item->{'data-icon'},
-			];
+		if (!method_exists($this, $search)) {
+			throw new InvalidArgumentException('Search method '.$search.' is not implemented.');
 		}
 
-		$this->getPresenter()->sendJson([
-			'results' => array_values($items),
-			'pagination' => [
-				'more' => !empty($items),
-			],
-		]);
+		$result = $this->$search($query, $page -1);
+
+		$this->getPresenter()->sendJson(
+			new SearchPayload($result)
+		);
 	}
 
 
