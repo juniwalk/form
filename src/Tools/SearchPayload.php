@@ -32,6 +32,8 @@ class SearchPayload implements JsonSerializable
 		$group = $item['group'] ?? null;
 		$key = $item['id'];
 
+		unset($item['group']);
+
 		if (!isset($group)) {
 			$this->items[$key] = $item;
 			return;
@@ -42,7 +44,7 @@ class SearchPayload implements JsonSerializable
 	}
 
 
-	public jsonSerialize(): mixed
+	public function jsonSerialize(): mixed
 	{
 		return $this->getPayload();
 	}
@@ -50,13 +52,17 @@ class SearchPayload implements JsonSerializable
 
 	public function getPayload(): array
 	{
-		$results = Arrays::map($this->items, function(array $item): array {
-			if (isset($item['children'])) {
-				$item['children'] = array_values($item['children']);
-			}
+		$results = Arrays::map(
+			items: $this->items,
+			isRecursive: false,
+			callback: function(array $item): array {
+				if (isset($item['children'])) {
+					$item['children'] = array_values($item['children']);
+				}
 
-			return $item;
-		});
+				return $item;
+			}
+		);
 
 		return [
 			'results' => array_values($results),
@@ -76,8 +82,8 @@ class SearchPayload implements JsonSerializable
 		}
 
 		$this->items[$key] = [
-			'name' => $name,
-			'children' = [],
+			'text' => $name,
+			'children' => [],
 		];
 
 		return $key;
@@ -101,6 +107,6 @@ class SearchPayload implements JsonSerializable
 		}
 
 		// return Scheme::process($item, new Scheme);
-		return $item;
+		return array_filter($item);
 	}
 }

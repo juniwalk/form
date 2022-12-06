@@ -150,8 +150,8 @@ abstract class AbstractForm extends Control
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		$query = $this->httpRequest->getQuery('term') ?? '';
-		$page = (int) $this->httpRequest->getQuery('page') ?? 1;
+		$query = $this->httpRequest->getQuery('term') ?: '';
+		$page = (int) $this->httpRequest->getQuery('page') ?: 1;
 
 		if (!method_exists($this, $search)) {
 			throw new InvalidArgumentException('Search method '.$search.' is not implemented.');
