@@ -8,6 +8,7 @@
 namespace JuniWalk\Form\Controls;
 
 use JuniWalk\Utils\Enums\LabeledEnum;
+use JuniWalk\Utils\Html;
 use Nette\Forms\Controls\SelectBox;
 use InvalidArgumentException;
 
@@ -33,7 +34,7 @@ final class SelectBoxEnum extends SelectBox
 				throw new InvalidArgumentException('Enum does not match items of type '.$class);
 			}
 
-			$items[$enum->value] = $enum->label();
+			$items[$enum->value] = Html::optionEnum($enum);
 			$class = get_class($enum);
 		}
 

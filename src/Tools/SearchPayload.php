@@ -103,6 +103,7 @@ class SearchPayload implements JsonSerializable
 				'content' => $item->{'data-content'},
 				'group' => $item->{'data-group'},
 				'icon' => $item->{'data-icon'},
+				'color' => $item->{'data-color'},
 			];
 		}
 
