@@ -1,9 +1,11 @@
+<div class="modal fade" id="{$control->getName()}" data-backdrop="static">
+<div n:snippet="form">
+
 {default $color = 'secondary'}
 {default $contentClass = null}
 {default $contentPos = 'top'}
 {default $size = null}
 
-<div class="modal fade" id="{$control->getName()}" data-backdrop="static">
 <form n:name="form" n:class="modal-dialog, modal-dialog-centered, $size">
 
 	<div class="modal-content">
@@ -61,4 +63,5 @@
 	{ifset #javascript}{include #javascript}{/ifset}
 
 </form>
+</div>
 </div>

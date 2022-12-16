@@ -1,9 +1,11 @@
+<div n:snippet="form">
+
 {default $color = 'secondary'}
 {default $contentClass = null}
 {default $contentPos = 'top'}
 {default $headColor = null}
 
-<section n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline" n:snippet="form">
+<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
 <form n:name="form">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
@@ -55,4 +57,5 @@
 	{ifset #javascript}{include #javascript}{/ifset}
 
 </form>
-</section>
+</div>
+</div>
