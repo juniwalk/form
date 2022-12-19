@@ -31,12 +31,25 @@ abstract class AbstractForm extends Control
 	protected ?ITranslator $translator;
 	protected ?HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
+	protected string $formClass = Form::class;
 	protected string $templateFile;
 
 	/** @var callable[] */
 	public array $onRender = [];
 	public array $onSuccess = [];
 	public array $onError = [];
+
+
+	public function setFormClass(string $formClass): void
+	{
+		$this->formClass = $formClass;
+	}
+
+
+	public function getFormClass(): string
+	{
+		return $this->formClass;
+	}
 
 
 	public function getForm(): Form
@@ -54,18 +67,6 @@ abstract class AbstractForm extends Control
 	public function getHttpRequest(): ?HttpRequest
 	{
 		return $this->httpRequest;
-	}
-
-
-	public function setTranslator(ITranslator $translator = null): void
-	{
-		$this->translator = $translator;
-	}
-
-
-	public function getTranslator(): ?ITranslator
-	{
-		return $this->translator;
 	}
 
 
@@ -87,9 +88,35 @@ abstract class AbstractForm extends Control
 	}
 
 
-	public function setTemplateFile(string $file): void
+	public function setTemplateFile(?string $file): void
 	{
-		$this->templateFile = $file;
+		$this->templateFile = $file ?? null;
+	}
+
+
+	public function getTemplateFile(): string
+	{
+		if (isset($this->templateFile)) {
+			return $this->templateFile;
+		}
+
+		$rc = new ReflectionClass($this);
+		return sprintf('%s/templates/%s.latte',
+			dirname($rc->getFilename()),
+			$rc->getShortName()
+		);
+	}
+
+
+	public function setTranslator(ITranslator $translator = null): void
+	{
+		$this->translator = $translator;
+	}
+
+
+	public function getTranslator(): ?ITranslator
+	{
+		return $this->translator;
 	}
 
 
@@ -117,30 +144,6 @@ abstract class AbstractForm extends Control
 	}
 
 
-	public function render(): void
-	{
-		$template = $this->createTemplate();
-		$template->add('form', $this->getForm());
-
-		if (!empty($this->onRender)) {
-			$this->onRender($this, $template);
-		}
-
-		if (!isset($template->layout)) {
-			$template->add('layout', $this->layout);
-		}
-
-		$template->render();
-	}
-
-
-	public function renderModal(): void
-	{
-		$this->setLayout(Layout::Modal);
-		$this->render();
-	}
-
-
 	/**
 	 * @throws InvalidArgumentException
 	 * @throws InvalidStateException
@@ -153,7 +156,7 @@ abstract class AbstractForm extends Control
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		$query = $this->httpRequest->getQuery('term') ?: '';
+		$query = (string) $this->httpRequest->getQuery('term') ?: '';
 		$page = (int) $this->httpRequest->getQuery('page') ?: 1;
 
 		if (!method_exists($this, $search)) {
@@ -168,39 +171,31 @@ abstract class AbstractForm extends Control
 	}
 
 
-	protected function createTemplate(): ITemplate
+	public function renderModal(): void
 	{
-		if (!isset($this->templateFile)) {
-			$rc = new ReflectionClass($this);
-			$this->templateFile = sprintf(
-				'%s/templates/%s.latte',
-				dirname($rc->getFilename()),
-				$rc->getShortName()
-			);
-		}
+		$this->setLayout(Layout::Modal);
+		$this->render();
+	}
 
-		$template = parent::createTemplate();
+
+	public function render(): void
+	{
+		$template = $this->createTemplate();
 		$template->setTranslator($this->translator);
-		$template->setFile($this->templateFile);
 
-		return $template;
+		$this->onRender($this, $template);
+
+		$templateFile = $template->getFile() ?? $this->getTemplateFile();
+		$template->render($templateFile, [
+			'form' => $this->getForm(),
+			'layout' => $this->layout,
+		]);
 	}
 
 
 	protected function createComponentForm(): Form
 	{
-		return $this->createForm();
-	}
-
-
-	protected function handleSuccess(Form $form, ArrayHash $data): void
-	{
-	}
-
-
-	protected function createForm(string $class = Form::class): Form
-	{
-		$form = new $class;
+		$form = new $this->formClass;
 		$form->setTranslator($this->translator);
 		$form->addProtection();
 
@@ -218,5 +213,10 @@ abstract class AbstractForm extends Control
 		};
 
 		return $form;
+	}
+
+
+	protected function handleSuccess(Form $form, ArrayHash $data): void
+	{
 	}
 }
