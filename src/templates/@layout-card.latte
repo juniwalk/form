@@ -23,11 +23,11 @@
 
 	</div>
 
-	<div class="card-body">
+	<div class="card-body" n:ifcontent>
 
 		{ifset #controls-card}
 			{include #controls-card}
-		{else}
+		{elseifset #controls}
 			{include #controls}
 		{/ifset}
 
@@ -43,7 +43,7 @@
 
 		{ifset #buttons-card}
 			{include #buttons-card}
-		{else}
+		{elseifset #buttons}
 			{include #buttons}
 		{/ifset}
 

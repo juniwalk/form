@@ -1,6 +1,7 @@
 <div class="modal fade" id="{$control->getName()}" data-backdrop="static">
 <div n:snippet="form">
 
+{default $hasCloseButton = true}
 {default $color = 'secondary'}
 {default $contentClass = null}
 {default $contentPos = 'top'}
@@ -26,11 +27,11 @@
 
 		</div>
 
-		<div class="modal-body">
+		<div class="modal-body" n:ifcontent>
 
 			{ifset #controls-modal}
 				{include #controls-modal}
-			{else}
+			{elseifset #controls}
 				{include #controls}
 			{/ifset}
 
@@ -42,8 +43,9 @@
 
 		</div>
 
-		<div class="modal-footer bg-light">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">{_web.button.close|noescape}</button>
+		<div class="modal-footer bg-light" n:ifcontent>
+
+			<button type="button" class="btn btn-secondary" data-dismiss="modal" n:if="$hasCloseButton">{_web.button.close|noescape}</button>
 
 			{ifset #buttons-modal}
 				{include #buttons-modal}
