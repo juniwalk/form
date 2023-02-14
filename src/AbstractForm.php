@@ -23,6 +23,7 @@ use ReflectionClass;
 
 /**
  * @method void onRender(self $self, ITemplate $template)
+ * @method void onValidate(Form $form, ArrayHash $data)
  * @method void onSuccess(Form $form, ArrayHash $data)
  * @method void onError(Form $form)
  */
@@ -36,6 +37,7 @@ abstract class AbstractForm extends Control
 
 	/** @var callable[] */
 	public array $onRender = [];
+	public array $onValidate = [];
 	public array $onSuccess = [];
 	public array $onError = [];
 
@@ -199,20 +201,30 @@ abstract class AbstractForm extends Control
 		$form->setTranslator($this->translator);
 		$form->addProtection();
 
+		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
+			$this->handleValidate($form, $data)
+			$this->onValidate($form, $data);
+		};
+
 		$form->onSuccess[] = $this->handleSuccess(...);
-		$form->onSuccess[] = function(Form $form, ArrayHash $data) {
+		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {
 			$this->onSuccess($form, $data);
 			$this->redrawControl();
 			$form->reset();
 		};
 
-		$form->onError[] = function(Form $form) {
+		$form->onError[] = function(Form $form): void {
 			$this->onError($form);
 			$this->redrawControl();
 			$form->setSubmittedBy(null);
 		};
 
 		return $form;
+	}
+
+
+	protected function handleValidate(Form $form, ArrayHash $data): void
+	{
 	}
 
 
