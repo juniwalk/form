@@ -202,7 +202,7 @@ abstract class AbstractForm extends Control
 		$form->addProtection();
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
-			$this->handleValidate($form, $data)
+			$this->handleValidate($form, $data);
 			$this->onValidate($form, $data);
 		};
 
