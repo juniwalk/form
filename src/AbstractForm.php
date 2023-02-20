@@ -23,9 +23,9 @@ use ReflectionClass;
 
 /**
  * @method void onRender(self $self, ITemplate $template)
- * @method void onValidate(Form $form, ArrayHash $data)
- * @method void onSuccess(Form $form, ArrayHash $data)
- * @method void onError(Form $form)
+ * @method void onValidate(Form $form, ArrayHash $data, self $self)
+ * @method void onSuccess(Form $form, ArrayHash $data, self $self)
+ * @method void onError(Form $form, self $self)
  */
 abstract class AbstractForm extends Control
 {
@@ -211,18 +211,18 @@ abstract class AbstractForm extends Control
 			}
 
 			$this->handleValidate($form, $data);
-			$this->onValidate($form, $data);
+			$this->onValidate($form, $data, $this);
 		};
 
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {
 			$this->handleSuccess($form, $data);
-			$this->onSuccess($form, $data);
+			$this->onSuccess($form, $data, $this);
 			$this->redrawControl();
 			$form->reset();
 		};
 
 		$form->onError[] = function(Form $form): void {
-			$this->onError($form);
+			$this->onError($form, $this);
 			$this->redrawControl();
 			$form->setSubmittedBy(null);
 		};
