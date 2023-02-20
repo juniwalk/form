@@ -186,11 +186,14 @@ abstract class AbstractForm extends Control
 		$template->setTranslator($this->translator);
 
 		$this->onRender($this, $template);
+		$form = $this->getForm()->setDefaults([
+			'__layout' => $this->layout->value,
+		]);
 
 		$templateFile = $template->getFile() ?? $this->getTemplateFile();
 		$template->render($templateFile, [
-			'form' => $this->getForm(),
 			'layout' => $this->layout,
+			'form' => $form,
 		]);
 	}
 
@@ -199,9 +202,14 @@ abstract class AbstractForm extends Control
 	{
 		$form = new $this->formClass;
 		$form->setTranslator($this->translator);
+		$form->addHidden('__layout');
 		$form->addProtection();
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
+			if ($layout = Layout::tryMake($data->__layout ?? '')) {
+				$this->setLayout($layout);
+			}
+
 			$this->handleValidate($form, $data);
 			$this->onValidate($form, $data);
 		};
