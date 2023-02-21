@@ -8,7 +8,7 @@
 <div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
 <form n:name="form">
 
-	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
+	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}">
 		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
 			<h3 class="card-title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
@@ -19,7 +19,7 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div id="{$control->getUniqueId()}" n:class="collapse, $form->hasErrors() ? show" data-parent="#{$control->getParent()->getName()}">
+	<div id="{$control->getUniqueId()}" n:class="collapse, $form->hasErrors() ? show" data-parent="#{$container}">
 
 		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
 

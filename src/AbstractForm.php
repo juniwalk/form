@@ -173,9 +173,13 @@ abstract class AbstractForm extends Control
 	}
 
 
-	public function renderAccordion(): void
+	public function renderAccordion(string $container): void
 	{
 		$this->setLayout(Layout::Accordion);
+		$this->onRender[] => function($self, $template): void {
+			$template->add('container', $container);
+		};
+
 		$this->render();
 	}
 
