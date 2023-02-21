@@ -1,0 +1,67 @@
+<div n:snippet="form">
+
+{default $color = 'secondary'}
+{default $contentClass = null}
+{default $contentPos = 'top'}
+{default $headColor = null}
+
+<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
+<form n:name="form">
+
+	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
+		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
+			<h3 class="card-title">{$event->label()|translate}</h3>
+			{ifset #tools}{include #tools}{/ifset}
+		</div>
+	</a>
+
+	<div class="card-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
+	</div>
+
+	<div id="{$control->getUniqueId()}" n:class="collapse, $form->hasErrors() ? show" data-parent="#{$control->getParent()->getName()}">
+
+		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
+
+			{include #content}
+
+		</div>
+
+		<div class="card-body" n:ifcontent>
+
+			{ifset #controls-card}
+				{include #controls-card}
+			{elseifset #controls}
+				{include #controls}
+			{/ifset}
+
+		</div>
+
+		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
+
+			{include #content}
+
+		</div>
+
+		<div class="card-footer" n:ifcontent>
+
+			{ifset #buttons-card}
+				{include #buttons-card}
+			{elseifset #buttons}
+				{include #buttons}
+			{/ifset}
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript" n:ifcontent n:inner-foreach="$form->getControls() as $input">
+		{continueIf !$input->hasErrors()}
+		document.getElementById({$input->getHtmlId()}).classList.add('is-invalid')
+	</script>
+
+	{ifset #javascript}{include #javascript}{/ifset}
+
+</form>
+</div>
+</div>

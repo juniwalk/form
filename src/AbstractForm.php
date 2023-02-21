@@ -173,6 +173,13 @@ abstract class AbstractForm extends Control
 	}
 
 
+	public function renderAccordion(): void
+	{
+		$this->setLayout(Layout::Accordion);
+		$this->render();
+	}
+
+
 	public function renderModal(): void
 	{
 		$this->setLayout(Layout::Modal);
