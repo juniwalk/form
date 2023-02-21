@@ -10,7 +10,7 @@
 
 	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
 		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-			<h3 class="card-title">{$event->label()|translate}</h3>
+			<h3 class="card-title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
 	</a>
