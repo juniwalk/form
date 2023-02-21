@@ -12,7 +12,7 @@ use JuniWalk\Form\Tools\SearchPayload;
 use JuniWalk\Utils\Strings;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\ITemplate;
+use Nette\Application\UI\ITemplate as Template;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
@@ -22,7 +22,7 @@ use Nette\Utils\ArrayHash;
 use ReflectionClass;
 
 /**
- * @method void onRender(self $self, ITemplate $template)
+ * @method void onRender(self $self, Template $template)
  * @method void onValidate(Form $form, ArrayHash $data, self $self)
  * @method void onSuccess(Form $form, ArrayHash $data, self $self)
  * @method void onError(Form $form, self $self)
@@ -176,7 +176,7 @@ abstract class AbstractForm extends Control
 	public function renderAccordion(string $container): void
 	{
 		$this->setLayout(Layout::Accordion);
-		$this->onRender[] => function($self, $template): void {
+		$this->onRender[] = function(self $self, Template $template): void {
 			$template->add('container', $container);
 		};
 
