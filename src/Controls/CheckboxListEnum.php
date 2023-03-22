@@ -53,6 +53,10 @@ final class CheckboxListEnum extends CheckboxList
 		}
 
 		$values = Arrays::map($values, function($value) {
+			if ($value && isset($this->backedEnum)) {
+				$value = $this->backedEnum::tryMake($value) ?: $value;
+			}
+	
 			if ($value && !$value instanceof LabeledEnum) {
 				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 			}

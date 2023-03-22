@@ -48,6 +48,10 @@ final class SelectBoxEnum extends SelectBox
 	 */
 	public function setValue(/*?LabeledEnum*/ $value): self
 	{
+		if ($value && isset($this->backedEnum)) {
+			$value = $this->backedEnum::tryMake($value) ?: $value;
+		}
+
 		if ($value && !$value instanceof LabeledEnum) {
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 		}
