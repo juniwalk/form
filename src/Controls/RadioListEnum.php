@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Form\Controls;
 
+use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\LabeledEnum;
 use Nette\Forms\Controls\RadioList;
 use InvalidArgumentException;
@@ -14,6 +15,14 @@ use InvalidArgumentException;
 final class RadioListEnum extends RadioList
 {
 	private string $backedEnum;
+
+
+	public function getCases(): array
+	{
+		return Arrays::map($this->getItems(), function($value) {
+			return $this->backedEnum::tryMake($value);
+		});
+	}
 
 
 	/**

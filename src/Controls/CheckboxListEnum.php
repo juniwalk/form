@@ -7,14 +7,22 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Enums\LabeledEnum;
 use JuniWalk\Utils\Arrays;
+use JuniWalk\Utils\Enums\LabeledEnum;
 use Nette\Forms\Controls\CheckboxList;
 use InvalidArgumentException;
 
 final class CheckboxListEnum extends CheckboxList
 {
 	private string $backedEnum;
+
+
+	public function getCases(): array
+	{
+		return Arrays::map($this->getItems(), function($value) {
+			return $this->backedEnum::tryMake($value);
+		});
+	}
 
 
 	/**
@@ -74,7 +82,7 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function getValue(): array
 	{
-		$values = Arrays::map($this->value, function($value, $key) {
+		$values = Arrays::map($this->value, function($value) {
 			return $this->backedEnum::tryMake($value);
 		});
 
