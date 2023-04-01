@@ -19,8 +19,8 @@ final class RadioListEnum extends RadioList
 
 	public function getCases(): array
 	{
-		return Arrays::map($this->getItems(), function($value) {
-			return $this->backedEnum::tryMake($value);
+		return Arrays::map($this->getItems(), function($value, $key) {
+			return $this->backedEnum::tryMake($key);
 		});
 	}
 

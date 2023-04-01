@@ -19,8 +19,8 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function getCases(): array
 	{
-		return Arrays::map($this->getItems(), function($value) {
-			return $this->backedEnum::tryMake($value);
+		return Arrays::map($this->getItems(), function($value, $key) {
+			return $this->backedEnum::tryMake($key);
 		});
 	}
 
@@ -82,8 +82,8 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function getValue(): array
 	{
-		$values = Arrays::map($this->value, function($value) {
-			return $this->backedEnum::tryMake($value);
+		$values = Arrays::map($this->value, function($value, $key) {
+			return $this->backedEnum::tryMake($key);
 		});
 
 		return parent::getValue($values);
