@@ -235,7 +235,7 @@ abstract class AbstractForm extends Control
 		$form->onError[] = function(Form $form): void {
 			$this->onError($form, $this);
 			$this->redrawControl();
-			$form->setSubmittedBy(null);
+			// $form->setSubmittedBy(null);
 		};
 
 		return $form;
