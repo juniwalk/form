@@ -10,16 +10,19 @@ namespace JuniWalk\Form;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\Tools\SearchPayload;
 use JuniWalk\Utils\Strings;
+use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate as Template;
-use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\SubmitterControl;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Localization\ITranslator;
 use Nette\Utils\ArrayHash;
 use ReflectionClass;
+use Throwable;
+use Tracy\Debugger;
 
 /**
  * @method void onRender(self $self, Template $template)
@@ -131,7 +134,7 @@ abstract class AbstractForm extends Control
 				continue;
 			}
 
-			if (!$button instanceof SubmitButton) {
+			if (!$button instanceof SubmitterControl) {
 				continue;
 			}
 
@@ -152,7 +155,8 @@ abstract class AbstractForm extends Control
 	 */
 	public function handleSearch(string $type): void
 	{
-		$search = 'search'.Strings::firstUpper($type);
+		$method = 'search'.Strings::firstUpper($type);
+		$form = $this->getForm();
 
 		if (!$this->httpRequest) {
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
@@ -161,15 +165,71 @@ abstract class AbstractForm extends Control
 		$query = (string) $this->httpRequest->getQuery('term') ?: '';
 		$page = (int) $this->httpRequest->getQuery('page') ?: 1;
 
-		if (!method_exists($this, $search)) {
-			throw new InvalidArgumentException('Search method '.$search.' is not implemented.');
+		if (!method_exists($this, $method)) {
+			throw new InvalidArgumentException('Search method '.$method.' is not implemented.');
 		}
 
-		$result = $this->$search($query, $page -1);
+		try {
+			$result = $this->$method($query, $page -1);
 
-		$this->getPresenter()->sendJson(
-			new SearchPayload($result)
-		);
+		} catch (AbortException) {
+		} catch (Throwable $e) {
+			$form->addError($e->getMessage());
+			Debugger::log($e);
+		}
+
+		$this->getPresenter()->sendJson(new SearchPayload($result));
+	}
+
+
+	/**
+	 * @throws InvalidArgumentException
+	 * @throws InvalidStateException
+	 */
+	public function handleRefresh(string $type, mixed $value = null): void
+	{
+		$method = 'refresh'.Strings::firstUpper($type);
+		$form = $this->getForm();
+
+		if (!$this->httpRequest) {
+			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
+		}
+
+		$formData = (array) $this->httpRequest->getPost() ?? [];
+		$layout = Layout::from($formData['_layout_']);
+
+		if (!method_exists($this, $method)) {
+			throw new InvalidArgumentException('Refresh method '.$method.' is not implemented.');
+		}
+
+		$form->setValues($formData);
+
+		try {
+			$this->$method($form, $formData, $value);
+
+		} catch (AbortException) {
+		} catch (Throwable $e) {
+			$form->addError($e->getMessage());
+			Debugger::log($e);
+		}
+
+		$this->redrawControl('form');
+		$this->setLayout($layout);
+		$this->redirect('this');
+	}
+
+
+	public function redirect(string $dest, mixed ...$args): void
+	{
+		$presenter = $this->getPresenter();
+
+		if ($presenter->isAjax()) {
+			$presenter->payload->postGet = true;
+			$presenter->payload->url = $this->link($dest, ...$args);
+			return;
+		}
+
+		parent::redirect($dest, ...$args);
 	}
 
 
@@ -217,10 +277,7 @@ abstract class AbstractForm extends Control
 		$form->addProtection();
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
-			if ($layout = Layout::tryMake($data->_layout_ ?? '')) {
-				$this->setLayout($layout);
-			}
-
+			$this->setLayout(Layout::from($data->_layout_));
 			$this->handleValidate($form, $data);
 			$this->onValidate($form, $data, $this);
 		};
@@ -235,7 +292,6 @@ abstract class AbstractForm extends Control
 		$form->onError[] = function(Form $form): void {
 			$this->onError($form, $this);
 			$this->redrawControl();
-			// $form->setSubmittedBy(null);
 		};
 
 		return $form;
@@ -249,5 +305,20 @@ abstract class AbstractForm extends Control
 
 	protected function handleSuccess(Form $form, ArrayHash $data): void
 	{
+	}
+
+
+	/**
+	 * @internal
+	 */
+	protected function findSubmitButton(): ?SubmitterControl
+	{
+		$buttons = $this->getComponents(true, SubmitterControl::class);
+
+		if (!$buttons = iterator_to_array($buttons)) {
+			return null;
+		}
+
+		return $buttons['submit'] ?? current($buttons);
 	}
 }
