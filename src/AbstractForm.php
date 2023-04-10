@@ -205,7 +205,7 @@ abstract class AbstractForm extends Control
 		$form->setValues($formData);
 
 		try {
-			$this->$method($form, $formData, $value);
+			$redraw = $this->$method($form, $formData, $value);
 
 		} catch (AbortException) {
 		} catch (Throwable $e) {
@@ -213,7 +213,7 @@ abstract class AbstractForm extends Control
 			Debugger::log($e);
 		}
 
-		$this->redrawControl('form');
+		$this->redrawControl('form', $redraw ?? true);
 		$this->setLayout($layout);
 		$this->redirect('this');
 	}
