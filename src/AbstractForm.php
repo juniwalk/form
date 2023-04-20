@@ -36,7 +36,7 @@ abstract class AbstractForm extends Control
 	protected ?HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
 	protected string $formClass = Form::class;
-	protected string $templateFile;
+	protected ?string $templateFile = null;
 
 	/** @var callable[] */
 	public array $onRender = [];
