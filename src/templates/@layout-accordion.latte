@@ -6,7 +6,7 @@
 {default $headColor = null}
 
 <div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
-<form n:name="form">
+<form n:name="form" data-form-name="{$control->getName()}">
 
 	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}-content">
 		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">

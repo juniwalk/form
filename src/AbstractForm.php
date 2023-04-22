@@ -151,34 +151,31 @@ abstract class AbstractForm extends Control
 
 	/**
 	 * @throws InvalidArgumentException
-	 * @throws InvalidStateException
 	 */
-	public function handleSearch(string $type): void
+	public function handleSearch(string $type, ?int $maxResults = null, string $term = '', int $page = 1): void
 	{
+		$search = new SearchPayload([], $page, $maxResults);
 		$method = 'search'.Strings::firstUpper($type);
 		$form = $this->getForm();
 
-		if (!$this->httpRequest) {
-			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
-		}
-
-		$query = (string) $this->httpRequest->getQuery('term') ?: '';
-		$page = (int) $this->httpRequest->getQuery('page') ?: 1;
-
-		if (!method_exists($this, $method)) {
-			throw new InvalidArgumentException('Search method '.$method.' is not implemented.');
-		}
-
 		try {
-			$result = $this->$method($query, $page -1);
+			if (!method_exists($this, $method)) {
+				throw new InvalidArgumentException('Search method '.$method.' is not implemented.');
+			}
 
-		} catch (AbortException) {
+			$result = $this->$method($term, $search);
+			$search->addItems($result ?? []);
+
 		} catch (Throwable $e) {
 			$form->addError($e->getMessage());
 			Debugger::log($e);
+
+			// todo: If error displaying is solved in future
+			// todo: remove this statement as it would trigger Tracy
+			throw $e;
 		}
 
-		$this->getPresenter()->sendJson(new SearchPayload($result));
+		$this->getPresenter()->sendJson($search);
 	}
 
 
@@ -195,16 +192,14 @@ abstract class AbstractForm extends Control
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		$formData = (array) $this->httpRequest->getPost() ?? [];
-		$layout = Layout::from($formData['_layout_']);
-
-		if (!method_exists($this, $method)) {
-			throw new InvalidArgumentException('Refresh method '.$method.' is not implemented.');
-		}
-
+		$formData = (array) $this->httpRequest->getPost() ?: [];
 		$form->setValues($formData);
 
 		try {
+			if (!method_exists($this, $method)) {
+				throw new InvalidArgumentException('Refresh method '.$method.' is not implemented.');
+			}
+
 			$redraw = $this->$method($form, $formData, $value);
 
 		} catch (AbortException) {
@@ -213,8 +208,8 @@ abstract class AbstractForm extends Control
 			Debugger::log($e);
 		}
 
+		$this->setLayout(Layout::from($formData['_layout_']));
 		$this->redrawControl('form', $redraw ?? true);
-		$this->setLayout($layout);
 		$this->redirect('this');
 	}
 

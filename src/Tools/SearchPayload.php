@@ -15,38 +15,87 @@ use JuniWalk\Utils\Strings;
 
 class SearchPayload implements JsonSerializable
 {
+	private int $page = 1;
+	private ?int $maxResults = null;
+	private bool $hasGroupAllowed = true;
 	private array $items = [];
 
-
-	public function __construct(array $data)
+	public function __construct(iterable $items, int $page = 1, int $maxResults = null)
 	{
-		foreach ($data as $key => $value) {
+		$this->maxResults = $maxResults;
+		$this->page = $page;
+
+		$this->addItems($items);
+	}
+
+
+	public function setPage(int $page): void
+	{
+		$this->page = $page;
+	}
+
+
+	public function getPage(): int
+	{
+		return $this->page;
+	}
+
+
+	public function setMaxResults(?int $maxResults): void
+	{
+		$this->maxResults = $maxResults;
+	}
+
+
+	public function getMaxResults(): ?int
+	{
+		return $this->maxResults;
+	}
+
+
+	public function getFirstResult(): ?int
+	{
+		if (is_null($this->maxResults)) {
+			return null;
+		}
+
+		return ($this->page -1) * $this->maxResults;
+	}
+
+
+	public function setGroupsAllowed(bool $groupsAllowed)
+	{
+		$this->hasGroupAllowed = $groupsAllowed;
+	}
+
+
+	public function hasGroupsAllowed(): bool
+	{
+		return $this->hasGroupAllowed;
+	}
+
+
+	public function addItems(iterable $items): static
+	{
+		foreach ($items as $value) {
 			$this->addItem($value);
 		}
+
+		return $this;
 	}
 
 
 	public function addItem(mixed $item): void
 	{
 		$item = $this->checkStructure($item);
-		$group = $item['group'] ?? null;
 		$key = $item['id'];
 
-		unset($item['group']);
-
-		if (!isset($group)) {
+		if (!$group = $this->createGroup($item)) {
 			$this->items[$key] = $item;
 			return;
 		}
 
-		$name = $this->createGroup($group);
-		$this->items[$name]['children'][$key] = $item;
-	}
-
-
-	public function jsonSerialize(): mixed
-	{
-		return $this->getPayload();
+		$this->items[$group]['children'][$key] = $item;
 	}
 
 
@@ -67,14 +116,24 @@ class SearchPayload implements JsonSerializable
 		return [
 			'results' => array_values($results),
 			'pagination' => [
-				'more' => !empty($results),
+				'more' => $this->maxResults && !empty($results),
 			],
 		];
 	}
 
 
-	protected function createGroup(string $name): string
+	public function jsonSerialize(): mixed
 	{
+		return $this->getPayload();
+	}
+
+
+	protected function createGroup(array $item): ?string
+	{
+		if (!$name = $item['group'] ?? null) {
+			return null;
+		}
+
 		$key = Strings::webalize($name);
 
 		if (isset($this->items[$key])) {
@@ -107,7 +166,14 @@ class SearchPayload implements JsonSerializable
 			];
 		}
 
-		// return Scheme::process($item, new Scheme);
+		// $item = Scheme::process($item, new Scheme);
+		$group = $item['group'] ?? null;
+
+		if (!$this->hasGroupAllowed && $group) {
+			$item['text'] = $group.' - '.$item['text'];
+			unset($item['group']);
+		}
+
 		return array_filter($item);
 	}
 }
