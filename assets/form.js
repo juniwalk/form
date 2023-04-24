@@ -18,7 +18,7 @@ function initFormControls()
 			options.dropdownParent = this.parentNode.parentNode;
 		}
 
-		if (this.classList.contains('ajax')) {
+		if (this.classList.contains('ajax') || this.dataset['ajax-Url'] !== undefined) {
 			options.minimumResultsForSearch = 0;
 			options.ajax = {delay: 250, cache: true, transport: (request, done, error) => {
 				let params = {};
