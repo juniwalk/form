@@ -152,9 +152,15 @@ abstract class AbstractForm extends Control
 	/**
 	 * @throws InvalidArgumentException
 	 */
-	public function handleSearch(string $type, ?int $maxResults = null, string $term = '', int $page = 1): void
+	public function handleSearch(string $type, ?int $maxResults = null, ?string $term = null, ?int $page = null): void
 	{
-		$search = new SearchPayload([], $page, $maxResults);
+		// ? For backwards compatibility with old style request get arguments from the httpRequest
+		if ($this->httpRequest && $this->httpRequest->getQuery($this->getName().'-term') === null) {
+			$term = (string) $this->httpRequest->getQuery('term') ?: '';
+			$page = (int) $this->httpRequest->getQuery('page') ?: 1;
+		}
+
+		$search = new SearchPayload($page, $maxResults);
 		$method = 'search'.Strings::firstUpper($type);
 		$form = $this->getForm();
 
@@ -163,7 +169,7 @@ abstract class AbstractForm extends Control
 				throw new InvalidArgumentException('Search method '.$method.' is not implemented.');
 			}
 
-			$result = $this->$method($term, $search);
+			$result = $this->$method($term ?? '', $search);
 			$search->addItems($result ?? []);
 
 		} catch (Throwable $e) {
