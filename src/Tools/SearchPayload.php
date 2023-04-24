@@ -15,17 +15,15 @@ use JuniWalk\Utils\Strings;
 
 class SearchPayload implements JsonSerializable
 {
-	private int $page = 1;
+	private int $page;
 	private ?int $maxResults = null;
 	private bool $hasGroupAllowed = true;
 	private array $items = [];
 
-	public function __construct(iterable $items, int $page = 1, int $maxResults = null)
+	public function __construct(int $page = null, int $maxResults = null)
 	{
 		$this->maxResults = $maxResults;
-		$this->page = $page;
-
-		$this->addItems($items);
+		$this->page = $page ?? 1;
 	}
 
 
