@@ -7,8 +7,10 @@
 
 namespace JuniWalk\Form;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueException;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\Tools\SearchPayload;
+use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Strings;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
@@ -321,5 +323,39 @@ abstract class AbstractForm extends Control
 		}
 
 		return $buttons['submit'] ?? current($buttons);
+	}
+
+
+	/**
+	 * @internal
+	 */
+	protected function handleUniqueConstraintViolation(UniqueException $e, string $message, array $fieldMap = []): void
+	{
+		$translate = $this->getTranslator()->translate(...);
+		$form = $this->getForm();
+
+		$fields = Strings::match($e->getMessage(), '/\((?<field>[^\)]+)\)=\((?<value>[^\)]+)\)/i');
+		$fields = array_combine(
+			explode(', ', $fields['field']),
+			explode(', ', $fields['value'])
+		);
+
+		foreach ($fields as $field => $value) {
+			$field = Format::camelCase($field);
+			$fieldName = $fieldMap[$field] ?? $field;
+
+			if (!$form[$field] ?? null) {
+				continue;
+			}
+
+			$form[$field]->addError($translate($message, [
+				'field' => $translate($fieldName),
+				'value' => $value,
+			]));
+		}
+
+		if (!$form->hasErrors()) {
+			$form->addError($message);
+		}
 	}
 }
