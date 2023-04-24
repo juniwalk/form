@@ -344,7 +344,7 @@ abstract class AbstractForm extends Control
 			$field = Format::camelCase($field);
 			$fieldName = $fieldMap[$field] ?? $field;
 
-			if (!$form[$field] ?? null) {
+			if (!$input = $form[$field] ?? null) {
 				continue;
 			}
 
