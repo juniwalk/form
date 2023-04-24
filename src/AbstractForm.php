@@ -329,33 +329,39 @@ abstract class AbstractForm extends Control
 	/**
 	 * @internal
 	 */
-	protected function handleUniqueConstraintViolation(UniqueException $e, string $message, array $fieldMap = []): void
+	protected function handleUniqueConstraintViolation(UniqueException $e, callable $callback = null, array $fieldMap = []): void
 	{
-		$translate = $this->getTranslator()->translate(...);
+		$callback = $callback ?? fn() => null;
 		$form = $this->getForm();
 
 		$fields = Strings::match($e->getMessage(), '/\((?<field>[^\)]+)\)=\((?<value>[^\)]+)\)/i');
+		$defaultMessage = $callback(null) ?? $e->getMessage();
+
+		if (empty($fields)) {
+			$form->addError($defaultMessage);
+			return;
+		}
+
 		$fields = array_combine(
-			explode(', ', $fields['field']),
-			explode(', ', $fields['value'])
+			Strings::split($fields['field'], '/,\s?/'),
+			Strings::split($fields['value'], '/,\s?/')
 		);
 
 		foreach ($fields as $field => $value) {
-			$field = Format::camelCase($field);
-			$fieldName = $fieldMap[$field] ?? $field;
+			$field = $fieldMap[$field] ?? Format::camelCase($field);
+			$message = $callback($field) ?? $defaultMessage;
 
-			if (!$input = $form[$field] ?? null) {
+			if (!$form->getComponent($field, false)) {
 				continue;
 			}
 
-			$form[$field]->addError($translate($message, [
-				'field' => $translate($fieldName),
+			$form[$field]->addError(new Message($message, [
 				'value' => $value,
 			]));
 		}
 
 		if (!$form->hasErrors()) {
-			$form->addError($message);
+			$form->addError($defaultMessage);
 		}
 	}
 }
