@@ -21,7 +21,7 @@ function initFormControls()
 		if (this.classList.contains('ajax') || this.dataset['ajax-Url'] !== undefined) {
 			options.minimumResultsForSearch = 0;
 			options.ajax = {delay: 250, cache: true, transport: (request, done, error) => {
-				let params = {};
+				let params = findPrefixedUrlParams(formName);
 				params[formName+'-term'] = request.data.term || '';
 				params[formName+'-page'] = request.data.page || 1;
 
@@ -57,6 +57,24 @@ function initFormControls()
 	$('a[data-clear-input]').off('click').on('click', function() {
 		$($(this).data('clear-input')).val('').trigger('change');
 	});
+}
+
+
+function findPrefixedUrlParams(prefix)
+{
+	let url = new URL(document.location);		
+	let urlSearch = new URLSearchParams(url.search);
+	let params = {};
+	
+	for (let key of urlSearch.keys()) {
+		if (!key.startsWith(prefix)) {
+			continue;
+		}
+
+		params[key] = urlSearch.get(key);
+	}
+
+	return params;
 }
 
 
