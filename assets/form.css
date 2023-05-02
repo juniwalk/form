@@ -38,15 +38,15 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
  
  
 /**
-* Select2
-*/
+ * Select2
+ */
 .select2-container { flex: 1 1 auto; }
 .select2-container .select2-selection { height: auto; }
 .select2-container .select2-selection--single { padding: .344rem .75rem; }
 .select2-container .select2-selection--single .select2-selection__arrow { top: calc(50% - 35px / 2); }
 
-.modal .input-group .select2-container { max-width: calc(100% - 46px); }
-.modal .select2-container { width: 100% !important; }
+.modal .input-group > .select2-container { max-width: calc(100% - 46px); }
+.modal .form-group > .select2-container { width: 100% !important; }
 
 .form-control:is([data-invalid], .is-invalid, [data-valid], .is-valid) + .select2-container .select2-selection__rendered { padding-right: 0px; }
 .form-control:is([data-invalid], .is-invalid, [data-valid], .is-valid) + .select2-container .select2-selection__arrow { visibility: hidden; }
