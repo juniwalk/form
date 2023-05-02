@@ -17,6 +17,7 @@ use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate as Template;
+use Nette\Forms\Controls\ChoiceControl;
 use Nette\Forms\SubmitterControl;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
@@ -196,6 +197,10 @@ abstract class AbstractForm extends Control
 	{
 		$method = 'refresh'.Strings::firstUpper($type);
 		$form = $this->getForm();
+
+		foreach ($this->getComponents(true, ChoiceControl::class) as $field) {
+			$field->checkDefaultValue(false);
+		}
 
 		if (!$this->httpRequest) {
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
