@@ -19,14 +19,14 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	transition: none;
 }
  
-.form-group .control-label,
-.custom-control .control-label { font-weight: normal; }
+.form-group label.control-label,
+.custom-control label.control-label { font-weight: normal; }
  
-.form-group.required .control-label,
-.custom-control.required .control-label { font-weight: bold; }
+.form-group.required label.control-label,
+.custom-control.required label.control-label { font-weight: bold; }
  
-.form-group.required .control-label::after,
-.custom-control.required .control-label::after {
+.form-group.required label.control-label::after,
+.custom-control.required label.control-label::after {
 	color: var(--red);
 	content: "*";
 	margin-left: 4px;
