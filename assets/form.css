@@ -66,3 +66,14 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	border-color: var(--red);
 	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/></svg>");
 }
+
+
+/**
+ * Dark Mode
+ */
+.dark-mode .input-group-text { background-color: rgba(0,0,0, .1); }
+.dark-mode input:read-only { background: #2f343a !important; }
+
+.dark-mode input:-webkit-autofill:is(*,:focus,:active,:hover) {
+	box-shadow: 0 0 0 100px var(--gray-dark) inset;
+}
