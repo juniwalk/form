@@ -22,7 +22,7 @@ use Nette\Forms\SubmitterControl;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
-use Nette\Localization\ITranslator;
+use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use ReflectionClass;
 use Throwable;
@@ -36,7 +36,7 @@ use Tracy\Debugger;
  */
 abstract class AbstractForm extends Control
 {
-	protected ?ITranslator $translator;
+	protected ?Translator $translator;
 	protected ?HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
 	protected string $formClass = Form::class;
@@ -117,13 +117,13 @@ abstract class AbstractForm extends Control
 	}
 
 
-	public function setTranslator(ITranslator $translator = null): void
+	public function setTranslator(Translator $translator = null): void
 	{
 		$this->translator = $translator;
 	}
 
 
-	public function getTranslator(): ?ITranslator
+	public function getTranslator(): ?Translator
 	{
 		return $this->translator;
 	}
