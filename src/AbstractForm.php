@@ -265,7 +265,9 @@ abstract class AbstractForm extends Control
 		$template = $this->createTemplate();
 		$template->setTranslator($this->translator);
 
+		ksort($this->onRender);
 		$this->onRender($this, $template);
+
 		$form = $this->getForm()->setDefaults([
 			'_layout_' => $this->layout->value,
 		]);
