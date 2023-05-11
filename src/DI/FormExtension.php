@@ -46,6 +46,17 @@ final class FormExtension extends CompilerExtension
 			return $form[$name] = new Controls\DateTimePicker($label);
 		});
 
+		Form::extensionMethod('addPhoneNumber', function(
+			Form $form,
+			string $name,
+			$label = null,
+			?int $cols = null,
+			?int $maxLength = null
+		) {
+			return $form[$name] = (new Controls\PhoneNumber($label, $maxLength))
+				->setHtmlAttribute('size', $cols);
+		});
+
 		Form::extensionMethod('addSelectEnum', function(
 			Form $form,
 			string $name,
