@@ -20,15 +20,16 @@ final class PhoneNumber extends TextInput
 	}
 
 
-	public function setValue($value = null)
+	public function setValue($value = null): static
 	{
-		$value = Format::phoneNumber($this->value);
-		return parent::setValue($value);
+		$this->value = Format::phoneNumber($value);
+		$this->rawValue = (string) $value;
+		return $this;
 	}
 
 
 	public function getValue(): ?string
 	{
-		return Sanitize::phoneNumber($this->value);
+		return Sanitize::phoneNumber(parent::getValue());
 	}
 }
