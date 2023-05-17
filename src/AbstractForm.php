@@ -11,6 +11,7 @@ use Contributte\Translation\Wrappers\Message;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueException;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\Tools\SearchPayload;
+use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Strings;
 use Nette\Application\AbortException;
@@ -280,6 +281,21 @@ abstract class AbstractForm extends Control
 	}
 
 
+	/**
+	 * @internal
+	 */
+	protected function findSubmitButton(): ?SubmitterControl
+	{
+		$buttons = $this->getComponents(true, SubmitterControl::class);
+
+		if (!$buttons = iterator_to_array($buttons)) {
+			return null;
+		}
+
+		return $buttons['submit'] ?? current($buttons);
+	}
+
+
 	protected function createComponentForm(): Form
 	{
 		$form = new $this->formClass;
@@ -319,24 +335,6 @@ abstract class AbstractForm extends Control
 	}
 
 
-	/**
-	 * @internal
-	 */
-	protected function findSubmitButton(): ?SubmitterControl
-	{
-		$buttons = $this->getComponents(true, SubmitterControl::class);
-
-		if (!$buttons = iterator_to_array($buttons)) {
-			return null;
-		}
-
-		return $buttons['submit'] ?? current($buttons);
-	}
-
-
-	/**
-	 * @internal
-	 */
 	protected function handleUniqueConstraintViolation(UniqueException $e, callable $callback = null, array $fieldMap = []): void
 	{
 		$callback = $callback ?? fn() => null;
@@ -355,21 +353,24 @@ abstract class AbstractForm extends Control
 			Strings::split($fields['value'], '/,\s?/')
 		);
 
-		foreach ($fields as $field => $value) {
-			$field = $fieldMap[$field] ?? Format::camelCase($field);
-			$message = $callback($field) ?? $defaultMessage;
+		$fields = Arrays::walk($fields, fn($value, $field) =>
+			yield $fieldMap[$field] ?? Format::camelCase($field) => $value
+		);
 
+		$fieldKey = implode('-', array_keys($fields));
+		$message = $callback($fieldKey) ?? $defaultMessage;
+		$message = new Message($message, $fields);
+
+		foreach ($fields as $field => $value) {
 			if (!$form->getComponent($field, false)) {
 				continue;
 			}
 
-			$form[$field]->addError(new Message($message, [
-				'value' => $value,
-			]));
+			$form[$field]->addError($message);
 		}
 
 		if (!$form->hasErrors()) {
-			$form->addError($defaultMessage);
+			$form->addError($message);
 		}
 	}
 }
