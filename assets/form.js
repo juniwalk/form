@@ -6,6 +6,61 @@
 
 function initFormControls()
 {
+	document.querySelectorAll('.tom-select').forEach((el) => {
+		let formName = el.form.dataset.formName;
+		let options = {
+			plugins: ['dropdown_input'],
+			searchField: ['text'],
+			labelField: 'text',
+			valueField: 'id',
+			create: el.dataset['tags'] !== undefined,
+			optgroupLabelField: 'group',
+			optgroupValueField: 'group',
+			optgroupField: 'group',
+			render:{
+				item: (item, escape) => '<div>' + (item.content || escape(item.text)) + '</div>',
+				dropdown: () => '<div class="dropdown-menu"></div>',
+				option: (item, escape) => '<div class="dropdown-item">' + (item.content || escape(item.text)) + '</div>',
+				option_create: (data, escape) => '<div class="dropdown-item create">Add <strong>' + escape(data.input) + '</strong>&hellip;</div>',
+				no_results: (data, escape) => '<div class="dropdown-item disabled">No results found for "' + escape(data.input) + '"</div>',
+				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>'
+			}
+		};
+
+		if (el.classList.contains('ajax') || el.dataset['ajax-Url'] !== undefined) {
+			options.plugins.push('virtual_scroll');
+			options.loadThrottle = 150;
+			options.preload = 'focus';
+			options.firstUrl = function(query) {
+				let url = new URL(el.dataset['ajax-Url']);		
+				let params = findPrefixedUrlParams(formName);
+
+				Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+
+				url.searchParams.append(formName+'-term', query);
+				url.searchParams.append(formName+'-page', 1);
+
+				return url;
+			},
+
+			options.load = function(query, callback) {
+				let url = this.getUrl(query);
+				naja.makeRequest('GET', url, {}, {history: false})
+					.then((json) => {
+						if (json.pagination.more){
+							url.searchParams.set(formName+'-page', json.pagination.page +1);
+							this.setNextUrl(query, url);
+						}
+
+						callback(json.results);
+					})
+					.catch(() => callback());
+			};
+		}
+
+		let tomSelect = new TomSelect(el, options);
+	});
+
 	$('select,input.select2').not('.tom-select,.no-select2,.custom-select,.flatpickr-monthDropdown-months').each(function() {
 		let formName = this.form.dataset.formName;
 		let options = {
