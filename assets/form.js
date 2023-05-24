@@ -6,7 +6,7 @@
 
 function initFormControls()
 {
-	$('select,input.select2').not('.no-select2,.custom-select,.flatpickr-monthDropdown-months').each(function() {
+	$('select,input.select2').not('.tom-select,.no-select2,.custom-select,.flatpickr-monthDropdown-months').each(function() {
 		let formName = this.form.dataset.formName;
 		let options = {
 			minimumResultsForSearch: 20,
