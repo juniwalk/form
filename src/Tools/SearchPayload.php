@@ -114,7 +114,7 @@ class SearchPayload implements JsonSerializable
 		return [
 			'results' => array_values($results),
 			'pagination' => [
-				'more' => $this->maxResults && !empty($results),
+				'more' => $this->maxResults && sizeof($results) >= $this->maxResults,
 				'page' => $this->page,
 			],
 		];
