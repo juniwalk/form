@@ -32,7 +32,8 @@ function initFormControls()
 				no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
 				no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
 				loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
-				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>'
+				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
+				not_loading: () => `<div class="dropdown-item disabled">No results</div>`
 			}
 		};
 
