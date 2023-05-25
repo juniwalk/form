@@ -150,8 +150,17 @@ function initFormControls()
 		});
 	});
 
-	$('a[data-clear-input]').off('click').on('click', function() {
-		$($(this).data('clear-input')).val('').trigger('change');
+	document.querySelectorAll('a[data-clear-input]').forEach((el) => {
+		el.addEventListener('click', ({currentTarget}) => {
+			let input = document.querySelector(currentTarget.dataset.clearInput);
+			input.value = '';
+
+			if ('tomselect' in input) {
+				input.tomselect.setValue('');
+			}
+	
+			input.dispatchEvent(new Event('change'));
+		});
 	});
 }
 
