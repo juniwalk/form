@@ -6,7 +6,11 @@
 
 function initFormControls()
 {
-	document.querySelectorAll('.tom-select').forEach((el) => {
+	document.querySelectorAll('select.tom-select,input.tom-select').forEach((el) => {
+		if (el.tomselect !== undefined) {
+			return;
+		}
+
 		let formName = el.form.dataset.formName;
 		let options = {
 			plugins: ['dropdown_input'],
