@@ -6,12 +6,12 @@
 
 function initFormControls()
 {
-	document.querySelectorAll('select:not(.custom-select),select.tom-select,input.tom-select').forEach((el) => {
+	if (typeof TomSelect === 'function') document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
 		if (el.tomselect !== undefined) {
 			return;
 		}
 
-		let formName = el.form.dataset.formName;
+		let formName = null;
 		let options = {
 			plugins: ['dropdown_input'],
 			searchField: ['text'],
@@ -34,12 +34,20 @@ function initFormControls()
 			}
 		};
 
+		if (el.form && 'formName' in el.form.dataset) {
+			formName = el.form.dataset.formName + '-';
+		}
+
+		if ('noSearch' in el.dataset) {
+			options.controlInput = null;
+			options.plugins = [];
+		}
+
 		if (el.hasAttribute('multiple')) {
+			options.plugins = [];
 			options.plugins.push('caret_position');
 			options.plugins.push('input_autogrow');
 			options.plugins.push('remove_button');
-
-			delete options.plugins[options.plugins.indexOf('dropdown_input')];
 		}
 
 		if (el.dataset['ajax-Url'] !== undefined) {
@@ -49,15 +57,17 @@ function initFormControls()
 			options.preload = 'focus';
 			options.firstUrl = function(query) {
 				let ajaxUrl = el.dataset['ajax-Url'].split('?');
-				let params = findPrefixedUrlParams(formName);
 				let url = new URL(window.location.href);
 				url.pathname = ajaxUrl[0];
 				url.search = ajaxUrl[1];
 	
-				Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+				let params = findPrefixedUrlParams(formName);
+				Object.entries(params).forEach(([key, value]) => {
+					url.searchParams.set(key, value);
+				});
 
-				url.searchParams.append(formName+'-term', query);
-				url.searchParams.append(formName+'-page', 1);
+				url.searchParams.append(formName+'term', query);
+				url.searchParams.append(formName+'page', 1);
 
 				return url;
 			},
@@ -85,19 +95,20 @@ function initFormControls()
 			};
 		}
 
-		// create event listener that will hide
-		// search input if # of items is < X
-
 		let tomSelect = new TomSelect(el, options);
 	});
 
-	$('select,input.select2').not('.tom-select,.no-select2,.custom-select,.flatpickr-monthDropdown-months').each(function() {
-		let formName = this.form.dataset.formName;
+	if ($().select2 !== undefined) $('select,input.select2').not('.tom-select,.custom-select,.flatpickr-monthDropdown-months').each(function() {
+		let formName = null;
 		let options = {
 			minimumResultsForSearch: 20,
 			templateSelection: select2Format,
 			templateResult: select2Format,
 		};
+
+		if (this.form && 'formName' in this.form.dataset) {
+			formName = this.form.dataset.formName + '-';
+		}
 
 		if (this.closest('.modal')) {
 			options.dropdownParent = this.parentNode.parentNode;
@@ -107,8 +118,8 @@ function initFormControls()
 			options.minimumResultsForSearch = 0;
 			options.ajax = {delay: 250, cache: true, transport: (request, done, error) => {
 				let params = findPrefixedUrlParams(formName);
-				params[formName+'-term'] = request.data.term || '';
-				params[formName+'-page'] = request.data.page || 1;
+				params[formName+'term'] = request.data.term || '';
+				params[formName+'page'] = request.data.page || 1;
 
 				naja.makeRequest(request.type, request.url, params, {history: false})
 					.then(done).catch(error);
