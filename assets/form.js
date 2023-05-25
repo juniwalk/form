@@ -33,7 +33,13 @@ function initFormControls()
 				no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
 				loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
 				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
-				not_loading: () => `<div class="dropdown-item disabled">No results</div>`
+				not_loading: () => {	
+					if (Object.keys(el.tomselect.options).length > 0) {
+						return;
+					}
+
+					return `<div class="dropdown-item disabled">No results found</div>`;
+				}
 			}
 		};
 
