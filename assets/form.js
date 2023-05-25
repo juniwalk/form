@@ -6,7 +6,7 @@
 
 function initFormControls()
 {
-	document.querySelectorAll('select.tom-select,input.tom-select').forEach((el) => {
+	document.querySelectorAll('select:not(.custom-select),select.tom-select,input.tom-select').forEach((el) => {
 		if (el.tomselect !== undefined) {
 			return;
 		}
