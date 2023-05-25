@@ -30,6 +30,8 @@ function initFormControls()
 				option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
 				optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
 				no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
+				no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
+				loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
 				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>'
 			}
 		};
@@ -77,11 +79,11 @@ function initFormControls()
 				naja.makeRequest('GET', url, {}, {history: false})
 					.then((json) => {
 						if (json.pagination.more){
-							url.searchParams.set(formName+'-page', json.pagination.page +1);
+							url.searchParams.set(formName+'page', json.pagination.page +1);
 							this.setNextUrl(query, url);
 						}
 
-						let results = json.results.map((item) => {
+						let items = json.results.map((item) => {
 							if (item.children) {
 								this.addOptionGroup(item.text, item);
 							}
@@ -89,7 +91,7 @@ function initFormControls()
 							return item.children || item;
 						});
 
-						callback(results);
+						callback(items);
 					})
 					.catch(() => callback());
 			};
