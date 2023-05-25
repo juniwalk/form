@@ -18,6 +18,8 @@ function initFormControls()
 			labelField: 'text',
 			valueField: 'id',
 			create: el.dataset['tags'] !== undefined,
+			allowEmptyOption: true,
+			addPrecedence: true,
 			optgroupLabelField: 'group',
 			optgroupValueField: 'group',
 			optgroupField: 'group',
@@ -25,9 +27,9 @@ function initFormControls()
 				dropdown: () => '<div class="dropdown-menu"></div>',
 				item: (data, escape) => tomSelectFormat('item', data, escape),
 				option: (data, escape) => tomSelectFormat('option', data, escape),
-				option_create: (data, escape) => '<div class="dropdown-item create">Add <strong>' + escape(data.input) + '</strong>&hellip;</div>',
-				no_results: (data, escape) => '<div class="dropdown-item disabled">No results found for "' + escape(data.input) + '"</div>',
-				optgroup_header: (data, escape) => '<div class="dropdown-header">' + escape(data.text) + '</div>',
+				option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
+				optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
+				no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
 				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>'
 			}
 		};
@@ -42,6 +44,7 @@ function initFormControls()
 
 		if (el.dataset['ajax-Url'] !== undefined) {
 			options.plugins.push('virtual_scroll');
+			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
 			options.firstUrl = function(query) {
@@ -81,6 +84,9 @@ function initFormControls()
 					.catch(() => callback());
 			};
 		}
+
+		// create event listener that will hide
+		// search input if # of items is < X
 
 		let tomSelect = new TomSelect(el, options);
 	});
@@ -186,18 +192,18 @@ function insertAtCursor(input, value)
 function tomSelectFormat(type, data, escape)
 {
 	let content = data.content || escape(data.text);
-	let html = '<div>';
+	let html = '<div class="text-truncate">';
 
 	if (!data.content && data.group && type === 'item') {
 		content = escape(data.group) + ' - ' + content;
 	}
 
 	if (type === 'option') {
-		html = html.replace('>', ' class="dropdown-item">');
+		html = html.replace('">', ' dropdown-item">');
 	}
 
 	if (!data.content && data.icon !== undefined) {
-		html += '<i class="fa '+ data.icon +' fa-fw '+ (data.color || '') +'"></i> ';
+		html += `<i class="fa ${data.icon} fa-fw ${data.color || ''}"></i> `;
 	}
 
 	return html + content + '</div>';
