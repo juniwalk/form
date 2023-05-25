@@ -11,27 +11,27 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	box-shadow: 0 0 0 100px #fff inset;
 	border-color: var(--orange) !important;
 }
- 
+
 .custom-file-label::after { display: none; }
 .custom-control-label::before,
 .custom-file-label,
 .custom-select {
 	transition: none;
 }
- 
+
 .form-group label.control-label,
 .custom-control label.control-label { font-weight: normal; }
- 
+
 .form-group.required label.control-label,
 .custom-control.required label.control-label { font-weight: bold; }
- 
+
 .form-group.required label.control-label::after,
 .custom-control.required label.control-label::after {
 	color: var(--red);
 	content: "*";
 	margin-left: 4px;
 }
- 
+
 .form-control.date.flatpickr-input { height: calc(1.8125rem + 4px); }
 .form-control.btn-group { height: calc(2.25rem + 3px); }
 .form-control.is-invalid { z-index: 3; }
@@ -40,8 +40,15 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 /**
  * TomSelect
  */
-.ts-wrapper .ts-control .item { width: 100%; margin-right: 2.75rem; }
+.ts-wrapper.single .ts-control .item { width: 100%; margin-right: 2.75rem; }
+.ts-wrapper.multi .ts-control .item .remove { border-color: var(--secondary); }
+.ts-wrapper.multi .ts-control .item .remove:hover { background: rgba(0,0,0, .1); }
+.ts-wrapper.multi .ts-control .item {
+	background: var(--secondary);
+	color: #fff;
+}
 
+.ts-wrapper.has-items.plugin-input_autogrow .ts-control > input { flex: none; min-width: 0px; }
 .ts-wrapper.focus .ts-control,
 .ts-wrapper input { box-shadow: none !important; }
 
@@ -53,6 +60,12 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	top: calc(100% - 1px);
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
+}
+
+.ts-wrapper .ts-dropdown .optgroup .dropdown-header {
+	text-align: left;
+	background: none;
+	border: none;
 }
 
 /* Validation */
@@ -84,6 +97,7 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	color: #fff !important;
 }
 
+.dark-mode .ts-wrapper .ts-dropdown .optgroup::before { border-color: #6c757d; }
 .dark-mode .ts-wrapper .ts-dropdown {
 	border-color: #6c757d !important;
 	border-top-color: #80bdff !important;

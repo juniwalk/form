@@ -18,23 +18,35 @@ function initFormControls()
 			optgroupValueField: 'group',
 			optgroupField: 'group',
 			render:{
-				item: (item, escape) => '<div>' + (item.content || escape(item.text)) + '</div>',
 				dropdown: () => '<div class="dropdown-menu"></div>',
-				option: (item, escape) => '<div class="dropdown-item">' + (item.content || escape(item.text)) + '</div>',
+				item: (data, escape) => tomSelectFormat('item', data, escape),
+				option: (data, escape) => tomSelectFormat('option', data, escape),
 				option_create: (data, escape) => '<div class="dropdown-item create">Add <strong>' + escape(data.input) + '</strong>&hellip;</div>',
 				no_results: (data, escape) => '<div class="dropdown-item disabled">No results found for "' + escape(data.input) + '"</div>',
+				optgroup_header: (data, escape) => '<div class="dropdown-header">' + escape(data.text) + '</div>',
 				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>'
 			}
 		};
 
-		if (el.classList.contains('ajax') || el.dataset['ajax-Url'] !== undefined) {
+		if (el.hasAttribute('multiple')) {
+			options.plugins.push('caret_position');
+			options.plugins.push('input_autogrow');
+			options.plugins.push('remove_button');
+
+			delete options.plugins[options.plugins.indexOf('dropdown_input')];
+		}
+
+		if (el.dataset['ajax-Url'] !== undefined) {
 			options.plugins.push('virtual_scroll');
 			options.loadThrottle = 150;
 			options.preload = 'focus';
 			options.firstUrl = function(query) {
-				let url = new URL(el.dataset['ajax-Url']);		
+				let ajaxUrl = el.dataset['ajax-Url'].split('?');
 				let params = findPrefixedUrlParams(formName);
-
+				let url = new URL(window.location.href);
+				url.pathname = ajaxUrl[0];
+				url.search = ajaxUrl[1];
+	
 				Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
 
 				url.searchParams.append(formName+'-term', query);
@@ -52,7 +64,15 @@ function initFormControls()
 							this.setNextUrl(query, url);
 						}
 
-						callback(json.results);
+						let results = json.results.map((item) => {
+							if (item.children) {
+								this.addOptionGroup(item.text, item);
+							}
+
+							return item.children || item;
+						});
+
+						callback(results);
 					})
 					.catch(() => callback());
 			};
@@ -156,6 +176,27 @@ function insertAtCursor(input, value)
 	}
 
 	input.value = input.value.trim();
+}
+
+
+function tomSelectFormat(type, data, escape)
+{
+	let content = data.content || escape(data.text);
+	let html = '<div>';
+
+	if (!data.content && data.group && type === 'item') {
+		content = escape(data.group) + ' - ' + content;
+	}
+
+	if (type === 'option') {
+		html = html.replace('>', ' class="dropdown-item">');
+	}
+
+	if (!data.content && data.icon !== undefined) {
+		html += '<i class="fa '+ data.icon +' fa-fw '+ (data.color || '') +'"></i> ';
+	}
+
+	return html + content + '</div>';
 }
 
 

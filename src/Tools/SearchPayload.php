@@ -165,13 +165,12 @@ class SearchPayload implements JsonSerializable
 			];
 		}
 
-		// $item = Scheme::process($item, new Scheme);
-		$group = $item['group'] ?? null;
-
-		if (!$this->hasGroupAllowed && $group) {
+		if (!$this->hasGroupAllowed && $group = $item['group'] ?? null) {
 			$item['text'] = $group.' - '.$item['text'];
 			unset($item['group']);
 		}
+
+		// $item = Scheme::process($item, new Scheme);
 
 		return array_filter($item);
 	}
