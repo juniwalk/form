@@ -58,6 +58,7 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 .ts-wrapper .ts-dropdown {
 	margin: 0px;
 	top: calc(100% - 1px);
+	min-width: 0px !important;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
 }
