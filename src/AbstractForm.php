@@ -305,12 +305,15 @@ abstract class AbstractForm extends Control
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
 			$this->setLayout(Layout::from($data->_layout_));
+
 			$this->handleValidate($form, $data);
 			$this->onValidate($form, $data, $this);
 		};
 
-		$form->onSuccess[] = $this->handleSuccess(...);
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {
+			unset($data->_layout_);
+
+			$this->handleSuccess($form, $data);
 			$this->onSuccess($form, $data, $this);
 			$this->redrawControl();
 			$form->reset();
