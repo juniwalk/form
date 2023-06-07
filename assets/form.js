@@ -152,6 +152,11 @@ function initFormControls()
 		naja.makeRequest('POST', signalLink, formData);
 	});
 
+	$('[data-auto-submit]').off('change').on('change', function(e) {
+		let submitButton = $(this).parent().find('[type=submit]');
+		return submitButton.click();
+	});
+
 	$('a[data-pwd-toggle]').off('click').on('click', function() {
 		$('i.fas', this).toggleClass('fa-eye fa-eye-slash');
 		$($(this).data('pwd-toggle')).attr('type', function(k, v) {
