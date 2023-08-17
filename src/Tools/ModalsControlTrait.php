@@ -11,19 +11,8 @@ use JuniWalk\Form\AbstractForm;
 use JuniWalk\Utils\Strings;
 use Nette\Application\UI\Control;
 
-trait PresenterTrait
+trait ModalsControlTrait
 {
-	public function redirectAjax(string $dest, mixed ...$args): void
-	{
-		if (!$this->isAjax()) {
-			$this->redirect($dest, ...$args);
-		}
-
-		$this->payload->postGet = true;
-		$this->payload->url = $this->link($dest, ...$args);
-	}
-
-
 	public function openModal(Control|string $control, array $params = []): void
 	{
 		if (is_string($control) && !Strings::startsWith($control, '#')) {
@@ -45,5 +34,16 @@ trait PresenterTrait
 
 		$this->redrawControl('modals');
 		$this->redirectAjax('this');
+	}
+
+
+	public function redirectAjax(string $dest, mixed ...$args): void
+	{
+		if (!$this->isAjax()) {
+			$this->redirect($dest, ...$args);
+		}
+
+		$this->payload->postGet = true;
+		$this->payload->url = $this->link($dest, ...$args);
 	}
 }
