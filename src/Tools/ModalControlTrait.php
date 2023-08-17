@@ -11,7 +11,7 @@ use JuniWalk\Form\AbstractForm;
 use JuniWalk\Utils\Strings;
 use Nette\Application\UI\Control;
 
-trait ModalsControlTrait
+trait ModalControlTrait
 {
 	public function openModal(Control|string $control, array $params = []): void
 	{
