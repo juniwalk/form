@@ -42,6 +42,7 @@ abstract class AbstractForm extends Control
 	protected Layout $layout = Layout::Card;
 	protected string $formClass = Form::class;
 	protected ?string $templateFile = null;
+	protected bool $isModalOpen = false;
 
 	/** @var callable[] */
 	public array $onRender = [];
@@ -59,6 +60,12 @@ abstract class AbstractForm extends Control
 	public function getFormClass(): string
 	{
 		return $this->formClass;
+	}
+
+
+	public function setModalOpen(bool $open): void
+	{
+		$this->isModalOpen = $open;
 	}
 
 
@@ -263,6 +270,10 @@ abstract class AbstractForm extends Control
 
 	public function render(): void
 	{
+		if (!$this->isModalOpen && $this->layout == Layout::Modal) {
+			return;
+		}
+
 		$template = $this->createTemplate();
 		$template->setTranslator($this->translator);
 
