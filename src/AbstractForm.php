@@ -40,7 +40,6 @@ abstract class AbstractForm extends Control
 	protected ?Translator $translator;
 	protected ?HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
-	protected string $formClass = Form::class;
 	protected ?string $templateFile = null;
 	protected bool $isModalOpen = false;
 
@@ -49,18 +48,6 @@ abstract class AbstractForm extends Control
 	public array $onValidate = [];
 	public array $onSuccess = [];
 	public array $onError = [];
-
-
-	public function setFormClass(string $formClass): void
-	{
-		$this->formClass = $formClass;
-	}
-
-
-	public function getFormClass(): string
-	{
-		return $this->formClass;
-	}
 
 
 	public function setModalOpen(bool $open): void
@@ -309,7 +296,7 @@ abstract class AbstractForm extends Control
 
 	protected function createComponentForm(): Form
 	{
-		$form = new $this->formClass;
+		$form = new Form;
 		$form->setTranslator($this->translator);
 		$form->addHidden('_layout_');
 		$form->addProtection();
