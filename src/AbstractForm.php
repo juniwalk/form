@@ -219,6 +219,7 @@ abstract class AbstractForm extends Control
 
 		$this->setLayout(Layout::from($formData['_layout_']));
 		$this->redrawControl('form', $redraw ?? true);
+		$this->isModalOpen = true;
 		$this->redirect('this');
 	}
 
