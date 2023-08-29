@@ -7,13 +7,13 @@
 
 namespace JuniWalk\Form\Tools;
 
-use JuniWalk\Utils\UI\Modal\Presenter;
+use JuniWalk\Utils\UI\Modal\Traits;
 
 /**
  * @deprecated
  */
 trait ModalControlTrait
 {
-	use Presenter\NajaAjaxRedirectTrait;
-	use Presenter\ModalControlTrait;
+	use Traits\NajaAjaxRedirectTrait;
+	use Traits\ModalControlTrait;
 }
