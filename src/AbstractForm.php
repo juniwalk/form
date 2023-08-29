@@ -14,6 +14,7 @@ use JuniWalk\Form\Tools\SearchPayload;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Strings;
+use JuniWalk\Utils\UI\Modal;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
@@ -35,7 +36,7 @@ use Tracy\Debugger;
  * @method void onSuccess(Form $form, ArrayHash $data, self $self)
  * @method void onError(Form $form, self $self)
  */
-abstract class AbstractForm extends Control
+abstract class AbstractForm extends Control implements Modal
 {
 	protected ?Translator $translator;
 	protected ?HttpRequest $httpRequest;
