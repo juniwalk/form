@@ -8,10 +8,10 @@
 namespace JuniWalk\Form\Controls;
 
 use DateTimeInterface;
-use Exception;
 use Nette\Forms\Controls\TextBase;
 use Nette\Utils\DateTime;
 use Nette\Utils\Html;
+use Throwable;
 
 final class DateTimePicker extends TextBase
 {
@@ -44,7 +44,7 @@ final class DateTimePicker extends TextBase
 	}
 
 
-	public function setValue(/*DateTimeInterface|string*/ $value = null)// : self
+	public function setValue(/*DateTimeInterface|string*/ $value = null)//: self
 	{
 		if ($value instanceof DateTimeInterface) {
 			$value = $value->format($this->format);
@@ -65,9 +65,13 @@ final class DateTimePicker extends TextBase
 		}
 
 		try {
-			return DateTime::createFromFormat($this->format, $this->value);
+			$date = DateTime::createFromFormat($this->format, $this->value);
 
-		} catch (Exception) {}
+			if ($date instanceof DateTime) {
+				return $date;
+			}
+
+		} catch (Throwable) {}
 
 		if ($time = strtotime($value)) {
 			return DateTime::from($time);
