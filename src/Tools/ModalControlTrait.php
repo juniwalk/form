@@ -7,7 +7,7 @@
 
 namespace JuniWalk\Form\Tools;
 
-use JuniWalk\Utils\UI\Modal\Traits;
+use JuniWalk\Utils\UI\Traits;
 
 /**
  * @deprecated
