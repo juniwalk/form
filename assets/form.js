@@ -64,6 +64,7 @@ function initFormControls()
 			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
+			options.searchField = [];
 			options.firstUrl = function(query) {
 				let ajaxUrl = el.dataset['ajax-Url'].split('?');
 				let url = new URL(window.location.href);
@@ -98,6 +99,7 @@ function initFormControls()
 							return item.children || item;
 						});
 
+						this.clearOptions();
 						callback(items);
 					})
 					.catch(() => callback());
