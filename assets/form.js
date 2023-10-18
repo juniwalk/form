@@ -61,10 +61,11 @@ function initFormControls()
 
 		if (el.dataset['ajax-Url'] !== undefined) {
 			options.plugins.push('virtual_scroll');
+			options.sortField = [{field:'$order'},{field:'$score'}];
+			options.searchField = [];
 			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
-			options.searchField = [];
 			options.firstUrl = function(query) {
 				let ajaxUrl = el.dataset['ajax-Url'].split('?');
 				let url = new URL(window.location.href);
@@ -99,7 +100,7 @@ function initFormControls()
 							return item.children || item;
 						});
 
-						this.clearOptions();
+						//this.clearOptions();
 						callback(items);
 					})
 					.catch(() => callback());
