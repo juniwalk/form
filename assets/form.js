@@ -100,7 +100,7 @@ function initFormControls()
 							return item.children || item;
 						});
 
-						//this.clearOptions();
+						this.clearOptions();
 						callback(items);
 					})
 					.catch(() => callback());
