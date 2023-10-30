@@ -62,7 +62,7 @@ function initFormControls()
 		if (el.dataset['ajax-Url'] !== undefined) {
 			options.plugins.push('virtual_scroll');
 			options.sortField = [{field:'$order'},{field:'$score'}];
-			options.searchField = [];
+			// options.searchField = [];
 			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
@@ -100,7 +100,7 @@ function initFormControls()
 							return item.children || item;
 						});
 
-						this.clearOptions();
+						// this.clearOptions();
 						callback(items);
 					})
 					.catch(() => callback());
