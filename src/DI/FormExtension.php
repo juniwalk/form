@@ -38,6 +38,7 @@ final class FormExtension extends CompilerExtension
 
 	public static function registerControls(): void
 	{
+		if (!method_exists(Form::class, 'addDateTime'))
 		Form::extensionMethod('addDateTime', function(
 			Form $form,
 			string $name,
@@ -46,6 +47,7 @@ final class FormExtension extends CompilerExtension
 			return $form[$name] = new Controls\DateTimePicker($label);
 		});
 
+		if (!method_exists(Form::class, 'addPhoneNumber'))
 		Form::extensionMethod('addPhoneNumber', function(
 			Form $form,
 			string $name,
@@ -57,6 +59,7 @@ final class FormExtension extends CompilerExtension
 				->setHtmlAttribute('size', $cols);
 		});
 
+		if (!method_exists(Form::class, 'addSelectEnum'))
 		Form::extensionMethod('addSelectEnum', function(
 			Form $form,
 			string $name,
@@ -68,6 +71,7 @@ final class FormExtension extends CompilerExtension
 				->setHtmlAttribute('size', $size > 1 ? $size : null);
 		});
 
+		if (!method_exists(Form::class, 'addRadioEnum'))
 		Form::extensionMethod('addRadioEnum', function(
 			Form $form,
 			string $name,
@@ -77,6 +81,7 @@ final class FormExtension extends CompilerExtension
 			return $form[$name] = new Controls\RadioListEnum($label, $items);
 		});
 
+		if (!method_exists(Form::class, 'addCheckboxEnum'))
 		Form::extensionMethod('addCheckboxEnum', function(
 			Form $form,
 			string $name,
