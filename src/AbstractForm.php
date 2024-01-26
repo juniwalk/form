@@ -242,9 +242,9 @@ abstract class AbstractForm extends Control implements Modal
 	public function renderAccordion(string $container): void
 	{
 		$this->setLayout(Layout::Accordion);
-		$this->onRender[] = function(self $self, Template $template) use ($container): void {
-			$template->add('container', $container);
-		};
+		$this->onRender[] = fn($self, $template) => $template->setParameters([
+			'container' => $container,
+		]);
 
 		$this->render();
 	}
