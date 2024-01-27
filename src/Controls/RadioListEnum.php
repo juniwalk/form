@@ -11,17 +11,27 @@ use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\LabeledEnum;
 use Nette\Forms\Controls\RadioList;
 use InvalidArgumentException;
+use ValueError;
 
 final class RadioListEnum extends RadioList
 {
-	private string $backedEnum;
+	private ?string $enumType = null;
+
+
+	public function setEnumType(string $enumType): self
+	{
+		if (!is_subclass_of($enumType, LabeledEnum::class)) {
+			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
+		}
+
+		$this->enumType = $enumType;
+		return $this;
+	}
 
 
 	public function getCases(): array
 	{
-		return Arrays::map($this->getItems(), function($value, $key) {
-			return $this->backedEnum::tryMake($key);
-		});
+		return Arrays::map($this->getItems(), fn($value, $key) => $this->enumType::make($key));
 	}
 
 
@@ -30,42 +40,25 @@ final class RadioListEnum extends RadioList
 	 */
 	public function setItems(array $enums, bool $useKeys = true): self
 	{
-		$class = null;
-		$items = [];
-
-		foreach ($enums as $enum) {
-			if (!$enum instanceof LabeledEnum) {
-				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
+		$items = Arrays::walk($enums, function(LabeledEnum $enum) {
+			if (!$enum instanceof $this->enumType) {
+				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			if ($class && !$enum instanceof $class) {
-				throw new InvalidArgumentException('Enum does not match items of type '.$class);
-			}
+			yield $enum->value => $enum->label();
+		});
 
-			$items[$enum->value] = $enum->label();
-			$class = get_class($enum);
-		}
-
-		$this->backedEnum = $class;
 		return parent::setItems($items, $useKeys);
 	}
 
 
 	/**
-	 * @throws InvalidArgumentException
+	 * @throws ValueError
 	 */
 	public function setValue(/*?LabeledEnum*/ $value): self
 	{
-		if ($value && isset($this->backedEnum)) {
-			$value = $this->backedEnum::tryMake($value) ?: $value;
-		}
-
-		if ($value && !$value instanceof LabeledEnum) {
-			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
-		}
-
-		if ($value && !$value instanceof $this->backedEnum) {
-			throw new InvalidArgumentException('Enum does not match items of type '.$this->backedEnum);
+		if ($value && !$value instanceof $this->enumType) {
+			$value = $this->enumType::make($value);
 		}
 
 		return parent::setValue($value?->value ?? null);
@@ -74,16 +67,14 @@ final class RadioListEnum extends RadioList
 
 	public function getValue(): ?LabeledEnum
 	{
-		return $this->backedEnum::tryMake($this->value);
+		return $this->enumType::make($this->value, false);
 	}
 
 
 	public function setDisabled(/*bool|array*/ $value = true)//: self
 	{
 		if (is_array($value)) {
-			foreach ($value as $key => $item) {
-				$value[$key] = $item->value;
-			}
+			$value = Arrays::map($value, fn($item) => $item->value);
 		}
 
 		return parent::setDisabled($value);

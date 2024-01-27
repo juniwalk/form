@@ -11,17 +11,27 @@ use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\LabeledEnum;
 use Nette\Forms\Controls\CheckboxList;
 use InvalidArgumentException;
+use ValueError;
 
 final class CheckboxListEnum extends CheckboxList
 {
-	private string $backedEnum;
+	private ?string $enumType = null;
+
+
+	public function setEnumType(string $enumType): self
+	{
+		if (!is_subclass_of($enumType, LabeledEnum::class)) {
+			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
+		}
+
+		$this->enumType = $enumType;
+		return $this;
+	}
 
 
 	public function getCases(): array
 	{
-		return Arrays::map($this->getItems(), function($value, $key) {
-			return $this->backedEnum::tryMake($key);
-		});
+		return Arrays::map($this->getItems(), fn($value, $key) => $this->enumType::make($key));
 	}
 
 
@@ -30,29 +40,20 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function setItems(array $enums, bool $useKeys = true): self
 	{
-		$class = null;
-		$items = [];
-
-		foreach ($enums as $enum) {
-			if (!$enum instanceof LabeledEnum) {
-				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
+		$items = Arrays::walk($enums, function(LabeledEnum $enum) {
+			if (!$enum instanceof $this->enumType) {
+				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			if ($class && !$enum instanceof $class) {
-				throw new InvalidArgumentException('Enum does not match items of type '.$class);
-			}
+			yield $enum->value => $enum->label();
+		});
 
-			$items[$enum->value] = $enum->label();
-			$class = get_class($enum);
-		}
-
-		$this->backedEnum = $class;
 		return parent::setItems($items, $useKeys);
 	}
 
 
 	/**
-	 * @throws InvalidArgumentException
+	 * @throws ValueError
 	 */
 	public function setValue(/*?LabeledEnum*/ $values): self
 	{
@@ -60,17 +61,9 @@ final class CheckboxListEnum extends CheckboxList
 			return parent::setValue(null);
 		}
 
-		$values = Arrays::map($values, function($value) {
-			if ($value && isset($this->backedEnum)) {
-				$value = $this->backedEnum::tryMake($value) ?: $value;
-			}
-	
-			if ($value && !$value instanceof LabeledEnum) {
-				throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
-			}
-	
-			if ($value && !$value instanceof $this->backedEnum) {
-				throw new InvalidArgumentException('Enum does not match items of type '.$this->backedEnum);
+		$values = Arrays::map($values, function(mixed $value) {
+			if ($value && !$value instanceof $this->enumType) {
+				$value = $this->enumType::make($value);
 			}
 
 			return $value?->value;
@@ -82,22 +75,15 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function getValue(): array
 	{
-		$values = Arrays::map($this->value, function($value, $key) {
-			return $this->backedEnum::tryMake($key);
-		});
-
+		$values = Arrays::map($this->value, fn($value, $key) => $this->enumType::make($key, false));
 		return parent::getValue($values);
 	}
 
 
 	public function setDisabled(/*bool|array*/ $value = true)//: self
 	{
-		if (is_bool($value)) {
-			return parent::setDisabled($value);
-		}
-
-		foreach ($value as $key => $item) {
-			$value[$key] = $item->value;
+		if (is_array($value)) {
+			$value = Arrays::map($value, fn($item) => $item->value);
 		}
 
 		return parent::setDisabled($value);
