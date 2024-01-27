@@ -154,12 +154,6 @@ abstract class AbstractForm extends Control implements Modal
 	 */
 	public function handleSearch(string $type, ?int $maxResults = null, ?string $term = null, ?int $page = null): void
 	{
-		// ? For backwards compatibility with old style request get arguments from the httpRequest
-		if ($this->httpRequest && $this->httpRequest->getQuery($this->getName().'-term') === null) {
-			$term = (string) $this->httpRequest->getQuery('term') ?: '';
-			$page = (int) $this->httpRequest->getQuery('page') ?: 1;
-		}
-
 		$search = new SearchPayload($page, $maxResults);
 		$method = 'search'.Strings::firstUpper($type);
 		$form = $this->getForm();
