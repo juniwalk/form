@@ -20,7 +20,7 @@ final class SelectBoxEnum extends SelectBox
 	/**
 	 * @throws InvalidArgumentException
 	 */
-	public function setItems(array $enums, bool $useKeys = true): self
+	public function setItems(array $enums, bool $useKeys = true, bool $badge = false): self
 	{
 		$class = null;
 		$items = [];
@@ -34,7 +34,7 @@ final class SelectBoxEnum extends SelectBox
 				throw new InvalidArgumentException('Enum does not match items of type '.$class);
 			}
 
-			$items[$enum->value] = Html::optionEnum($enum);
+			$items[$enum->value] = Html::optionEnum($enum, $badge);
 			$class = get_class($enum);
 		}
 
