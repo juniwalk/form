@@ -152,7 +152,7 @@ function initFormControls()
 		let formData = new FormData(this.form); formData.delete('_do');
 
 		displayRequestSpinner(this);
-		naja.makeRequest('POST', signalLink, formData, {history: false});
+		naja.makeRequest('POST', signalLink, formData);	// , {history: false}
 	});
 
 	$('[data-auto-submit]').off('change').on('change', function(e) {
