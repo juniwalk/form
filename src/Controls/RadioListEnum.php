@@ -40,13 +40,15 @@ final class RadioListEnum extends RadioList
 	 */
 	public function setItems(array $enums, bool $useKeys = true): self
 	{
-		$items = Arrays::walk($enums, function(LabeledEnum $enum) {
+		$items = [];
+
+		foreach ($enums as $enum) {
 			if (!$enum instanceof $this->enumType) {
 				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			yield $enum->value => $enum->label();
-		});
+			$items[$enum->value] = $enum->label();
+		}
 
 		return parent::setItems($items, $useKeys);
 	}

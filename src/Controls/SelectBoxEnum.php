@@ -35,13 +35,15 @@ final class SelectBoxEnum extends SelectBox
 	 */
 	public function setItems(array $enums, bool $useKeys = true, bool $badge = false): self
 	{
-		$items = Arrays::walk($enums, function(LabeledEnum $enum) use ($badge) {
+		$items = [];
+
+		foreach ($enums as $enum) {
 			if (!$enum instanceof $this->enumType) {
 				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			yield $enum->value => Html::optionEnum($enum, $badge);
-		});
+			$items[$enum->value] = Html::optionEnum($enum, $badge);
+		}
 
 		return parent::setItems($items, $useKeys);
 	}
