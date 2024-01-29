@@ -158,10 +158,11 @@ class SearchPayload implements JsonSerializable
 			$item = [
 				'id' => $item->getValue(),
 				'text' => $item->getText(),
-				'content' => $item->{'data-content'},
-				'group' => $item->{'data-group'},
-				'icon' => $item->{'data-icon'},
-				'color' => $item->{'data-color'},
+				'content' => $item->getAttribute('data-content'),
+				'group' => $item->getAttribute('data-group'),
+				'icon' => $item->getAttribute('data-icon'),
+				'color' => $item->getAttribute('data-color'),
+				'disabled' => $item->getDisabled() ?? false,
 			];
 		}
 
