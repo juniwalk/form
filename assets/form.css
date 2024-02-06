@@ -4,12 +4,26 @@
  * @license   MIT License
  */
 
-textarea { min-height: 38px; }
 input:read-only { color: var(--secondary) !important; }
 input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	filter: none; /* needed for firefox! */
 	box-shadow: 0 0 0 100px #fff inset;
 	border-color: var(--orange) !important;
+}
+
+textarea { min-height: 38px; }
+textarea.code {
+	font-size: .7rem;
+	font-family: Consolas, 'Courier New', Courier, monospace;
+}
+
+/* TextArea counter */
+.form-group span[data-count="maxlength"] {
+	position: absolute;
+	text-align: center;
+	bottom: 6px;
+	left: 5px;
+	right: 5px;
 }
 
 .custom-file-label::after { display: none; }
@@ -46,6 +60,11 @@ input:-webkit-autofill:is(*,:focus,:active,:hover) {
 .ts-wrapper.multi .ts-control .item {
 	background: var(--secondary);
 	color: #fff;
+}
+
+.ts-wrapper.multi.rows-3 .ts-control {
+	align-items: start;
+	min-height: 72px;
 }
 
 .ts-wrapper.has-items.plugin-input_autogrow .ts-control > input { flex: none; min-width: 0px; }
