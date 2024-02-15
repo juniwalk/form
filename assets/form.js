@@ -25,8 +25,8 @@ function initFormControls()
 			optgroupField: 'group',
 			render:{
 				dropdown: () => '<div class="dropdown-menu"></div>',
-				item: (data, escape) => tomSelectFormat('item', data, escape),
-				option: (data, escape) => tomSelectFormat('option', data, escape),
+				item: (data, escape) => tomSelectFormat('item', data, escape, el.multiple),
+				option: (data, escape) => tomSelectFormat('option', data, escape, el.multiple),
 				option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
 				optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
 				no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
@@ -226,24 +226,48 @@ function insertAtCursor(input, value)
 }
 
 
-function tomSelectFormat(type, data, escape)
+function tomSelectFormat(type, data, escape, isMultiple)
 {
-	let content = data.content || escape(data.text);
-	let html = '<div class="text-truncate">';
-
-	if (!data.content && data.group && type === 'item') {
-		content = escape(data.group) + ' - ' + content;
-	}
+	let html = document.createElement('div');
+	html.classList.add('text-truncate');
+	html.append(escape(data.text));
 
 	if (type === 'option') {
-		html = html.replace('">', ' dropdown-item">');
+		html.classList.add('dropdown-item');
 	}
 
-	if (!data.content && data.icon !== undefined) {
-		html += `<i class="fa ${data.icon} fa-fw ${data.color || ''}"></i> `;
+	if (type === 'item' && data.group) {
+		html.prepend(escape(data.group), ' - ');
 	}
 
-	return html + content + '</div>';
+	if (type === 'item' && isMultiple && data.color) {
+		html.classList.add(data.color.replace('text', 'bg'));
+
+		if (data.content && data.content.includes('badge')) {
+			data.content = '';
+		}
+	}
+
+	if (data.icon && data.icon !== undefined) {
+		let icon = document.createElement('i');
+		icon.classList.add('fa', 'fa-fw', ... data.icon.split(' '));
+		icon.style.marginTop = '2px';
+
+		if (data.color && (type !== 'item' || !isMultiple)) {
+			icon.classList.add(data.color);
+		}
+
+		html.prepend(icon, ' ');
+	}
+
+	if (data.content && data.content !== undefined) {
+		const template = document.createElement('template');
+		template.innerHTML = data.content;
+
+		html.replaceChildren(template.content);
+	}
+
+	return html.outerHTML;
 }
 
 
