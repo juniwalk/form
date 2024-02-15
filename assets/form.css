@@ -128,38 +128,6 @@ textarea.code {
 
 
 /**
- * Select2
- */
-.select2-container { flex: 1 1 auto; }
-.select2-container .select2-selection { height: auto; }
-.select2-container .select2-selection--single { padding: .344rem .75rem; }
-.select2-container .select2-selection--single .select2-selection__arrow { top: calc(50% - 35px / 2); }
-
-.modal .input-group > .select2-container { max-width: calc(100% - 46px); }
-.modal .form-group > .select2-container { width: 100% !important; }
-
-/* Validation */
-.form-control:is([data-invalid], .is-invalid, [data-valid], .is-valid) + .select2-container .select2-selection__rendered { padding-right: 0px; }
-.form-control:is([data-invalid], .is-invalid, [data-valid], .is-valid) + .select2-container .select2-selection__arrow { visibility: hidden; }
-.form-control:is([data-invalid], .is-invalid, [data-valid], .is-valid) + .select2-container .select2-selection {
-	padding-right: 2.25rem !important;
-	background-repeat: no-repeat;
-	background-position: right calc(.375em + .1875rem) center;
-	background-size: calc(.75em + .375rem) calc(.75em + .375rem);
-}
-
-.form-control:is([data-valid], .is-valid) + .select2-container .select2-selection {
-	border-color: var(--green);
-	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>");
-}
-
-.form-control:is([data-invalid], .is-invalid) + .select2-container .select2-selection {
-	border-color: var(--red);
-	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/></svg>");
-}
-
-
-/**
  * Dark Mode
  */
 .dark-mode .input-group-text { background-color: rgba(0,0,0, .1); }
