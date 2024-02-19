@@ -218,6 +218,7 @@ function tomSelectFormat(type, data, escape, isMultiple)
 	if (data.icon && data.icon !== undefined) {
 		let icon = document.createElement('i');
 		icon.classList.add('fa', 'fa-fw', ... data.icon.split(' '));
+		icon.style.marginRight = '2px';
 		icon.style.marginTop = '2px';
 
 		if (data.color && (type !== 'item' || !isMultiple)) {
