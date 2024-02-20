@@ -8,7 +8,7 @@
 namespace JuniWalk\Form\Tools;
 
 use JsonSerializable;
-use JuniWalk\ORM\Interfaces\HtmlOption;
+use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Html;
 use JuniWalk\Utils\Strings;
