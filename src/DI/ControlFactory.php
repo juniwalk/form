@@ -8,7 +8,9 @@
 namespace JuniWalk\Form\DI;
 
 use JuniWalk\Form\Controls;
+use JuniWalk\Utils\Country;
 use Nette\Forms\Container as Form;
+use Nette\Forms\Controls\SelectBox;
 
 final class ControlFactory
 {
@@ -17,6 +19,7 @@ final class ControlFactory
 		static $methods = [
 			'addDateTime',
 			'addPhoneNumber',
+			'addSelectCountry',
 			'addSelectEnum',
 			'addRadioEnum',
 			'addCheckboxEnum',
@@ -50,6 +53,22 @@ final class ControlFactory
 	) {
 		return $form[$name] = (new Controls\PhoneNumber($label, $maxLength))
 			->setHtmlAttribute('size', $cols);
+	}
+
+
+	public static function addSelectCountry(
+		Form $form,
+		string $name,
+		?array $items = null,
+		?string $lang = null,
+	) {
+		$lang ??= $form->getTranslator()?->getLocale();
+
+		if (!$items && class_exists(Country::class)) {
+			$items = Country::getList($lang);
+		}
+
+		return $form->addSelect($name)->setItems($items);
 	}
 
 
