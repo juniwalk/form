@@ -54,7 +54,7 @@ final class SelectBoxEnum extends SelectBox
 	 */
 	public function setValue(/*?LabeledEnum*/ $value): self
 	{
-		if ($value && !$value instanceof $this->enumType) {
+		if (isset($value) && !$value instanceof $this->enumType) {
 			$value = $this->enumType::make($value);
 		}
 

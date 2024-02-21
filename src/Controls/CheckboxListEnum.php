@@ -64,7 +64,7 @@ final class CheckboxListEnum extends CheckboxList
 		}
 
 		$values = Arrays::map($values, function(mixed $value) {
-			if ($value && !$value instanceof $this->enumType) {
+			if (isset($value) && !$value instanceof $this->enumType) {
 				$value = $this->enumType::make($value);
 			}
 
