@@ -244,9 +244,16 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
-	public function renderModal(): void
+	public function renderModal(bool $keyboard = false, bool|string $backdrop = 'static'): void
 	{
 		$this->setLayout(Layout::Modal);
+		$this->onRender[] = fn($self, $template) => $template->setParameters([
+			'modalOptions' => [
+				'data-backdrop' => Format::scalarize($backdrop),
+				'data-keyboard' => Format::scalarize($keyboard),
+			],
+		]);
+
 		$this->render();
 	}
 

@@ -1,13 +1,15 @@
-<div class="modal fade" id="{$control->getName()}" data-backdrop="static">
-<div n:snippet="form">
+<div class="modal fade" id="{$control->getName()}" n:attr="... $modalOptions" tabindex="-1">
+
+{default $size = null}
+
+<div n:snippet="form" n:class="modal-dialog, modal-dialog-centered, $size">
 
 {default $hasCloseButton = true}
 {default $color = 'secondary'}
 {default $contentClass = null}
 {default $contentPos = 'top'}
-{default $size = null}
 
-<form n:name="form" n:class="modal-dialog, modal-dialog-centered, $size" data-form-name="{$control->getName()}">
+<form n:name="form" data-form-name="{$control->getName()}">
 
 	<div class="modal-content">
 
