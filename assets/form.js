@@ -110,6 +110,8 @@ function initFormControls()
 		let tomSelect = new TomSelect(el, options);
 	});
 
+	$('.modal').on('hidden.bs.modal', () => $(this).children('form').reset?.());
+
 	$('[data-signal]').off('click change').on('click change', function(e) {
 		if (!this.matches('BUTTON') && e.type == 'click') {
 			return;
