@@ -375,4 +375,13 @@ abstract class AbstractForm extends Control implements Modal
 			$form->addError($message);
 		}
 	}
+
+
+	/**
+	 * ? Used to translate prompts when translator is removed from ChoiceControl
+	 */
+	protected function translate(string $message, array $params = []): string
+	{
+		return $this->translator?->translate($message, $params) ?? $message;
+	}
 }
