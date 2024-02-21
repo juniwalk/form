@@ -63,12 +63,14 @@ final class ControlFactory
 		?string $lang = null,
 	) {
 		$lang ??= $form->getTranslator()?->getLocale();
+		$select = $form->addSelect($name);
 
 		if (!$items && class_exists(Country::class)) {
 			$items = Country::getList($lang);
+			$select->setTranslator(null);
 		}
 
-		return $form->addSelect($name)->setItems($items);
+		return $select->setItems($items);
 	}
 
 
