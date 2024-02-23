@@ -48,6 +48,10 @@ function initFormControls()
 			formName = el.form.dataset.formName + '-';
 		}
 
+		if ('delimiter' in el.dataset) {
+			options.delimiter = el.dataset.delimiter;
+		}
+
 		if ('noSearch' in el.dataset) {
 			options.controlInput = null;
 			options.plugins = [];
