@@ -48,6 +48,10 @@ function initFormControls()
 			formName = el.form.dataset.formName + '-';
 		}
 
+		if ('pattern' in el.dataset) {
+			options.createFilter = el.dataset.pattern;
+		}
+
 		if ('delimiter' in el.dataset) {
 			options.delimiter = el.dataset.delimiter;
 		}
