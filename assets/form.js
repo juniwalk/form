@@ -17,7 +17,8 @@ function initFormControls()
 			searchField: ['text'],
 			labelField: 'text',
 			valueField: 'id',
-			create: el.dataset['tags'] !== undefined,
+			create: 'tags' in el.dataset,
+			createOnBlur: 'createOnBlur' in el.dataset,
 			allowEmptyOption: true,
 			addPrecedence: true,
 			optgroupLabelField: 'group',
@@ -59,7 +60,7 @@ function initFormControls()
 			options.plugins.push('remove_button');
 		}
 
-		if (el.dataset['ajax-Url'] !== undefined) {
+		if ('ajax-Url' in el.dataset) {
 			options.plugins.push('virtual_scroll');
 			options.sortField = [{field:'$order'},{field:'$score'}];
 			options.searchField = [];
