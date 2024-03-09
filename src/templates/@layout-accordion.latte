@@ -10,7 +10,7 @@
 
 	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}-content">
 		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-			<h3 class="card-title">{include #title|noescape}</h3>
+			<h3 class="card-title" n:ifset="block title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
 	</a>

@@ -9,7 +9,7 @@
 <form n:name="form" data-form-name="{$control->getName()}">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-		<h3 class="card-title">{include #title|noescape}</h3>
+		<h3 class="card-title" n:ifset="block title">{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
 
