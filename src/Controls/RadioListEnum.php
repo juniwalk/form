@@ -73,7 +73,7 @@ final class RadioListEnum extends RadioList
 	}
 
 
-	public function setDisabled(/*bool|array*/ $value = true)//: self
+	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
 			$value = Arrays::map($value, fn($item) => $item->value);
