@@ -33,6 +33,10 @@ function initFormControls()
 	});
 
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
+		if (typeof TomSelect !== 'function') {
+			return;
+		}
+
 		tomSelectInit(el);
 	});
 
@@ -97,7 +101,7 @@ function insertAtCursor(input, value)
 
 function tomSelectInit(el)
 {
-	if (typeof TomSelect !== 'function' || el.tomselect !== undefined) {
+	if (el.tomselect !== undefined) {
 		return;
 	}
 
