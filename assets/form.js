@@ -32,26 +32,20 @@ function initFormControls()
 		});
 	});
 
-	$('[data-check-dirty]').each(function(e) {
+	$('[data-check-dirty]').each(function() {
+		let form = $(this);
+
 		if (!$.fn.dirty) {
 			return;
-		}
-
-		let form = $(this);
-		let config = {
-			leavingMessage: form.data('checkDirty'),
-			preventLeaving: true,
-		};
-
-		if (!config.leavingMessage) {
-			delete config.leavingMessage;
 		}
 
 		if (form.is('button')) {
 			form = form.parents('form');
 		}
 
-		form.dirty(config);
+		form.dirty({
+			preventLeaving: true,
+		});
 	});
 
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
