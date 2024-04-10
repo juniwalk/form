@@ -265,6 +265,7 @@ abstract class AbstractForm extends Control implements Modal
 		}
 
 		$template = $this->createTemplate();
+		$template->setFile($this->getTemplateFile());
 		$template->setTranslator($this->translator);
 
 		ksort($this->onRender);
@@ -274,11 +275,12 @@ abstract class AbstractForm extends Control implements Modal
 			'_layout_' => $this->layout->value,
 		]);
 
-		$templateFile = $template->getFile() ?? $this->getTemplateFile();
-		$template->render($templateFile, [
+		$template->setParameters([
 			'layout' => $this->layout,
 			'form' => $form,
 		]);
+
+		$template->render();
 	}
 
 
