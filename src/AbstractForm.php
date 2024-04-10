@@ -113,6 +113,13 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
+	public function isPreventLeavingWhenDirty(): bool
+	{
+		$rc = new ReflectionClass($this);
+		return (bool) $rc->getAttributes(PreventLeavingWhenDirty::class);
+	}
+
+
 	public function setTranslator(Translator $translator = null): void
 	{
 		$this->translator = $translator;
@@ -278,6 +285,11 @@ abstract class AbstractForm extends Control implements Modal
 		$template->setParameters([
 			'layout' => $this->layout,
 			'form' => $form,
+
+			'formOptions' => [
+				'data-check-dirty' => $this->isPreventLeavingWhenDirty(),
+				'data-form-name' => $this->getName(),
+			],
 		]);
 
 		$template->render();

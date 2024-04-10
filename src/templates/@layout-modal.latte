@@ -1,4 +1,4 @@
-<div class="modal fade" id="{$control->getName()}" n:attr="... $modalOptions" tabindex="-1">
+<div class="modal fade" id="{$control->getName()}" n:attr="...$modalOptions" tabindex="-1">
 
 {default $size = null}
 
@@ -9,7 +9,7 @@
 {default $contentClass = null}
 {default $contentPos = 'top'}
 
-<form n:name="form" class="w-100" data-form-name="{$control->getName()}">
+<form n:name="form" class="w-100" n:attr="...$formOptions">
 
 	<div class="modal-content">
 
