@@ -327,14 +327,8 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
-	protected function handleValidate(Form $form, ArrayHash $data): void
-	{
-	}
-
-
-	protected function handleSuccess(Form $form, ArrayHash $data): void
-	{
-	}
+	protected function handleValidate(Form $form, ArrayHash $data): void { }
+	protected function handleSuccess(Form $form, ArrayHash $data): void { }
 
 
 	protected function handleUniqueConstraintViolation(UniqueException $e, callable $callback = null, array $fieldMap = []): void
