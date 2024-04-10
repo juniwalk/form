@@ -48,7 +48,7 @@ function initFormControls()
 		}
 
 		if (form.is('button')) {
-			form = form.parent('form');
+			form = form.parents('form');
 		}
 
 		form.dirty(config);
