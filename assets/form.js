@@ -32,6 +32,29 @@ function initFormControls()
 		});
 	});
 
+	$('[data-check-dirty]').each(function(e) {
+		if (!$.fn.dirty) {
+			return;
+		}
+
+		let element = e.target;
+		let form = $(element);
+		let config = {
+			leavingMessage: element.dataset.checkDirty,
+			preventLeaving: true,
+		};
+
+		if (!config.leavingMessage) {
+			delete config.leavingMessage;
+		}
+
+		if (element.matches('BUTTON')) {
+			form = form.parent('form');
+		}
+
+		form.dirty(config);
+	});
+
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
 		if (typeof TomSelect !== 'function') {
 			return;
