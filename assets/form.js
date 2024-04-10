@@ -37,10 +37,9 @@ function initFormControls()
 			return;
 		}
 
-		let element = e.target;
-		let form = $(element);
+		let element = $(this);
 		let config = {
-			leavingMessage: element.dataset.checkDirty,
+			leavingMessage: element.data('checkDirty'),
 			preventLeaving: true,
 		};
 
@@ -48,11 +47,11 @@ function initFormControls()
 			delete config.leavingMessage;
 		}
 
-		if (element.matches('BUTTON')) {
+		if (element.is('button')) {
 			form = form.parent('form');
 		}
 
-		form.dirty(config);
+		element.dirty(config);
 	});
 
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
