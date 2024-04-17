@@ -32,21 +32,9 @@ function initFormControls()
 		});
 	});
 
-	$('[data-check-dirty]').each(function() {
-		let form = $(this);
-
-		if (!$.fn.dirty) {
-			return;
-		}
-
-		if (form.is('button')) {
-			form = form.parents('form');
-		}
-
-		form.dirty({
-			preventLeaving: true,
-		});
-	});
+	if ($.fn.areYouSure) {
+		$('[data-check-dirty]').areYouSure();
+	}
 
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
 		if (typeof TomSelect !== 'function') {
