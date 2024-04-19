@@ -167,7 +167,7 @@ function tomSelectInit(el)
 	}
 
 	// ? For back compatibility with old Select2 option
-	if ('ajax-Url' in el.dataset && !'search' in el.dataset) {
+	if ('ajax-Url' in el.dataset && !('search' in el.dataset)) {
 		el.dataset.search = el.dataset['ajax-Url'];
 		delete el.dataset['ajax-Url'];
 	}
