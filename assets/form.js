@@ -34,6 +34,10 @@ function initFormControls()
 
 	if ($.fn.areYouSure) {
 		$('[data-check-dirty]').areYouSure();
+
+		$('.modal').on('hidden.bs.modal', () => {
+			$('[data-check-dirty]', this).trigger('reinitialize.areYouSure');
+		});
 	}
 
 	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
