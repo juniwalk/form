@@ -116,8 +116,15 @@ abstract class AbstractForm extends Control implements Modal
 
 	public function isPreventLeavingWhenDirty(): bool
 	{
-		$rc = new ReflectionClass($this);
-		return (bool) $rc->getAttributes(PreventLeavingWhenDirty::class);
+		$attributes = (new ReflectionClass($this))
+			->getAttributes(PreventLeavingWhenDirty::class);
+
+		if (empty($attributes)) {
+			return false;
+		}
+
+		$preventLeaving = $attributes[0]->newInstance();
+		return $preventLeaving->for($this->layout);
 	}
 
 
