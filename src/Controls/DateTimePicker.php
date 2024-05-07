@@ -18,7 +18,7 @@ final class DateTimePicker extends TextBase
 	private string $format = 'Y-m-d H:i:s';
 
 
-	public function setFormat(string $format): self
+	public function setFormat(string $format): static
 	{
 		$this->format = $format;
 		return $this;
@@ -44,7 +44,10 @@ final class DateTimePicker extends TextBase
 	}
 
 
-	public function setValue(/*DateTimeInterface|string*/ $value = null)//: self
+	/**
+	 * @param int|string|null|DateTimeInterface $value
+	 */
+	public function setValue(mixed $value = null): static
 	{
 		if ($value instanceof DateTimeInterface) {
 			$value = $value->format($this->format);
@@ -60,18 +63,20 @@ final class DateTimePicker extends TextBase
 			return null;
 		}
 
+		/** @var int|string|DateTimeInterface $value */
 		if ($value instanceof DateTimeInterface || is_int($value)) {
 			return DateTime::from($value);
 		}
 
 		try {
-			$date = DateTime::createFromFormat($this->format, $this->value);
+			$date = DateTime::createFromFormat($this->format, $value);
 
 			if ($date instanceof DateTime) {
 				return $date;
 			}
 
-		} catch (Throwable) {}
+		} catch (Throwable) {
+		}
 
 		if ($time = strtotime($value)) {
 			return DateTime::from($time);

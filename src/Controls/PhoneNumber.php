@@ -10,17 +10,21 @@ namespace JuniWalk\Form\Controls;
 use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Sanitize;
 use Nette\Forms\Controls\TextInput;
+use Stringable;
 
 final class PhoneNumber extends TextInput
 {
-	public function __construct($label = null, ?int $maxLength = null)
+	public function __construct(string|Stringable|null $label = null, ?int $maxLength = null)
 	{
 		parent::__construct($label, $maxLength);
 		$this->setHtmlType('tel');
 	}
 
 
-	public function setValue($value = null): static
+	/**
+	 * @param ?string $value
+	 */
+	public function setValue(mixed $value = null): static
 	{
 		$this->value = Format::phoneNumber($value);
 		$this->rawValue = (string) $value;
@@ -30,6 +34,8 @@ final class PhoneNumber extends TextInput
 
 	public function getValue(): ?string
 	{
-		return Sanitize::phoneNumber(parent::getValue());
+		/** @var ?string */
+		$value = parent::getValue();
+		return Sanitize::phoneNumber($value);
 	}
 }

@@ -7,8 +7,7 @@
 
 namespace JuniWalk\Form\Enums;
 
-use JuniWalk\Utils\Enums\Color;
-use JuniWalk\Utils\Enums\LabeledEnum;
+use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use JuniWalk\Utils\Enums\Traits\Labeled;
 
 enum Layout: string implements LabeledEnum
@@ -26,8 +25,8 @@ enum Layout: string implements LabeledEnum
 	}
 
 
-	public function color(): Color
+	public function path(string $dir): string
 	{
-		return Color::Secondary;
+		return sprintf('%s/templates/@layout-%s.latte', $dir, $this->value);
 	}
 }

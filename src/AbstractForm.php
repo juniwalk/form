@@ -10,23 +10,27 @@ namespace JuniWalk\Form;
 use Contributte\Translation\Wrappers\Message;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueException;
 use JuniWalk\Form\Enums\Layout;
-use JuniWalk\Form\Tools\SearchPayload;
+use JuniWalk\Form\SearchPayload;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
+use JuniWalk\Utils\Interfaces\Modal;
 use JuniWalk\Utils\Strings;
-use JuniWalk\Utils\UI\Modal;
+use JuniWalk\Utils\Traits\RedirectAjaxHandler;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate as Template;
+use Nette\Bridges\ApplicationLatte\DefaultTemplate;
+use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\ChoiceControl;
-use Nette\Forms\SubmitterControl;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
 use ReflectionClass;
+use Stringable;
 use Throwable;
 use Tracy\Debugger;
 
@@ -38,16 +42,21 @@ use Tracy\Debugger;
  */
 abstract class AbstractForm extends Control implements Modal
 {
+	use RedirectAjaxHandler;
+
 	protected ?Translator $translator;
-	protected ?HttpRequest $httpRequest;
+	protected HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
 	protected ?string $templateFile = null;
 	protected bool $isModalOpen = false;
 
-	/** @var callable[] */
+	/** @var array<callable(self, Template): void> */
 	public array $onRender = [];
+	/** @var array<callable(Form, ArrayHash, self): void> */
 	public array $onValidate = [];
+	/** @var array<callable(Form, ArrayHash, self): void> */
 	public array $onSuccess = [];
+	/** @var array<callable(Form, self): void> */
 	public array $onError = [];
 
 
@@ -69,12 +78,6 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
-	public function getHttpRequest(): ?HttpRequest
-	{
-		return $this->httpRequest;
-	}
-
-
 	public function setLayout(Layout $layout): void
 	{
 		$this->layout = $layout;
@@ -89,7 +92,7 @@ abstract class AbstractForm extends Control implements Modal
 
 	public function getLayoutPath(): string
 	{
-		return __DIR__.'/templates/@layout-'.$this->layout->value.'.latte';
+		return $this->layout->path(__DIR__);
 	}
 
 
@@ -106,14 +109,11 @@ abstract class AbstractForm extends Control implements Modal
 		}
 
 		$rc = new ReflectionClass($this);
-		return sprintf('%s/templates/%s.latte',
-			dirname($rc->getFilename()),
-			$rc->getShortName()
-		);
+		return sprintf('%s/templates/%s.latte', dirname($rc->getFilename() ?: ''), $rc->getShortName());
 	}
 
 
-	public function setTranslator(Translator $translator = null): void
+	public function setTranslator(?Translator $translator = null): void
 	{
 		$this->translator = $translator;
 	}
@@ -125,6 +125,9 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
+	/**
+	 * @param array<string, string> $pages
+	 */
 	public function findRedirectPage(array $pages, string $default = 'default'): string
 	{
 		$form = $this->getForm();
@@ -134,7 +137,7 @@ abstract class AbstractForm extends Control implements Modal
 				continue;
 			}
 
-			if (!$button instanceof SubmitterControl) {
+			if (!$button instanceof SubmitButton) {
 				continue;
 			}
 
@@ -189,22 +192,23 @@ abstract class AbstractForm extends Control implements Modal
 		$form = $this->getForm();
 
 		foreach ($this->getComponents(true, ChoiceControl::class) as $field) {
+			/** @var ChoiceControl $field */
 			$field->checkDefaultValue(false);
 		}
 
-		if (!$this->httpRequest) {
+		if (!isset($this->httpRequest)) {
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		$formData = (array) $this->httpRequest->getPost() ?: [];
-		$form->setValues($formData);
+		$data = (array) $this->httpRequest->getPost() ?: [];
+		$form->setValues($data);
 
 		try {
 			if (!method_exists($this, $method)) {
 				throw new InvalidArgumentException('Refresh method '.$method.' is not implemented.');
 			}
 
-			$redraw = $this->$method($form, $formData, $value);
+			$redraw = $this->$method($form, $data, $value);
 
 		} catch (AbortException) {
 		} catch (Throwable $e) {
@@ -212,24 +216,18 @@ abstract class AbstractForm extends Control implements Modal
 			Debugger::log($e);
 		}
 
-		$this->setLayout(Layout::from($formData['_layout_']));
-		$this->redrawControl('form', $redraw ?? true);
-		$this->isModalOpen = true;
-		$this->redirect('this');
-	}
+		/** @var string $layout */
+		$layout = $data['_layout_'];
+		$layout = Layout::from($layout);
 
+		$this->setLayout($layout);
 
-	public function redirect(string $dest, mixed ...$args): void
-	{
-		$presenter = $this->getPresenter();
-
-		if ($presenter->isAjax()) {
-			$presenter->payload->postGet = true;
-			$presenter->payload->url = $this->link($dest, ...$args);
-			return;
+		if ($layout === Layout::Modal) {
+			$this->setModalOpen(true);
 		}
 
-		parent::redirect($dest, ...$args);
+		$this->redrawControl('form', $redraw ?? true);
+		$this->redirect('this');
 	}
 
 
@@ -264,7 +262,9 @@ abstract class AbstractForm extends Control implements Modal
 			return;
 		}
 
+		/** @var DefaultTemplate */
 		$template = $this->createTemplate();
+		$template->setFile($this->getTemplateFile());
 		$template->setTranslator($this->translator);
 
 		ksort($this->onRender);
@@ -274,26 +274,12 @@ abstract class AbstractForm extends Control implements Modal
 			'_layout_' => $this->layout->value,
 		]);
 
-		$templateFile = $template->getFile() ?? $this->getTemplateFile();
-		$template->render($templateFile, [
+		$template->setParameters([
 			'layout' => $this->layout,
 			'form' => $form,
 		]);
-	}
 
-
-	/**
-	 * @internal
-	 */
-	protected function findSubmitButton(): ?SubmitterControl
-	{
-		$buttons = $this->getComponents(true, SubmitterControl::class);
-
-		if (!$buttons = iterator_to_array($buttons)) {
-			return null;
-		}
-
-		return $buttons['submit'] ?? current($buttons);
+		$template->render();
 	}
 
 
@@ -304,15 +290,15 @@ abstract class AbstractForm extends Control implements Modal
 		$form->addHidden('_layout_');
 		$form->addProtection();
 
-		$form->onValidate[] = function(Form $form, ArrayHash $data): void {
+		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
 			$this->setLayout(Layout::from($data->_layout_));
 
 			$this->handleValidate($form, $data);
 			$this->onValidate($form, $data, $this);
 		};
 
-		$form->onSuccess[] = $this->handleSuccess(...);
-		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {
+		$form->onSuccess[] = $this->handleSuccess(...);						// @phpstan-ignore-line
+		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
 			$this->onSuccess($form, $data, $this);
 			$this->redrawControl();
 			$form->reset();
@@ -327,32 +313,33 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
-	protected function handleValidate(Form $form, ArrayHash $data): void
-	{
-	}
+	protected function handleValidate(Form $form, ArrayHash $data): void {}
+	protected function handleSuccess(Form $form, ArrayHash $data): void {}
 
 
-	protected function handleSuccess(Form $form, ArrayHash $data): void
-	{
-	}
-
-
-	protected function handleUniqueConstraintViolation(UniqueException $e, callable $callback = null, array $fieldMap = []): void
-	{
-		$callback = $callback ?? fn() => null;
+	/**
+	 * @param callable(?string): ?string $callback
+	 * @param array<string, string> $fieldMap
+	 */
+	protected function handleUniqueConstraintViolation(
+		UniqueException $e,
+		?callable $callback = null,
+		array $fieldMap = [],
+	): void {
+		$callback ??= fn() => null;
 		$form = $this->getForm();
 
-		$fields = Strings::match($e->getMessage(), '/\((?<field>[^\)]+)\)=\((?<value>[^\)]+)\)/i');
+		$matched = Strings::match($e->getMessage(), '/\((?<field>[^\)]+)\)=\((?<value>[^\)]+)\)/i');
 		$defaultMessage = $callback(null) ?? $e->getMessage();
 
-		if (empty($fields)) {
+		if (empty($matched)) {
 			$form->addError($defaultMessage);
 			return;
 		}
 
 		$fields = array_combine(
-			Strings::split($fields['field'], '/,\s?/'),
-			Strings::split($fields['value'], '/,\s?/')
+			Strings::split($matched['field'], '/,\s?/'),
+			Strings::split($matched['value'], '/,\s?/'),
 		);
 
 		$fields = Arrays::walk($fields, fn($value, $field) =>
@@ -364,11 +351,12 @@ abstract class AbstractForm extends Control implements Modal
 		$message = new Message($message, $fields);
 
 		foreach ($fields as $field => $value) {
-			if (!$form->getComponent($field, false)) {
+			if (!$control = $form->getComponent($field, false)) {
 				continue;
 			}
 
-			$form[$field]->addError($message);
+			/** @var BaseControl $control */
+			$control->addError($message);
 		}
 
 		if (!$form->hasErrors()) {
@@ -379,8 +367,9 @@ abstract class AbstractForm extends Control implements Modal
 
 	/**
 	 * ? Used to translate prompts when translator is removed from ChoiceControl
+	 * @param array<string, mixed> $params
 	 */
-	protected function translate(string $message, array $params = []): string
+	protected function translate(string $message, array $params = []): string|Stringable
 	{
 		return $this->translator?->translate($message, $params) ?? $message;
 	}

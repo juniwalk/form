@@ -7,19 +7,27 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Enums\LabeledEnum;
 use JuniWalk\Utils\Arrays;
+use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use JuniWalk\Utils\Html;
 use Nette\Forms\Controls\SelectBox;
 use InvalidArgumentException;
 use ValueError;
 
+/**
+ * @template T of LabeledEnum
+ */
 final class SelectBoxEnum extends SelectBox
 {
-	private ?string $enumType = null;
+	/** @var class-string<T> */
+	private string $enumType;
 
 
-	public function setEnumType(string $enumType): self
+	/**
+	 * @param  class-string<T> $enumType
+	 * @throws InvalidArgumentException
+	 */
+	public function setEnumType(string $enumType): static
 	{
 		if (!is_subclass_of($enumType, LabeledEnum::class)) {
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
@@ -31,6 +39,7 @@ final class SelectBoxEnum extends SelectBox
 
 
 	/**
+	 * @param  array<T> $enums
 	 * @throws InvalidArgumentException
 	 */
 	public function setItems(array $enums, bool $useKeys = true, bool $badge = false): self
@@ -50,9 +59,10 @@ final class SelectBoxEnum extends SelectBox
 
 
 	/**
+	 * @param  int|string|null|T $value
 	 * @throws ValueError
 	 */
-	public function setValue(/*?LabeledEnum*/ $value): self
+	public function setValue(mixed $value): self
 	{
 		if (isset($value) && !$value instanceof $this->enumType) {
 			$value = $this->enumType::make($value, $value !== '');
@@ -62,16 +72,22 @@ final class SelectBoxEnum extends SelectBox
 	}
 
 
+	/**
+	 * @return T|null
+	 */
 	public function getValue(): ?LabeledEnum
 	{
 		return $this->enumType::make($this->value, false);
 	}
 
 
+	/**
+	 * @param bool|array<T> $value
+	 */
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($item) => $item->value);
+			$value = Arrays::map($value, fn($x) => $x->value);
 		}
 
 		return parent::setDisabled($value);

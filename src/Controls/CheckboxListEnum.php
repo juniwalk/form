@@ -8,17 +8,24 @@
 namespace JuniWalk\Form\Controls;
 
 use JuniWalk\Utils\Arrays;
-use JuniWalk\Utils\Enums\LabeledEnum;
+use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use Nette\Forms\Controls\CheckboxList;
 use InvalidArgumentException;
 use ValueError;
 
+/**
+ * @template T of LabeledEnum
+ */
 final class CheckboxListEnum extends CheckboxList
 {
-	private ?string $enumType = null;
+	/** @var class-string<T> */
+	private string $enumType;
 
 
-	public function setEnumType(string $enumType): self
+	/**
+	 * @param class-string<T> $enumType
+	 */
+	public function setEnumType(string $enumType): static
 	{
 		if (!is_subclass_of($enumType, LabeledEnum::class)) {
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
@@ -29,13 +36,18 @@ final class CheckboxListEnum extends CheckboxList
 	}
 
 
+	/**
+	 * @return array<T>
+	 */
 	public function getCases(): array
 	{
-		return Arrays::map($this->getItems(), fn($value, $key) => $this->enumType::make($key));
+		/** @var array<T> */
+		return Arrays::map($this->getItems(), fn($x, $y) => $this->enumType::make($y));
 	}
 
 
 	/**
+	 * @param  array<T> $enums
 	 * @throws InvalidArgumentException
 	 */
 	public function setItems(array $enums, bool $useKeys = true): self
@@ -55,14 +67,16 @@ final class CheckboxListEnum extends CheckboxList
 
 
 	/**
+	 * @param  array<T> $values
 	 * @throws ValueError
 	 */
-	public function setValue(/*?LabeledEnum*/ $values): self
+	public function setValue(mixed $values): self
 	{
 		if (!is_iterable($values)) {
 			return parent::setValue(null);
 		}
 
+		/** @var array<T> */
 		$values = Arrays::map($values, function(mixed $value) {
 			if (isset($value) && !$value instanceof $this->enumType) {
 				$value = $this->enumType::make($value, $value !== '');
@@ -75,13 +89,24 @@ final class CheckboxListEnum extends CheckboxList
 	}
 
 
+	/**
+	 * @return array<T>
+	 * @throws ValueError
+	 */
 	public function getValue(): array
 	{
-		$values = Arrays::map($this->value, fn($value, $key) => $this->enumType::make($key, false));
-		return parent::getValue($values);
+		if (!is_iterable($this->value)) {
+			return [];
+		}
+
+		/** @var array<T> */
+		return Arrays::map($this->value, fn($x, $y) => $this->enumType::make($y, false));
 	}
 
 
+	/**
+	 * @param bool|array<T> $value
+	 */
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {

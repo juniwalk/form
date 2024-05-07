@@ -7,10 +7,13 @@
 
 namespace JuniWalk\Form\DI;
 
+use Contributte\Translation\Translator;
 use JuniWalk\Form\Controls;
+use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use JuniWalk\Utils\Country;
 use Nette\Forms\Container as Form;
-use Nette\Forms\Controls\SelectBox;
+use Nette\Forms\Control;
+use Throwable;
 
 final class ControlFactory
 {
@@ -39,7 +42,7 @@ final class ControlFactory
 		Form $form,
 		string $name,
 		string $label = null,
-	) {
+	): Control {
 		return $form[$name] = new Controls\DateTimePicker($label);
 	}
 
@@ -50,56 +53,78 @@ final class ControlFactory
 		string $label = null,
 		?int $cols = null,
 		?int $maxLength = null,
-	) {
+	): Control {
 		return $form[$name] = (new Controls\PhoneNumber($label, $maxLength))
 			->setHtmlAttribute('size', $cols);
 	}
 
 
+	/**
+	 * @param array<int|string, mixed> $items
+	 */
 	public static function addSelectCountry(
 		Form $form,
 		string $name,
-		?array $items = null,
+		array $items = [],
 		?string $lang = null,
-	) {
-		$lang ??= $form->getTranslator()?->getLocale();
+	): Control {
+		$translator = $form->getForm()->getTranslator();
 		$select = $form->addSelect($name);
 
-		if (!$items && class_exists(Country::class)) {
-			$items = Country::getList($lang);
-			$select->setTranslator(null);
+		if ($translator instanceof Translator) {
+			$lang ??= $translator->getLocale();
+		}
+
+		try {
+			if (!$items && class_exists(Country::class)) {
+				/** @var array<int|string, mixed> */
+				$items = Country::getList($lang ?? 'cs');
+				$select->setTranslator(null);
+			}
+
+		} catch (Throwable) {
+			$items = [];
 		}
 
 		return $select->setItems($items);
 	}
 
 
+	/**
+	 * @param class-string<LabeledEnum> $enumType
+	 */
 	public static function addSelectEnum(
 		Form $form,
 		string $name,
 		string $enumType,
 		bool $badge = false,
-	) {
+	): Control {
 		return $form[$name] = (new Controls\SelectBoxEnum)->setEnumType($enumType)
 			->setItems($enumType::cases(), badge: $badge);
 	}
 
 
+	/**
+	 * @param class-string<LabeledEnum> $enumType
+	 */
 	public static function addRadioEnum(
 		Form $form,
 		string $name,
 		string $enumType,
-	) {
+	): Control {
 		return $form[$name] = (new Controls\RadioListEnum)->setEnumType($enumType)
 			->setItems($enumType::cases());
 	}
 
 
+	/**
+	 * @param class-string<LabeledEnum> $enumType
+	 */
 	public static function addCheckboxEnum(
 		Form $form,
 		string $name,
 		string $enumType,
-	) {
+	): Control {
 		return $form[$name] = (new Controls\CheckboxListEnum)->setEnumType($enumType)
 			->setItems($enumType::cases());
 	}

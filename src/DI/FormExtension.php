@@ -10,19 +10,37 @@ namespace JuniWalk\Form\DI;
 use JuniWalk\Form\AbstractForm;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\FactoryDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 use Nette\PhpGenerator\ClassType;
 
 final class FormExtension extends CompilerExtension
 {
 	public function beforeCompile(): void
 	{
-		foreach ($this->findByType(AbstractForm::class) as $def) {
-			if ($def instanceof FactoryDefinition) {
-				$def = $def->getResultDefinition();
+		$definitions = $this->getContainerBuilder()->getDefinitions();
+		$definitions = array_filter($definitions, function($stmt): bool {
+			if (is_a($stmt->getType() ?? '', AbstractForm::class, true)) {
+				return true;
 			}
 
-			$def->addSetup('setHttpRequest');
-			$def->addSetup('setTranslator');
+			if (!$stmt instanceof FactoryDefinition) {
+				return false;
+			}
+
+			return is_a($stmt->getResultType() ?? '', AbstractForm::class, true);
+		});
+
+		foreach ($definitions as $stmt) {
+			if ($stmt instanceof FactoryDefinition) {
+				$stmt = $stmt->getResultDefinition();
+			}
+
+			if (!$stmt instanceof ServiceDefinition) {
+				continue;
+			}
+
+			$stmt->addSetup('setHttpRequest');
+			$stmt->addSetup('setTranslator');
 		}
 	}
 
@@ -31,16 +49,5 @@ final class FormExtension extends CompilerExtension
 	{
 		$init = $class->getMethods()['initialize'];
 		$init->addBody(ControlFactory::class.'::registerControls();');
-	}
-
-
-	private function findByType(string $type): array
-	{
-		$definitions = $this->getContainerBuilder()
-			->getDefinitions();
-
-		return array_filter($definitions, function($def) use ($type): bool {
-			return is_a($def->getType(), $type, true) || ($def instanceof FactoryDefinition && is_a($def->getResultType(), $type, true));
-		});
 	}
 }
