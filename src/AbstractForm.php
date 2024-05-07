@@ -13,13 +13,15 @@ use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\SearchPayload;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
+use JuniWalk\Utils\Interfaces\EventAutoWatch;
+use JuniWalk\Utils\Interfaces\EventHandler;
 use JuniWalk\Utils\Interfaces\Modal;
 use JuniWalk\Utils\Strings;
+use JuniWalk\Utils\Traits\Events;
 use JuniWalk\Utils\Traits\RedirectAjaxHandler;
 use Nette\Application\AbortException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
-use Nette\Application\UI\ITemplate as Template;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\ChoiceControl;
@@ -35,41 +37,20 @@ use Throwable;
 use Tracy\Debugger;
 
 /**
- * @method void onRender(self $self, Template $template)
- * @method void onValidate(Form $form, ArrayHash $data, self $self)
- * @method void onSuccess(Form $form, ArrayHash $data, self $self)
- * @method void onError(Form $form, self $self)
+ * @property callable[] $onRender
+ * @property callable[] $onValidate
+ * @property callable[] $onSuccess
+ * @property callable[] $onError
  */
-abstract class AbstractForm extends Control implements Modal
+abstract class AbstractForm extends Control implements Modal, EventHandler, EventAutoWatch
 {
-	use RedirectAjaxHandler;
+	use Events, RedirectAjaxHandler;
 
-	protected ?Translator $translator;
-	protected HttpRequest $httpRequest;
 	protected Layout $layout = Layout::Card;
+	protected HttpRequest $httpRequest;
+	protected ?Translator $translator = null;
 	protected ?string $templateFile = null;
 	protected bool $isModalOpen = false;
-
-	/** @var array<callable(self, Template): void> */
-	public array $onRender = [];
-	/** @var array<callable(Form, ArrayHash, self): void> */
-	public array $onValidate = [];
-	/** @var array<callable(Form, ArrayHash, self): void> */
-	public array $onSuccess = [];
-	/** @var array<callable(Form, self): void> */
-	public array $onError = [];
-
-
-	public function setModalOpen(bool $open): void
-	{
-		$this->isModalOpen = $open;
-	}
-
-
-	public function getForm(): Form
-	{
-		return $this->getComponent('form');
-	}
 
 
 	public function setHttpRequest(HttpRequest $httpRequest): void
@@ -78,8 +59,13 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
-	public function setLayout(Layout $layout): void
+	public function setLayout(string|Layout $layout): void
 	{
+		if (!$layout instanceof Layout) {
+			$layout = Layout::make($layout, true);
+		}
+
+		/** @var Layout $layout */
 		$this->layout = $layout;
 	}
 
@@ -96,6 +82,12 @@ abstract class AbstractForm extends Control implements Modal
 	}
 
 
+	public function setModalOpen(bool $open): void
+	{
+		$this->isModalOpen = $open;
+	}
+
+
 	public function setTemplateFile(?string $file): void
 	{
 		$this->templateFile = $file ?? null;
@@ -108,12 +100,15 @@ abstract class AbstractForm extends Control implements Modal
 			return $this->templateFile;
 		}
 
-		$rc = new ReflectionClass($this);
-		return sprintf('%s/templates/%s.latte', dirname($rc->getFilename() ?: ''), $rc->getShortName());
+		$class = new ReflectionClass($this);
+		$shortName = $class->getShortName();
+		$fileName = $class->getFilename();
+
+		return sprintf('%s/templates/%s.latte', dirname($fileName ?: ''), $shortName);
 	}
 
 
-	public function setTranslator(?Translator $translator = null): void
+	public function setTranslator(?Translator $translator): void
 	{
 		$this->translator = $translator;
 	}
@@ -122,6 +117,12 @@ abstract class AbstractForm extends Control implements Modal
 	public function getTranslator(): ?Translator
 	{
 		return $this->translator;
+	}
+
+
+	public function getForm(): Form
+	{
+		return $this->getComponent('form');
 	}
 
 
@@ -191,16 +192,17 @@ abstract class AbstractForm extends Control implements Modal
 		$method = 'refresh'.Strings::firstUpper($type);
 		$form = $this->getForm();
 
+		if (!isset($this->httpRequest)) {
+			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
+		}
+
 		foreach ($this->getComponents(true, ChoiceControl::class) as $field) {
 			/** @var ChoiceControl $field */
 			$field->checkDefaultValue(false);
 		}
 
-		if (!isset($this->httpRequest)) {
-			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
-		}
-
-		$data = (array) $this->httpRequest->getPost() ?: [];
+		/** @var array{_layout_: string} */
+		$data = $this->httpRequest->getPost();
 		$form->setValues($data);
 
 		try {
@@ -214,19 +216,16 @@ abstract class AbstractForm extends Control implements Modal
 		} catch (Throwable $e) {
 			$form->addError($e->getMessage());
 			Debugger::log($e);
-		}
 
-		/** @var string $layout */
-		$layout = $data['_layout_'];
-		$layout = Layout::from($layout);
-
-		$this->setLayout($layout);
-
-		if ($layout === Layout::Modal) {
-			$this->setModalOpen(true);
 		}
 
 		$this->redrawControl('form', $redraw ?? true);
+		$this->setLayout($data['_layout_']);
+
+		if ($this->layout === Layout::Modal) {
+			$this->setModalOpen(true);
+		}
+
 		$this->redirect('this');
 	}
 
@@ -234,9 +233,9 @@ abstract class AbstractForm extends Control implements Modal
 	public function renderAccordion(string $container): void
 	{
 		$this->setLayout(Layout::Accordion);
-		$this->onRender[] = fn($self, $template) => $template->setParameters([
+		$this->when('render', fn($x, $t) => $t->setParameters([
 			'container' => $container,
-		]);
+		]));
 
 		$this->render();
 	}
@@ -245,12 +244,12 @@ abstract class AbstractForm extends Control implements Modal
 	public function renderModal(bool $keyboard = false, bool|string $backdrop = 'static'): void
 	{
 		$this->setLayout(Layout::Modal);
-		$this->onRender[] = fn($self, $template) => $template->setParameters([
+		$this->when('render', fn($x, $t) => $t->setParameters([
 			'modalOptions' => [
 				'data-backdrop' => Format::stringify($backdrop),
 				'data-keyboard' => Format::stringify($keyboard),
 			],
-		]);
+		]));
 
 		$this->render();
 	}
@@ -267,8 +266,7 @@ abstract class AbstractForm extends Control implements Modal
 		$template->setFile($this->getTemplateFile());
 		$template->setTranslator($this->translator);
 
-		ksort($this->onRender);
-		$this->onRender($this, $template);
+		$this->trigger('render', $this, $template);
 
 		$form = $this->getForm()->setDefaults([
 			'_layout_' => $this->layout->value,
@@ -291,21 +289,21 @@ abstract class AbstractForm extends Control implements Modal
 		$form->addProtection();
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
-			$this->setLayout(Layout::from($data->_layout_));
+			$this->setLayout($data->_layout_);
 
 			$this->handleValidate($form, $data);
-			$this->onValidate($form, $data, $this);
+			$this->trigger('validate', $form, $data, $this);
 		};
 
 		$form->onSuccess[] = $this->handleSuccess(...);						// @phpstan-ignore-line
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
-			$this->onSuccess($form, $data, $this);
+			$this->trigger('success', $form, $data, $this);
 			$this->redrawControl();
 			$form->reset();
 		};
 
 		$form->onError[] = function(Form $form): void {
-			$this->onError($form, $this);
+			$this->trigger('error', $form, $this);
 			$this->redrawControl();
 		};
 
