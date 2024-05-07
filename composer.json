@@ -24,6 +24,10 @@
 		}
 	},
 
+	"extra" : {
+		"branch-alias" : {"dev-master" : "7.0.x-dev"}
+	},
+
 	"require": {
 		"php": ">=8.2",
 		"juniwalk/orm": ">=0.10",
