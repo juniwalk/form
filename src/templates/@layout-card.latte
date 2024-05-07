@@ -6,7 +6,7 @@
 {default $headColor = null}
 
 <div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
-<form n:name="form" data-form-name="{$control->getName()}">
+<form n:name="form" n:attr="...$formOptions">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
 		<h3 class="card-title" n:ifset="block title">{include #title|noescape}</h3>

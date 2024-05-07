@@ -6,119 +6,6 @@
 
 function initFormControls()
 {
-	if (typeof TomSelect === 'function') document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
-		if (el.tomselect !== undefined) {
-			return;
-		}
-
-		let formName = null;
-		let options = {
-			plugins: ['dropdown_input'],
-			searchField: ['text'],
-			labelField: 'text',
-			valueField: 'id',
-			create: 'tags' in el.dataset,
-			createOnBlur: 'createOnBlur' in el.dataset,
-			allowEmptyOption: true,
-			addPrecedence: true,
-			optgroupLabelField: 'group',
-			optgroupValueField: 'group',
-			optgroupField: 'group',
-			render:{
-				dropdown: () => '<div class="dropdown-menu"></div>',
-				item: (data, escape) => tomSelectFormat('item', data, escape, el.multiple),
-				option: (data, escape) => tomSelectFormat('option', data, escape, el.multiple),
-				option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
-				optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
-				no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
-				no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
-				loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
-				loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
-				not_loading: () => {	
-					if (Object.keys(el.tomselect.options).length > 0) {
-						return;
-					}
-
-					return `<div class="dropdown-item disabled">No results found</div>`;
-				}
-			}
-		};
-
-		if (el.form && 'formName' in el.form.dataset) {
-			formName = el.form.dataset.formName + '-';
-		}
-
-		if ('pattern' in el.dataset) {
-			options.createFilter = el.dataset.pattern;
-		}
-
-		if ('delimiter' in el.dataset) {
-			options.delimiter = el.dataset.delimiter;
-		}
-
-		if ('noSearch' in el.dataset) {
-			options.controlInput = null;
-			options.plugins = [];
-		}
-
-		if (el.hasAttribute('multiple')) {
-			options.plugins = [];
-			options.plugins.push('caret_position');
-			options.plugins.push('input_autogrow');
-			options.plugins.push('remove_button');
-		}
-
-		if ('ajax-Url' in el.dataset) {
-			options.plugins.push('virtual_scroll');
-			options.sortField = [{field:'$order'},{field:'$score'}];
-			options.searchField = [];
-			options.allowEmptyOption = false;
-			options.loadThrottle = 150;
-			options.preload = 'focus';
-			options.firstUrl = function(query) {
-				let ajaxUrl = el.dataset['ajax-Url'].split('?');
-				let url = new URL(window.location.href);
-				url.pathname = ajaxUrl[0];
-				url.search = ajaxUrl[1];
-	
-				let params = findPrefixedUrlParams(formName);
-				Object.entries(params).forEach(([key, value]) => {
-					url.searchParams.set(key, value);
-				});
-
-				url.searchParams.append(formName+'term', query);
-				url.searchParams.append(formName+'page', 1);
-
-				return url;
-			},
-
-			options.load = function(query, callback) {
-				let url = this.getUrl(query);
-				naja.makeRequest('GET', url, {}, {history: false})
-					.then((json) => {
-						if (json.pagination.more){
-							url.searchParams.set(formName+'page', json.pagination.page +1);
-							this.setNextUrl(query, url);
-						}
-
-						let items = json.results.map((item) => {
-							if (item.children) {
-								this.addOptionGroup(item.text, item);
-							}
-
-							return item.children || item;
-						});
-
-						// this.clearOptions();
-						callback(items);
-					})
-					.catch(() => callback());
-			};
-		}
-
-		let tomSelect = new TomSelect(el, options);
-	});
-
 	$('.modal').on('hidden.bs.modal', () => $(this).children('form').reset?.());
 
 	$('[data-signal]').off('click change').on('click change', function(e) {
@@ -143,6 +30,25 @@ function initFormControls()
 		$($(this).data('pwd-toggle')).attr('type', function(k, v) {
 			return v == 'text' ? 'password' : 'text';
 		});
+	});
+
+	if ($.fn.areYouSure) {
+		$('[data-check-dirty]').areYouSure();
+
+		let clearDirty = () => {
+			$('[data-check-dirty]').trigger('reinitialize.areYouSure');
+		};
+
+		$('.modal').on('hidden.bs.modal', clearDirty);
+		naja.addEventListener('before', clearDirty);
+	}
+
+	document.querySelectorAll('select:not(.custom-select,.select2),select.tom-select,input.tom-select').forEach((el) => {
+		if (typeof TomSelect !== 'function') {
+			return;
+		}
+
+		tomSelectInit(el);
 	});
 
 	document.querySelectorAll('a[data-clear-input]').forEach((el) => {
@@ -201,6 +107,126 @@ function insertAtCursor(input, value)
 	}
 
 	input.value = input.value.trim();
+}
+
+
+function tomSelectInit(el)
+{
+	if (el.tomselect !== undefined) {
+		return;
+	}
+
+	let formName = null;
+	let options = {
+		plugins: ['dropdown_input'],
+		searchField: ['text'],
+		labelField: 'text',
+		valueField: 'id',
+		create: 'tags' in el.dataset,
+		createOnBlur: 'createOnBlur' in el.dataset,
+		allowEmptyOption: true,
+		addPrecedence: true,
+		optgroupLabelField: 'group',
+		optgroupValueField: 'group',
+		optgroupField: 'group',
+		render:{
+			dropdown: () => '<div class="dropdown-menu"></div>',
+			item: (data, escape) => tomSelectFormat('item', data, escape, el.multiple),
+			option: (data, escape) => tomSelectFormat('option', data, escape, el.multiple),
+			option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
+			optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
+			no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
+			no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
+			loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
+			loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
+			not_loading: () => {	
+				if (Object.keys(el.tomselect.options).length > 0) {
+					return;
+				}
+
+				return `<div class="dropdown-item disabled">No results found</div>`;
+			}
+		}
+	};
+
+	if (el.form && 'formName' in el.form.dataset) {
+		formName = el.form.dataset.formName + '-';
+	}
+
+	if ('pattern' in el.dataset) {
+		options.createFilter = el.dataset.pattern;
+	}
+
+	if ('delimiter' in el.dataset) {
+		options.delimiter = el.dataset.delimiter;
+	}
+
+	if ('noSearch' in el.dataset) {
+		options.controlInput = null;
+		options.plugins = [];
+	}
+
+	if (el.hasAttribute('multiple')) {
+		options.plugins = [];
+		options.plugins.push('caret_position');
+		options.plugins.push('input_autogrow');
+		options.plugins.push('remove_button');
+	}
+
+	// ? For back compatibility with old Select2 option
+	if ('ajax-Url' in el.dataset && !('search' in el.dataset)) {
+		el.dataset.search = el.dataset['ajax-Url'];
+		delete el.dataset['ajax-Url'];
+	}
+
+	if ('search' in el.dataset) {
+		options.plugins.push('virtual_scroll');
+		options.sortField = [{field:'$order'},{field:'$score'}];
+		options.searchField = [];
+		options.allowEmptyOption = false;
+		options.loadThrottle = 150;
+		options.preload = 'focus';
+		options.firstUrl = (query) => {
+			let searchUrl = el.dataset.search.split('?');
+			let url = new URL(window.location.href);
+			url.pathname = searchUrl[0];
+			url.search = searchUrl[1];
+	
+			let params = findPrefixedUrlParams(formName);
+			Object.entries(params).forEach(([key, value]) => {
+				url.searchParams.set(key, value);
+			});
+	
+			url.searchParams.append(formName+'term', query);
+			url.searchParams.append(formName+'page', 1);
+			return url;
+		},
+
+		options.load = function(query, callback) {
+			let url = this.getUrl(query);
+			naja.makeRequest('GET', url, {}, {history: false})
+				.then((json) => {
+					if (json.pagination.more){
+						url.searchParams.set(formName+'page', json.pagination.page +1);
+						this.setNextUrl(query, url);
+					}
+
+					let items = json.results.map((item) => {
+						if (item.children) {
+							this.addOptionGroup(item.text, item);
+						}
+
+						return item.children || item;
+					});
+
+					// this.clearOptions();
+					callback(items);
+				})
+				.catch(() => callback());
+		};
+	}
+
+	return new TomSelect(el, options);
 }
 
 

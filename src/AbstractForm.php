@@ -9,6 +9,7 @@ namespace JuniWalk\Form;
 
 use Contributte\Translation\Wrappers\Message;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueException;
+use JuniWalk\Form\Attributes\PreventLeavingWhenDirty;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\SearchPayload;
 use JuniWalk\Utils\Arrays;
@@ -105,6 +106,20 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$fileName = $class->getFilename();
 
 		return sprintf('%s/templates/%s.latte', dirname($fileName ?: ''), $shortName);
+	}
+
+
+	public function isPreventLeavingWhenDirty(): bool
+	{
+		$attributes = (new ReflectionClass($this))
+			->getAttributes(PreventLeavingWhenDirty::class);
+
+		if (empty($attributes)) {
+			return false;
+		}
+
+		$preventLeaving = $attributes[0]->newInstance();
+		return $preventLeaving->for($this->layout);
 	}
 
 
@@ -275,6 +290,11 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$template->setParameters([
 			'layout' => $this->layout,
 			'form' => $form,
+
+			'formOptions' => [
+				'data-check-dirty' => $this->isPreventLeavingWhenDirty(),
+				'data-form-name' => $this->getName(),
+			],
 		]);
 
 		$template->render();

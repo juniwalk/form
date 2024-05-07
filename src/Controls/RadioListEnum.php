@@ -100,4 +100,14 @@ final class RadioListEnum extends RadioList
 
 		return parent::setDisabled($value);
 	}
+
+
+	public function isDisabled(mixed $key = null): bool
+	{
+		if (!$key || !is_array($this->disabled)) {
+			return parent::isDisabled();
+		}
+
+		return $this->disabled[$key] ?? false;
+	}
 }
