@@ -146,7 +146,7 @@ class SearchPayload implements JsonSerializable
 	public function getPayload(): array
 	{
 		/** @var array<int, Group|Result> */
-		$results = Arrays::mapRecursive($this->items, function(array $item): array {
+		$results = Arrays::map($this->items, function(array $item): array {
 			if (isset($item['children'])) {
 				$item['children'] = array_values($item['children']);
 			}
