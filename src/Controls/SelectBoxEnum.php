@@ -96,10 +96,10 @@ final class SelectBoxEnum extends SelectBox
 
 	public function isDisabled(mixed $key = null): bool
 	{
-		if (!$key || !is_array($this->disabled)) {
+		if (!$key || !is_array($this->disabled)) {	// @phpstan-ignore-line
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$key] ?? false;
+		return $this->disabled[$key] ?? false;		// @phpstan-ignore-line
 	}
 }
