@@ -8,7 +8,7 @@
 namespace JuniWalk\Form;
 
 use JsonSerializable;
-use JuniWalk\Form\SearchPayload as Deprecated;
+use JuniWalk\Form\Tools\SearchPayload as Deprecated;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Html;
