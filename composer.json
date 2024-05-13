@@ -30,7 +30,7 @@
 
 	"require": {
 		"php": ">=8.2",
-		"juniwalk/orm": ">=0.10",
+		"juniwalk/orm": ">=0.10 <1.0 | ^1.0",
 		"juniwalk/utils": "^4.0",
 		"nette/application": "^3.0",
 		"nette/di": "^3.0",
