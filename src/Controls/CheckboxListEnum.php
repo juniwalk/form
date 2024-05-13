@@ -127,4 +127,17 @@ final class CheckboxListEnum extends CheckboxList
 
 		return $this->disabled[$key->value] ?? false;	// @phpstan-ignore-line
 	}
+
+
+	public function isActive(mixed $key = null): bool
+	{
+		$key = $this->enumType::make($key, false);
+
+		if (!$key || !is_iterable($this->value)) {
+			return false;
+		}
+
+		$values = iterator_to_array($this->value);
+		return in_array($key->value, $values, true);
+	}
 }

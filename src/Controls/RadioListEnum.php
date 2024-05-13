@@ -112,4 +112,16 @@ final class RadioListEnum extends RadioList
 
 		return $this->disabled[$key->value] ?? false;	// @phpstan-ignore-line
 	}
+
+
+	public function isActive(mixed $key = null): bool
+	{
+		$key = $this->enumType::make($key, false);
+
+		if (!$key || !is_scalar($this->value)) {
+			return false;
+		}
+
+		return $key->value === $this->value;
+	}
 }
