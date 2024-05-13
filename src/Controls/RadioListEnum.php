@@ -43,7 +43,7 @@ final class RadioListEnum extends RadioList
 	public function getCases(): array
 	{
 		/** @var array<T> */
-		return Arrays::map($this->getItems(), fn($x, $y) => $this->enumType::make($y));
+		return Arrays::map($this->getItems(), fn($v, $k) => $this->enumType::make($k));
 	}
 
 
@@ -95,7 +95,7 @@ final class RadioListEnum extends RadioList
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($x) => $x->value);
+			$value = Arrays::map($value, fn($v) => $v->value);
 		}
 
 		return parent::setDisabled($value);

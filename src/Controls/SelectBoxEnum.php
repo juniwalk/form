@@ -87,7 +87,7 @@ final class SelectBoxEnum extends SelectBox
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($x) => $x->value);
+			$value = Arrays::map($value, fn($v) => $v->value);
 		}
 
 		return parent::setDisabled($value);

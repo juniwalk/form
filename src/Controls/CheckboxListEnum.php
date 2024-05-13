@@ -42,7 +42,7 @@ final class CheckboxListEnum extends CheckboxList
 	public function getCases(): array
 	{
 		/** @var array<T> */
-		return Arrays::map($this->getItems(), fn($x, $y) => $this->enumType::make($y));
+		return Arrays::map($this->getItems(), fn($v, $k) => $this->enumType::make($k));
 	}
 
 
@@ -100,7 +100,7 @@ final class CheckboxListEnum extends CheckboxList
 		}
 
 		/** @var array<int|string, T> */
-		return Arrays::map($this->value, fn($x) => $this->enumType::make($x));
+		return Arrays::map($this->value, fn($v) => $this->enumType::make($v));
 	}
 
 
