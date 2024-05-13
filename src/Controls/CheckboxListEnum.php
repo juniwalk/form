@@ -99,8 +99,8 @@ final class CheckboxListEnum extends CheckboxList
 			return [];
 		}
 
-		/** @var array<T> */
-		return Arrays::map($this->value, fn($x, $y) => $this->enumType::make($y, false));
+		/** @var array<int|string, T> */
+		return Arrays::map($this->value, fn($x) => $this->enumType::make($x));
 	}
 
 
