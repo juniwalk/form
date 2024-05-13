@@ -119,10 +119,12 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function isDisabled(mixed $key = null): bool
 	{
-		if (!$key || !is_array($this->disabled)) {	// @phpstan-ignore-line
+		$key = $this->enumType::make($key, false);
+
+		if (!$key || !is_array($this->disabled)) {		// @phpstan-ignore-line
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$key] ?? false;		// @phpstan-ignore-line
+		return $this->disabled[$key->value] ?? false;	// @phpstan-ignore-line
 	}
 }
