@@ -49,7 +49,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	protected Layout $layout = Layout::Card;
 	protected HttpRequest $httpRequest;
-	protected ?Translator $translator = null;
+	protected Translator $translator;
 	protected ?string $templateFile = null;
 	protected bool $isModalOpen = false;
 
@@ -123,7 +123,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
-	public function setTranslator(?Translator $translator): void
+	public function setTranslator(Translator $translator): void
 	{
 		$this->translator = $translator;
 	}
@@ -131,7 +131,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	public function getTranslator(): ?Translator
 	{
-		return $this->translator;
+		return $this->translator ?? null;
 	}
 
 
@@ -279,7 +279,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		/** @var DefaultTemplate */
 		$template = $this->createTemplate();
 		$template->setFile($this->getTemplateFile());
-		$template->setTranslator($this->translator);
+		$template->setTranslator($this->getTranslator());
 
 		$this->trigger('render', $this, $template);
 
@@ -304,7 +304,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	protected function createComponentForm(): Form
 	{
 		$form = new Form;
-		$form->setTranslator($this->translator);
+		$form->setTranslator($this->getTranslator());
 		$form->addHidden('_layout_');
 		$form->addProtection();
 
@@ -389,6 +389,10 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	 */
 	protected function translate(string $message, array $params = []): string|Stringable
 	{
-		return $this->translator?->translate($message, $params) ?? $message;
+		if (!isset($this->translator)) {
+			return $message;
+		}
+
+		return $this->translator->translate($message, $params);
 	}
 }
