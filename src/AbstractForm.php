@@ -17,6 +17,7 @@ use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Interfaces\EventAutoWatch;
 use JuniWalk\Utils\Interfaces\EventHandler;
 use JuniWalk\Utils\Interfaces\Modal;
+use JuniWalk\Utils\Interfaces\ModalHandler;
 use JuniWalk\Utils\Strings;
 use JuniWalk\Utils\Traits\Events;
 use JuniWalk\Utils\Traits\RedirectAjaxHandler;
@@ -325,6 +326,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$form->onError[] = function(Form $form): void {
 			$this->trigger('error', $form, $this);
 			$this->redrawControl();
+			$this->reopenModal();
 		};
 
 		return $form;
@@ -394,5 +396,19 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		}
 
 		return $this->translator->translate($message, $params);
+	}
+
+
+	private function reopenModal(): void
+	{
+		$presenter = $this->getPresenterIfExists();
+
+		if ($this->layout <> Layout::Modal ||
+			!$presenter instanceof ModalHandler ||
+			!$presenter->isAjax()) {
+			return;
+		}
+
+		$presenter->openModal($this);
 	}
 }
