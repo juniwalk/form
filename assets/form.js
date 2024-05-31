@@ -8,17 +8,10 @@ function initFormControls()
 {
 	$('.modal').on('hidden.bs.modal', () => $(this).children('form').reset?.());
 
-	$('[data-signal]').off('click change').on('click change', function(e) {
-		if (!this.matches('BUTTON') && e.type == 'click') {
-			return;
-		}
+	$('[data-signal]:is(button)').off('click').on('click', (e) => handleSignal(e.target));
+	$('[data-signal]:not(button):is([type^="datetime"])').off('blur').on('blur', (e) => handleSignal(e.target));
+	$('[data-signal]:not(button):not([type^="datetime"])').off('change').on('change', (e) => handleSignal(e.target));
 
-		let signalLink = this.dataset.signal.replace(/__?value_?/, this.value);
-		let formData = new FormData(this.form); formData.delete('_do');
-
-		displayRequestSpinner(this);
-		naja.makeRequest('POST', signalLink, formData);	// , {history: false}
-	});
 
 	$('[data-auto-submit]').off('change').on('change', function(e) {
 		let submitButton = $(this).parent().find('[type=submit]');
@@ -63,6 +56,20 @@ function initFormControls()
 			input.dispatchEvent(new Event('change'));
 		});
 	});
+}
+
+
+function handleSignal(el)
+{
+	if (!('signal' in el.dataset)) {
+		return;
+	}
+
+	let signalLink = el.dataset.signal.replace(/__?value_?/, el.value);
+	let formData = new FormData(el.form); formData.delete('_do');
+
+	// displayRequestSpinner(this);
+	naja.makeRequest('POST', signalLink, formData);	// , {history: false}
 }
 
 
