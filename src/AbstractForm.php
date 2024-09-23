@@ -357,13 +357,9 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			return;
 		}
 
-		$fields = array_combine(
-			Strings::split($matched['field'], '/,\s?/'),
-			Strings::split($matched['value'], '/,\s?/'),
-		);
-
+		$fields = array_fill_keys(Strings::split($matched['field'], '/,\s/'), null);
 		$fields = Arrays::walk($fields, fn($value, $field) =>
-			yield $fieldMap[$field] ?? Format::camelCase($field) => $value
+			yield $fieldMap[$field] ?? Format::camelCase($field) => $form->getComponent($field, false)?->getValue() ?? $value
 		);
 
 		$fieldKey = implode('-', array_keys($fields));
