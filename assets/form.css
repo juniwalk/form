@@ -4,11 +4,11 @@
  * @license   MIT License
  */
 
-input:read-only { color: var(--secondary) !important; }
+input:read-only { color: var(--bs-secondary, var(--secondary)) !important; }
 input:-webkit-autofill:is(*,:focus,:active,:hover) {
 	filter: none; /* needed for firefox! */
 	box-shadow: 0 0 0 100px #fff inset;
-	border-color: var(--orange) !important;
+	border-color: var(--bs-orange, var(--orange)) !important;
 }
 
 textarea { min-height: 38px; }
@@ -44,7 +44,7 @@ textarea.code {
 .form-group.required label.form-label::after,
 .form-group.required label.control-label::after,
 .custom-control.required label.control-label::after {
-	color: var(--red);
+	color: var(--bs-danger, var(--danger));
 	content: "*";
 	margin-left: 4px;
 }
@@ -58,10 +58,10 @@ textarea.code {
  * TomSelect
  */
 .ts-wrapper.single .ts-control .item { width: 100%; margin-right: 2.75rem; }
-.ts-wrapper.multi .ts-control .item .remove { border-color: var(--secondary); }
+.ts-wrapper.multi .ts-control .item .remove { border-color: var(--bs-secondary, var(--secondary)); }
 .ts-wrapper.multi .ts-control .item .remove:hover { background: rgba(0,0,0, .1); }
 .ts-wrapper.multi .ts-control .item {
-	background: var(--secondary);
+	background: var(--bs-secondary, var(--secondary));
 	color: #fff;
 }
 
@@ -101,12 +101,12 @@ textarea.code {
 }
 
 .form-control:is([data-valid], .is-valid) + .ts-wrapper .ts-control {
-	border-color: var(--green) !important;
+	border-color: var(--bs-success, var(--success)) !important;
 	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>");
 }
 
 .form-control:is([data-invalid], .is-invalid) + .ts-wrapper .ts-control {
-	border-color: var(--red) !important;
+	border-color: var(--bs-danger, var(--danger)) !important;
 	background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/></svg>");
 }
 
@@ -137,5 +137,5 @@ textarea.code {
 .dark-mode input:read-only { background: #2f343a !important; }
 
 .dark-mode input:-webkit-autofill:is(*,:focus,:active,:hover) {
-	box-shadow: 0 0 0 100px var(--gray-dark) inset;
+	box-shadow: 0 0 0 100px var(--bs-gray-dark, var(--gray-dark)) inset;
 }
