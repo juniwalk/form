@@ -33,12 +33,15 @@ textarea.code {
 	transition: none;
 }
 
+.form-group label.form-label,
 .form-group label.control-label,
 .custom-control label.control-label { font-weight: normal; }
 
+.form-group.required label.form-label,
 .form-group.required label.control-label,
 .custom-control.required label.control-label { font-weight: bold; }
 
+.form-group.required label.form-label::after,
 .form-group.required label.control-label::after,
 .custom-control.required label.control-label::after {
 	color: var(--red);
