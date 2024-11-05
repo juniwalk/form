@@ -15,6 +15,7 @@ enum Layout: string implements LabeledEnum
 	use Labeled;
 
 	case Accordion = 'accordion';
+	case Bare = 'bare';
 	case Card = 'card';
 	case Modal = 'modal';
 

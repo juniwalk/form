@@ -271,6 +271,13 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
+	public function renderBare(): void
+	{
+		$this->setLayout(Layout::Bare);
+		$this->render();
+	}
+
+
 	public function render(): void
 	{
 		if (!$this->isModalOpen && $this->layout == Layout::Modal) {

@@ -1,0 +1,59 @@
+<div n:snippet="form">
+
+{default $contentClass = null}
+{default $contentPos = 'top'}
+
+<div id="{$control->getName()}">
+<form n:name="form" n:attr="...$formOptions">
+
+	<div class="mb-3">
+		<h3 n:ifset="block title">{include #title|noescape}</h3>
+		{ifset #tools}{include #tools}{/ifset}
+	</div>
+
+	<div class="alerts mb-3" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
+	</div>
+
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
+
+		{include #content}
+
+	</div>
+
+	<div class="mb-3" n:ifcontent>
+
+		{ifset #controls-bare}
+			{include #controls-bare}
+		{elseifset #controls}
+			{include #controls}
+		{/ifset}
+
+	</div>
+
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
+
+		{include #content}
+
+	</div>
+
+	<div n:ifcontent>
+
+		{ifset #buttons-bare}
+			{include #buttons-bare}
+		{elseifset #buttons}
+			{include #buttons}
+		{/ifset}
+
+	</div>
+
+	<script type="text/javascript" n:ifcontent n:inner-foreach="$form->getControls() as $input">
+		{continueIf !$input->hasErrors()}
+		document.getElementById({$input->getHtmlId()}).classList.add('is-invalid')
+	</script>
+
+	{ifset #javascript}{include #javascript}{/ifset}
+
+</form>
+</div>
+</div>
