@@ -6,8 +6,8 @@
 <div id="{$control->getName()}">
 <form n:name="form" n:attr="...$formOptions">
 
-	<div class="mb-3">
-		<h3 n:ifset="block title">{include #title|noescape}</h3>
+	<div class="mb-3" n:ifcontent>
+		<h3 n:ifset="block title" n:ifcontent>{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
 
