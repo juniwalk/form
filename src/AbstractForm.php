@@ -301,7 +301,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 			'formOptions' => [
 				'data-check-dirty' => $this->isPreventLeavingWhenDirty(),
-				'data-form-name' => $this->lookupPath() ?? $this->getName(),
+				'data-form-name' => $this->lookupPath(throw: false) ?? $this->getName(),
 			],
 		]);
 
