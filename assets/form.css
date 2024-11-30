@@ -74,7 +74,19 @@ textarea.code {
 .ts-wrapper.focus .ts-control,
 .ts-wrapper input { box-shadow: none !important; }
 
-.ts-wrapper .ts-dropdown .dropdown-item.active { color: #fff; }
+
+/** Dropdown items */
+.ts-wrapper .ts-dropdown .dropdown-item:is(.active, :hover, :focus) {
+	background-color: #e9ecef;
+	color: #16181b;
+}
+
+.ts-wrapper .ts-dropdown .dropdown-item:is(.selected) {
+	background-color: var(--primary);
+	color: #fff;
+}
+
+
 .ts-wrapper .ts-dropdown .dropdown-input-wrap { padding: 4px; }
 .ts-wrapper .ts-dropdown .dropdown-input { border-width: 1px; }
 .ts-wrapper .ts-dropdown {
@@ -118,6 +130,12 @@ textarea.code {
 	background-color: #343a40 !important;
 	border-color: #6c757d !important;
 	color: #fff !important;
+}
+
+/** Dropdown items */
+.dark-mode .ts-wrapper .ts-dropdown .dropdown-item:is(.active, :hover, :focus) {
+	background-color: #3f474e;
+	color: #fff;
 }
 
 .dark-mode .ts-wrapper .ts-dropdown .optgroup::before { border-color: #6c757d; }
