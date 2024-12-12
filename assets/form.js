@@ -25,6 +25,13 @@ function initFormControls()
 		});
 	});
 
+	$('.range-slider input[type="range"]').each(function() {
+		let rangeValue = $(this).prev('.range-value');
+		rangeValue.html(this.value);
+
+		$(this).on('input', () => rangeValue.html(this.value));
+	});
+
 	if ($.fn.areYouSure) {
 		$('[data-check-dirty]').areYouSure();
 
