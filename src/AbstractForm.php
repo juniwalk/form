@@ -22,6 +22,7 @@ use JuniWalk\Utils\Strings;
 use JuniWalk\Utils\Traits\Events;
 use JuniWalk\Utils\Traits\RedirectAjaxHandler;
 use Nette\Application\AbortException;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
@@ -409,6 +410,9 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	{
 		try {
 			$method($form, $data);
+
+		} catch (ForbiddenRequestException) {
+			$form->addError('web.message.permission-denied');
 
 		} catch (Throwable $e) {
 			$form->addError('web.message.something-went-wrong');
