@@ -325,8 +325,9 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->catch($this->handleSuccess(...), $form, $data);
+		};
+		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->trigger('success', $form, $data, $this);
-
 			$this->redrawControl();
 			$form->reset();
 		};
