@@ -12,6 +12,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueExceptio
 use JuniWalk\Form\Attributes\PreventLeavingWhenDirty;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\SearchPayload;
+use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Interfaces\EventAutoWatch;
@@ -410,6 +411,15 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	{
 		try {
 			$method($form, $data);
+
+		} catch (EntityNotFoundException $e) {
+			if ($control = $form->getComponent($e->getEntityName(), false)) {
+				/** @var BaseControl $control */
+				$control->addError('web.message.entity-not-found');
+				return;
+			}
+
+			throw $e;
 
 		} catch (ForbiddenRequestException) {
 			$form->addError('web.message.permission-denied');
