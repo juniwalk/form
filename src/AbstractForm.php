@@ -413,13 +413,12 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			$method($form, $data);
 
 		} catch (EntityNotFoundException $e) {
-			if ($control = $form->getComponent($e->getEntityName(), false)) {
-				/** @var BaseControl $control */
-				$control->addError('web.message.entity-not-found');
-				return;
+			if (!$control = $form->getComponent($e->getEntityName(), false)) {
+				throw $e;
 			}
 
-			throw $e;
+			/** @var BaseControl $control */
+			$control->addError('web.message.entity-not-found');
 
 		} catch (ForbiddenRequestException) {
 			$form->addError('web.message.permission-denied');
