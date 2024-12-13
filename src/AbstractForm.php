@@ -329,6 +329,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->catch($this->handleSuccess(...), $form, $data);
 		};
+
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->trigger('success', $form, $data, $this);
 			$this->redrawControl();
@@ -418,7 +419,10 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			}
 
 			/** @var BaseControl $control */
-			$control->addError('web.message.entity-not-found');
+			$control->addError(new Message('web.message.entity-not-found', [
+				'field' => $e->getEntityName(),
+				'id' => $e->getId(),
+			]));
 
 		} catch (ForbiddenRequestException) {
 			$form->addError('web.message.permission-denied');
