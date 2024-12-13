@@ -316,16 +316,17 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$form->addHidden('_layout_');
 		$form->addProtection();
 
-		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
+		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->setLayout($data->_layout_);
 
-			$this->handleValidate($form, $data);
+			$this->catch($this->handleValidate(...), $form, $data);
 			$this->trigger('validate', $form, $data, $this);
 		};
 
-		$form->onSuccess[] = $this->handleSuccess(...);						// @phpstan-ignore-line
-		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore-line
+		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
+			$this->catch($this->handleSuccess(...), $form, $data);
 			$this->trigger('success', $form, $data, $this);
+
 			$this->redrawControl();
 			$form->reset();
 		};
@@ -399,6 +400,18 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		}
 
 		return $this->translator->translate($message, $params);
+	}
+
+
+	private function catch(callable $method, Form $form, ArrayHash $data): void
+	{
+		try {
+			$method($form, $data);
+
+		} catch (Throwable $e) {
+			$form->addError('web.message.something-went-wrong');
+			Debugger::log($e);
+		}
 	}
 
 
