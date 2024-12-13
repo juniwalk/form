@@ -323,6 +323,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			$this->trigger('validate', $form, $data, $this);
 		};
 
+		// ? Method handleSuccess has to be called in separate event for proper error handling
 		$form->onSuccess[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->catch($this->handleSuccess(...), $form, $data);
 		};
