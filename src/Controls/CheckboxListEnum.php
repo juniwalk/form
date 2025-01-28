@@ -144,7 +144,7 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function getColor(mixed $key, bool $outline = true): string
 	{
-		$enum = $this->enumType::make($key, false);
+		$enum = $this->enumType::make($key);
 
 		if ($outline && $this->isDisabled($enum) && $this->isActive($enum)) {
 			$outline = false;
@@ -153,5 +153,25 @@ final class CheckboxListEnum extends CheckboxList
 		return $enum->color()->for(
 			$outline ? 'btn-outline' : 'btn'
 		);
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function getClassList(mixed $key): array
+	{
+		$list = [];
+		$list[] = $this->getColor($key);
+
+		if ($this->isDisabled($key)) {
+			$list[] = 'disabled';
+		}
+
+		if ($this->isActive($key)) {
+			$list[] = 'active';
+		}
+
+		return $list;
 	}
 }
