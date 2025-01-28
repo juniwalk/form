@@ -104,24 +104,38 @@ final class RadioListEnum extends RadioList
 
 	public function isDisabled(mixed $key = null): bool
 	{
-		$key = $this->enumType::make($key, false);
+		$enum = $this->enumType::make($key, false);
 
-		if (!$key || !is_array($this->disabled)) {		// @phpstan-ignore-line
+		if (!$enum || !is_array($this->disabled)) {		// @phpstan-ignore-line
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$key->value] ?? false;	// @phpstan-ignore-line
+		return $this->disabled[$enum->value] ?? false;	// @phpstan-ignore-line
 	}
 
 
 	public function isActive(mixed $key = null): bool
 	{
-		$key = $this->enumType::make($key, false);
+		$enum = $this->enumType::make($key, false);
 
-		if (!$key || !is_scalar($this->value)) {
+		if (!$enum || !is_scalar($this->value)) {
 			return false;
 		}
 
-		return $key->value === $this->value;
+		return $enum->value === $this->value;
+	}
+
+
+	public function getColor(mixed $key, bool $outline = true): string
+	{
+		$enum = $this->enumType::make($key, false);
+
+		if ($outline && $this->isDisabled($enum) && $this->isActive($enum)) {
+			$outline = false;
+		}
+
+		return $enum->color()->for(
+			$outline ? 'btn-outline' : 'btn'
+		);
 	}
 }

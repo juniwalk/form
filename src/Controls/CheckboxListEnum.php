@@ -119,25 +119,39 @@ final class CheckboxListEnum extends CheckboxList
 
 	public function isDisabled(mixed $key = null): bool
 	{
-		$key = $this->enumType::make($key, false);
+		$enum = $this->enumType::make($key, false);
 
-		if (!$key || !is_array($this->disabled)) {		// @phpstan-ignore-line
+		if (!$enum || !is_array($this->disabled)) {		// @phpstan-ignore-line
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$key->value] ?? false;	// @phpstan-ignore-line
+		return $this->disabled[$enum->value] ?? false;	// @phpstan-ignore-line
 	}
 
 
 	public function isActive(mixed $key = null): bool
 	{
-		$key = $this->enumType::make($key, false);
+		$enum = $this->enumType::make($key, false);
 
-		if (!$key || !is_iterable($this->value)) {
+		if (!$enum || !is_iterable($this->value)) {
 			return false;
 		}
 
 		$values = iterator_to_array($this->value);
-		return in_array($key->value, $values, true);
+		return in_array($enum->value, $values, true);
+	}
+
+
+	public function getColor(mixed $key, bool $outline = true): string
+	{
+		$enum = $this->enumType::make($key, false);
+
+		if ($outline && $this->isDisabled($enum) && $this->isActive($enum)) {
+			$outline = false;
+		}
+
+		return $enum->color()->for(
+			$outline ? 'btn-outline' : 'btn'
+		);
 	}
 }
