@@ -57,7 +57,9 @@ textarea.code {
 /**
  * TomSelect
  */
-.ts-wrapper.single .ts-control .item { width: 100%; margin-right: 2.75rem; }
+.ts-wrapper.single .ts-control .item { width: 100%; }
+.ts-wrapper.single .ts-control:not(.rtl)::after { right: calc(.5rem + 5px); }
+
 .ts-wrapper.multi .ts-control .item .remove { border-color: var(--bs-secondary, var(--secondary)); }
 .ts-wrapper.multi .ts-control .item .remove:hover { background: rgba(0,0,0, .1); }
 .ts-wrapper.multi .ts-control .item {
