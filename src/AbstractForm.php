@@ -287,7 +287,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		}
 
 		/** @var DefaultTemplate */
-		$template = $this->createTemplate();
+		$template = $this->getTemplate();
 		$template->setFile($this->getTemplateFile());
 		$template->setTranslator($this->getTranslator());
 
