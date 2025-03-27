@@ -8,9 +8,9 @@ function initFormControls()
 {
 	$('.modal').on('hidden.bs.modal', () => $(this).children('form').reset?.());
 
-	$('[data-signal]:is(button)').off('click').on('click', (e) => handleSignal(e.target));
-	$('[data-signal]:not(button):is([type^="datetime"])').off('blur').on('blur', (e) => handleSignal(e.target));
-	$('[data-signal]:not(button):not([type^="datetime"])').off('change').on('change', (e) => handleSignal(e.target));
+	$('[data-signal]:is(button)').off('click').on('click', (e) => handleSignal(e.currentTarget));
+	$('[data-signal]:not(button):is([type^="datetime"])').off('blur').on('blur', (e) => handleSignal(e.currentTarget));
+	$('[data-signal]:not(button):not([type^="datetime"])').off('change').on('change', (e) => handleSignal(e.currentTarget));
 
 
 	$('[data-auto-submit]').off('change').on('change', function(e) {
