@@ -28,7 +28,7 @@ final class RadioListEnum extends RadioList
 	 */
 	public function setEnumType(string $enumType): static
 	{
-		if (!is_subclass_of($enumType, LabeledEnum::class)) {
+		if (!is_subclass_of($enumType, LabeledEnum::class)) {	// @phpstan-ignore function.alreadyNarrowedType
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 		}
 
@@ -76,7 +76,7 @@ final class RadioListEnum extends RadioList
 			$value = $this->enumType::make($value, $value !== '');
 		}
 
-		return parent::setValue($value?->value ?? null);
+		return parent::setValue($value?->value ?? null);	// @phpstan-ignore nullsafe.neverNull (It can be null?)
 	}
 
 

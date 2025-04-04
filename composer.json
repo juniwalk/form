@@ -29,8 +29,8 @@
 	},
 
 	"require": {
-		"php": ">=8.2",
-		"juniwalk/orm": ">=0.10 <1.0 | ^1.0 | ^2.0",
+		"php": ">=8.3",
+		"juniwalk/orm": "^2.0 | ^3.0",
 		"juniwalk/utils": "^4.0",
 		"nette/application": "^3.0",
 		"nette/di": "^3.0",
@@ -42,9 +42,9 @@
 		"contributte/translation": "^2.0",
 		"nette/tester": "^2.5",
 		"phpstan/extension-installer": "^1.0",
-		"phpstan/phpstan": "^1.0",
-		"phpstan/phpstan-nette": "^1.0",
-		"staabm/phpstan-todo-by": "^0.1",
+		"phpstan/phpstan": "^2.0",
+		"phpstan/phpstan-nette": "^2.0",
+		"staabm/phpstan-todo-by": "^0.2",
 		"tracy/tracy": "^2.10"
 	}
 }

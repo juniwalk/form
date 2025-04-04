@@ -27,7 +27,7 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function setEnumType(string $enumType): static
 	{
-		if (!is_subclass_of($enumType, LabeledEnum::class)) {
+		if (!is_subclass_of($enumType, LabeledEnum::class)) {	// @phpstan-ignore function.alreadyNarrowedType
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 		}
 
@@ -72,7 +72,7 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function setValue(mixed $values): self
 	{
-		if (!is_iterable($values)) {
+		if (!is_iterable($values)) {	// @phpstan-ignore function.alreadyNarrowedType
 			return parent::setValue(null);
 		}
 
