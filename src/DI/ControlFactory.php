@@ -41,7 +41,7 @@ final class ControlFactory
 	public static function addDateTime(
 		Form $form,
 		string $name,
-		string $label = null,
+		?string $label = null,
 	): Control {
 		return $form[$name] = new Controls\DateTimePicker($label);
 	}
@@ -50,7 +50,7 @@ final class ControlFactory
 	public static function addPhoneNumber(
 		Form $form,
 		string $name,
-		string $label = null,
+		?string $label = null,
 		?int $cols = null,
 		?int $maxLength = null,
 	): Control {
