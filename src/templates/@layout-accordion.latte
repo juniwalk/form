@@ -5,12 +5,12 @@
 {default $contentPos = 'top'}
 {default $headColor = null}
 
-<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
+<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
-	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}-content">
+	<a class="d-block w-100 collapsed" data-toggle="collapse" href="#{$control->getUniqueId()}-content" data-bs-toggle="collapse" data-bs-target="#{$control->getUniqueId()}-content">
 		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-			<h3 class="card-title" n:ifset="block title">{include #title|noescape}</h3>
+			<h3 class="card-title m-0" n:ifset="block title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
 	</a>
@@ -19,7 +19,7 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div id="{$control->getUniqueId()}-content" n:class="collapse, $form->hasErrors() ? show" data-parent="#{$container}">
+	<div id="{$control->getUniqueId()}-content" n:class="collapse, $form->hasErrors() ? show" data-parent="#{$container}" data-bs-parent="#{$container}">
 
 		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
 

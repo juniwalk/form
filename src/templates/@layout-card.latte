@@ -5,11 +5,11 @@
 {default $contentPos = 'top'}
 {default $headColor = null}
 
-<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline">
+<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-		<h3 class="card-title" n:ifset="block title">{include #title|noescape}</h3>
+		<h3 class="card-title m-0" n:ifset="block title">{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
 

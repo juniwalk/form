@@ -264,7 +264,9 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$this->setLayout(Layout::Modal);
 		$this->when('render', fn($x, $t) => $t->setParameters([
 			'modalOptions' => [
+				'data-bs-backdrop' => Format::stringify($backdrop),
 				'data-backdrop' => Format::stringify($backdrop),
+				'data-bs-keyboard' => Format::stringify($keyboard),
 				'data-keyboard' => Format::stringify($keyboard),
 			],
 		]));

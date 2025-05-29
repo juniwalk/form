@@ -13,9 +13,9 @@
 
 	<div class="modal-content">
 
-		<div class="modal-header bg-{$color}">
+		<div class="modal-header bg-{$color} text-bg-{$color}">
 			<h5 class="modal-title" n:ifset="block title">{include #title}</h5>
-			<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+			<button type="button" class="btn-close close" data-dismiss="modal" data-bs-dismiss="modal"></button>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
 
@@ -45,9 +45,9 @@
 
 		</div>
 
-		<div class="modal-footer bg-light" n:ifcontent>
+		<div class="modal-footer bg-light bg-body-tertiary" n:ifcontent>
 
-			<button type="button" class="btn btn-secondary" data-dismiss="modal" n:if="$hasCloseButton">{_web.button.close|noescape}</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal" n:if="$hasCloseButton">{_web.button.close|noescape}</button>
 
 			{ifset #buttons-modal}
 				{include #buttons-modal}
