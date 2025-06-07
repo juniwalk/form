@@ -75,20 +75,28 @@ function handleSignal(el)
 	let signalLink = el.dataset.signal.replace(/__?value_?/, el.value);
 	let formData = new FormData(el.form); formData.delete('_do');
 
-	handleSignalSpinner(el);
+	showSignalSpinner(el);
 	naja.makeRequest('POST', signalLink, formData);	// , {history: false}
 }
 
 
-function handleSignalSpinner(element)
+function handleSignalSpinner(element) { showSignalSpinner(element); }
+function showSignalSpinner(element)
 {
+	if (element.hasAttribute('data-overlay')) {
+		$('.app-wrapper > .overlay, .wrapper > .overlay').fadeIn();
+	}
+
 	if (element.matches('.spinner')) {
 		$('i', element).addClass('fa-spin');
 	}
+}
 
-	if (element.hasAttribute('data-overlay')) {
-		$('.wrapper > .overlay').fadeIn();
-	}
+
+function hideSignalSpinner()
+{
+	$('.app-wrapper > .overlay, .wrapper > .overlay').fadeOut();
+	$('.spinner > i.fa-spin').removeClass('fa-spin');
 }
 
 
