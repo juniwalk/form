@@ -266,9 +266,12 @@ function tomSelectInit(el)
 
 function tomSelectFormat(type, data, escape, isMultiple)
 {
+	let text = document.createElement('span');
+	text.append(escape(data.text));
+	text.classList.add('text-truncate');
+
 	let html = document.createElement('div');
-	html.classList.add('text-truncate');
-	html.append(escape(data.text));
+	html.append(text);
 
 	if (type === 'option') {
 		html.classList.add('dropdown-item');
@@ -289,7 +292,7 @@ function tomSelectFormat(type, data, escape, isMultiple)
 	if (data.icon && data.icon !== undefined) {
 		let icon = document.createElement('i');
 		icon.classList.add('fa', 'fa-fw', ... data.icon.split(' '));
-		icon.style.marginRight = '2px';
+		icon.style.marginRight = '6px';
 		icon.style.marginTop = '2px';
 
 		if (data.color && (type !== 'item' || !isMultiple)) {
