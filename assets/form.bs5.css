@@ -22,7 +22,7 @@ textarea.code {
 }
 
 
-.form-text { color: var(--bs-secondary); font-style: italic; }
+.form-text { color: var(--bs-tertiary-color); font-size: .8rem; line-height: 1.5; display: block; }
 
 .form-group { margin-bottom: 1rem; }
 .form-group label.form-label { font-weight: normal; }
@@ -55,6 +55,50 @@ textarea.code {
 
 /**
  * ====================================
+ * Summernote
+ * ====================================
+ */
+.note-editor.card {
+	border-color: var(--bs-border-color);
+	background-color: var(--bs-body-bg);
+	margin-bottom: 0px;
+}
+
+.note-editor.note-airframe p:last-child { margin-bottom: 0px; }
+.note-editor.note-airframe .note-placeholder { padding: 0px; }
+.note-editor.note-airframe .note-popover { position: absolute; }
+
+/* TODO: Fuck up the placement of arrow */
+/* .note-editor.note-airframe .note-popover-content {
+	--bs-popover-body-padding-y: .25rem;
+	--bs-popover-body-padding-x: .25rem;
+} */
+
+
+/**
+ * Fix washed up button coloring
+ */
+.note-editor .note-btn:not(:hover, :focus, .active) {
+	border-color: var(--bs-btn-border-color);
+	background-color: rgba(var(--bs-secondary-rgb), .125);
+	color: var(--bs-btn-color);
+}
+
+.note-editor .note-btn:hover {
+	border-color: var(--bs-btn-hover-border-color);
+	background-color: var(--bs-btn-hover-bg);
+	color: var(--bs-btn-hover-color);
+}
+
+.note-editor .note-btn:is(:focus, .active) {
+	border-color: var(--bs-btn-active-border-color);
+	background-color: var(--bs-btn-active-bg);
+	color: var(--bs-btn-active-color);
+}
+
+
+/**
+ * ====================================
  * TomSelect
  * ====================================
  */
@@ -62,14 +106,20 @@ textarea.code {
 	--ts-image-caret: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
 	--ts-image-invalid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
 	--ts-image-valid: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1'/%3e%3c/svg%3e");
+
+	--ts-wrapper-disabled-color: var(--bs-secondary);
+	--ts-wrapper-disabled-bg: var(--bs-light);
 }
 
 [data-bs-theme=dark] {
 	color-scheme: dark;
 	--ts-image-caret: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23dee2e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+
+	--ts-wrapper-disabled-bg: var(--bs-gray-dark);
 }
 
 
+.ts-wrapper.disabled { background: var(--ts-wrapper-disabled-bg); color: var(--ts-wrapper-disabled-color); }
 .ts-wrapper.multi:is(.form-select):is(.has-items) { background-image: none; }
 .ts-wrapper .ts-control {
 	--ts-input-padding-y: .275rem;
@@ -145,12 +195,19 @@ textarea.code {
 				color .15s ease-in-out;
 }
 
+.ts-wrapper.plugin-remove_button:is(.disabled) .item .remove {
+	padding: 0px !important;
+	border: 0px;
+	width: 0px;
+	overflow: hidden;
+}
+
 
 /**
  * Carets
  */
 .ts-wrapper.single { --ts-image-count: 1; }
-.ts-wrapper.single .ts-control {
+.ts-wrapper.single:not(.disabled) .ts-control {
 	padding-right: max(var(--ts-pr-min), var(--ts-pr-clear-button) + var(--ts-pr-caret) * var(--ts-image-count)) !important;
 }
 
@@ -217,38 +274,35 @@ textarea.code {
  * ====================================
  */
 .range-slider {
+	background: none !important;
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
 	align-items: center;
+	column-gap: 1.25rem;
 }
 
-.range-slider .form-range {
-	width: calc(100% - 100px);
-	display: inline-block;
-}
-
+.range-slider .form-range { flex: 1 1 auto !important; }
 .range-slider .range-value {
-	display: inline-block;
-	position: relative;
-	color: var(--bs-light);
-	background-color: var(--bs-secondary);
-	width: 75px;
+	--lte-range-value-color: var(--bs-body-color);
+	--lte-range-value-bg: var(--bs-dark-bg-subtle);
 
+	min-width: 4.5rem;
 	line-height: 20px;
 	text-align: center;
-	padding: 5px 10px;
-	margin-right: 8px;
+	padding: .25rem .5rem;
+	position: relative;
+	color: var(--lte-range-value-color);
+	background-color: var(--lte-range-value-bg);
+	border-radius: var(--bs-border-radius-sm);
 }
 
 .range-slider .range-value:after {
 	position: absolute;
-	top: 8px;
-	right: -7px;
+	top: calc(50% - 7px);
+	right: -6px;
 	width: 0;
 	height: 0;
 	border-top: 7px solid transparent;
-	border-left: 7px solid var(--bs-secondary);
+	border-left: 7px solid var(--lte-range-value-bg);
 	border-bottom: 7px solid transparent;
 	content: '';
 }
@@ -257,30 +311,49 @@ textarea.code {
 /**
  * Range slider (small)
  */
-.range-slider.range-slider-sm .form-range { width: calc(100% - 75px); }
-.range-slider.range-slider-sm .range-value:after { top: 4px; }
+.range-slider.range-slider-sm .range-value:after { top: calc(50% - 7px); }
 .range-slider.range-slider-sm .range-value {
-	line-height: 16px;
-	padding: 3px 5px;
+	padding: .125rem .25rem;
 	font-size: .8rem;
-	width: 50px;
+	min-width: 3rem;
 }
 
 
 /**
- * TODO: Make this work with bg-* classes instead
  * Color variants
  */
-.range-slider.range-primary .range-value { background-color: var(--bs-primary); }
-.range-slider.range-primary .range-value:after { border-left-color: var(--bs-primary); }
-.range-slider.range-info .range-value { background-color: var(--bs-info); }
-.range-slider.range-info .range-value:after { border-left-color: var(--bs-info); }
-.range-slider.range-success .range-value { background-color: var(--bs-success); }
-.range-slider.range-success .range-value:after { border-left-color: var(--bs-success); }
-.range-slider.range-warning .range-value { background-color: var(--bs-warning); color: var(--bs-dark); }
-.range-slider.range-warning .range-value:after { border-left-color: var(--bs-warning); }
-.range-slider.range-danger .range-value { background-color: var(--bs-danger); }
-.range-slider.range-danger .range-value:after { border-left-color: var(--bs-danger); }
+.range-value.bg-primary { --lte-range-value-bg: var(--bs-primary); }
+.range-value.bg-secondary { --lte-range-value-bg: var(--bs-secondary); }
+.range-value.bg-info { --lte-range-value-bg: var(--bs-info); }
+.range-value.bg-success { --lte-range-value-bg: var(--bs-success); }
+.range-value.bg-warning { --lte-range-value-bg: var(--bs-warning); }
+.range-value.bg-danger { --lte-range-value-bg: var(--bs-danger); }
+.range-value.bg-indigo { --lte-range-value-bg: var(--lte-indigo); }
+.range-value.bg-lightblue { --lte-range-value-bg: var(--lte-light-blue); }
+.range-value.bg-navy { --lte-range-value-bg: var(--lte-navy); }
+.range-value.bg-purple { --lte-range-value-bg: var(--lte-purple); }
+.range-value.bg-fuchsia { --lte-range-value-bg: var(--lte-fuchsia); }
+.range-value.bg-pink { --lte-range-value-bg: var(--lte-pink); }
+.range-value.bg-maroon { --lte-range-value-bg: var(--lte-maroon); }
+.range-value.bg-orange { --lte-range-value-bg: var(--lte-orange); }
+.range-value.bg-lime { --lte-range-value-bg: var(--lte-lime); }
+.range-value.bg-teal { --lte-range-value-bg: var(--lte-teal); }
+.range-value.bg-olive { --lte-range-value-bg: var(--lte-olive); }
+.range-value.bg-gray-dark { --lte-range-value-bg: var(--lte-gray-dark); }
+
+/**
+ * Range with white colored value
+ */
+.range-value:is(.bg-primary, .bg-secondary, .bg-success, .bg-danger, .bg-indigo, .bg-lightblue, .bg-navy, .bg-purple, .bg-fuchsia, .bg-pink, .bg-maroon, .bg-olive, .bg-gray-dark) {
+	--lte-range-value-color: var(--bs-white);
+}
+
+/**
+ * Range with black colored value
+ */
+.range-value:is(.bg-orange, .bg-teal, .bg-lime, .bg-warning, .text-bg-warning, .bg-info, .text-bg-info) {
+	--lte-range-value-color: var(--bs-black);
+}
 
 
 /**
