@@ -66,13 +66,18 @@ textarea.code {
 
 .note-editor.note-airframe p:last-child { margin-bottom: 0px; }
 .note-editor.note-airframe .note-placeholder { padding: 0px; }
-.note-editor.note-airframe .note-popover { position: absolute; }
 
-/* TODO: Fuck up the placement of arrow */
-/* .note-editor.note-airframe .note-popover-content {
-	--bs-popover-body-padding-y: .25rem;
-	--bs-popover-body-padding-x: .25rem;
-} */
+.note-editor.note-airframe .note-popover { position: absolute; }
+.note-editor.note-airframe .note-popover .note-popover-content {
+	--bs-popover-body-padding-y: .5rem;
+	--bs-popover-body-padding-x: .5rem;
+	display: flex;
+	flex-flow: row wrap;
+	gap: .5rem;
+}
+
+.note-editor.note-airframe .note-popover .popover-arrow { position: absolute; }
+.note-editor.note-airframe .note-popover[data-popper-placement=bottom] .popover-arrow { left: .5rem; }
 
 
 /**
