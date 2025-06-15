@@ -260,6 +260,17 @@ function tomSelectInit(el)
 		};
 	}
 
+	// Allow dropup if there is no space for dropdown
+	if (typeof Popper !== 'function') {
+		options.onInitialize = function() {
+			this.popper = Popper.createPopper(this.control, this.dropdown);
+		};
+
+		options.onDropdownOpen = function() {
+			this.popper.update();
+		};
+	}
+
 	return new TomSelect(el, options);
 }
 
