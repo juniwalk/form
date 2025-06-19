@@ -83,6 +83,9 @@ function handleSignal(el)
 function handleSignalSpinner(element) { showSignalSpinner(element); }
 function showSignalSpinner(element)
 {
+	// ? Remove all shown tooltips from the document so the do not linger stuck in the DOM
+	document.querySelectorAll('.tooltip.show').forEach((tooltip) => tooltip.remove());
+
 	if (element.hasAttribute('data-overlay')) {
 		$('.app-wrapper > .overlay, .wrapper > .overlay').fadeIn();
 	}
