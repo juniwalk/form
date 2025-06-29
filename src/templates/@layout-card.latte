@@ -14,7 +14,7 @@
 	</div>
 
 	<div class="card-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
-		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
+		<div n:class="alert, bg-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
 	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
