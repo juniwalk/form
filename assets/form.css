@@ -55,6 +55,22 @@ textarea.code {
 
 
 /**
+ * reCAPTCHA - Custom styling of borders and box-shadow
+ */
+.g-recaptcha iframe { margin: -1px 0px 0px -2px; }
+.g-recaptcha > div  { overflow: hidden; max-width: 298px; width: auto !important; height: 74px !important; }
+.g-recaptcha {
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius-sm);
+	box-shadow: var(--bs-box-shadow-sm);
+	padding: 4px;
+}
+
+.g-recaptcha[data-theme=light] { background-color: #f9f9f9; }
+.g-recaptcha[data-theme=dark] { background-color: #222; }
+
+
+/**
  * TomSelect
  */
 .ts-wrapper.single .ts-control .item { width: 100%; }
