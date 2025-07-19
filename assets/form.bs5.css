@@ -22,11 +22,6 @@ textarea.code {
 }
 
 
-.form-text { color: var(--bs-tertiary-color); font-size: .8rem; line-height: 1.5; display: block; }
-
-.form-group { margin-bottom: 1rem; }
-.form-group label.form-label { font-weight: normal; }
-
 .form-group.required label.form-label { font-weight: bold; }
 .form-group.required label.form-label::after {
 	color: var(--bs-red);
@@ -34,9 +29,7 @@ textarea.code {
 	margin-left: 4px;
 }
 
-.form-control.date.flatpickr-input { height: calc(1.8125rem + 4px); }
-.form-control.btn-group { height: calc(2.25rem + 3px); }
-.form-control.is-invalid { z-index: 3; }
+.form-text { color: var(--bs-tertiary-color); font-size: .8rem; line-height: 1.5; display: block; }
 
 .input-group-text { background-color: var(--bs-dark-bg-subtle); };
 
