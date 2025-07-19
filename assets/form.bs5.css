@@ -31,7 +31,7 @@ textarea.code {
 
 .form-text { color: var(--bs-tertiary-color); font-size: .8rem; line-height: 1.5; display: block; }
 
-.input-group-text { background-color: var(--bs-dark-bg-subtle); };
+.input-group-text { background-color: var(--bs-dark-bg-subtle) !important; };
 
 
 /**
