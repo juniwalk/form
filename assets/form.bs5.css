@@ -22,8 +22,8 @@ textarea.code {
 }
 
 
-.form-group.required label.form-label { font-weight: bold; }
-.form-group.required label.form-label::after {
+.form-label:has(.required-indicator) { font-weight: bold; }
+.form-label:has(.required-indicator)::after {
 	color: var(--bs-red);
 	content: "*";
 	margin-left: 4px;
