@@ -145,7 +145,7 @@ textarea.code {
 
 	--ts-pr-min: calc(var(--ts-input-padding-x) / 2);
 
-	min-height: calc(var(--ts-row-height) * var(--ts-row-count) + var(--ts-input-padding-y) * 2);
+	min-height: calc(var(--ts-row-height) * var(--ts-row-count) + var(--ts-input-padding-y) * 2 - 2);
 	padding: var(--ts-input-padding-y) var(--ts-input-padding-x) !important;
 }
 
@@ -157,7 +157,7 @@ textarea.code {
 /* Smaller input */
 .ts-wrapper:is(.form-select-sm) .ts-control,
 .input-group-sm > .ts-wrapper .ts-control {
-	--ts-input-padding-y: .25rem;
+	--ts-input-padding-y: .2rem;
 	--ts-input-padding-x: .5rem;
 	--ts-row-height: 19px;
 }
@@ -282,6 +282,15 @@ textarea.code {
 .ts-wrapper .ts-dropdown .dropdown-item.selected { color: var(--bs-white); background-color: var(--bs-primary); }
 .ts-wrapper .ts-dropdown .dropdown-item.selected:is(:hover, :focus) { color: var(--bs-white); background-color: var(--lte-primary-hover); }
 .ts-wrapper .ts-dropdown .dropdown-item:is(.disabled, [aria-disabled=true]) { color: var(--bs-dropdown-link-disabled-color); background-color: transparent; }
+
+
+/**
+ * Fixed rounding when in .input-group alone
+ */
+.input-group .ts-hidden-accessible + .ts-wrapper {
+	border-top-left-radius: var(--bs-border-radius-sm) !important;
+	border-bottom-left-radius: var(--bs-border-radius-sm) !important;
+}
 
 
 /**
