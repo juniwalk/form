@@ -9,6 +9,7 @@ namespace JuniWalk\Form;
 
 use Contributte\Translation\Wrappers\Message;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueException;
+use JuniWalk\Form\Attributes\DisableCSRFProtection;
 use JuniWalk\Form\Attributes\PreventLeavingWhenDirty;
 use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\SearchPayload;
@@ -123,6 +124,19 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$preventLeaving = $attributes[0]->newInstance();
 		return $preventLeaving->for($this->layout);
+	}
+
+
+	public function isProtectionDisabled(): bool
+	{
+		$attributes = (new ReflectionClass($this))
+			->getAttributes(DisableCSRFProtection::class);
+
+		if (empty($attributes)) {
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -318,7 +332,10 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$form = new Form;
 		$form->setTranslator($this->getTranslator());
 		$form->addHidden('_layout_');
-		$form->addProtection();
+
+		if (!$this->isProtectionDisabled()) {
+			$form->addProtection();
+		}
 
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->setLayout($data->_layout_);
