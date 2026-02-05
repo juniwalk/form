@@ -8,7 +8,6 @@
 namespace JuniWalk\Form;
 
 use JsonSerializable;
-use JuniWalk\Form\Tools\SearchPayload as Deprecated;
 use JuniWalk\ORM\Entity\Interfaces\HtmlOption;
 use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Html;
@@ -30,7 +29,7 @@ use Throwable;
  * }
  * @phpstan-type Group array{text: string, childen: Result[]}
  */
-class SearchPayload extends Deprecated implements JsonSerializable
+class SearchPayload implements JsonSerializable
 {
 	private bool $isGroupsAllowed = true;
 	private ?int $maxResults = null;
