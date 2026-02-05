@@ -24,10 +24,6 @@
 		}
 	},
 
-	"extra" : {
-		"branch-alias" : {"dev-master" : "7.0.x-dev"}
-	},
-
 	"require": {
 		"php": ">=8.3",
 		"juniwalk/orm": "^2.0 | ^3.0",
@@ -44,7 +40,7 @@
 		"phpstan/extension-installer": "^1.0",
 		"phpstan/phpstan": "^2.0",
 		"phpstan/phpstan-nette": "^2.0",
-		"staabm/phpstan-todo-by": "^0.2",
+		"staabm/phpstan-todo-by": "^0.3",
 		"tracy/tracy": "^2.10"
 	}
 }
