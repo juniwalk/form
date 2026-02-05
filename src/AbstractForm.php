@@ -64,14 +64,12 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
-	public function setLayout(string|Layout $layout): void
+	/**
+	 * @param value-of<Layout> $layout
+	 */
+	public function setLayout(Layout|string $layout): void
 	{
-		if (!$layout instanceof Layout) {
-			$layout = Layout::make($layout, true);
-		}
-
-		/** @var Layout $layout */
-		$this->layout = $layout;
+		$this->layout = Layout::make($layout);
 	}
 
 
@@ -252,7 +250,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		}
 
 		$this->redrawControl('form', $redraw ?? true);
-		$this->setLayout($data['_layout_']);
+		$this->setLayout(Layout::make($data['_layout_']));
 
 		if ($this->layout === Layout::Modal) {
 			$this->setModalOpen(true);
@@ -298,7 +296,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	public function render(): void
 	{
-		if (!$this->isModalOpen && $this->layout == Layout::Modal) {
+		if (!$this->isModalOpen && $this->layout === Layout::Modal) {
 			return;
 		}
 
