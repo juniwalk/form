@@ -19,7 +19,7 @@ function initFormControls()
 	});
 
 	$('a[data-pwd-toggle]').off('click').on('click', function() {
-		$('i.fas', this).toggleClass('fa-eye fa-eye-slash');
+		$('i', this).toggleClass('fa-eye fa-eye-slash');
 		$($(this).data('pwd-toggle')).attr('type', function(k, v) {
 			return v == 'text' ? 'password' : 'text';
 		});
