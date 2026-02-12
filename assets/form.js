@@ -18,11 +18,13 @@ function initFormControls()
 		return submitButton.click();
 	});
 
-	$('a[data-pwd-toggle]').off('click').on('click', function() {
+	$('[data-pwd-toggle]').off('click').on('click', function(e) {
 		$('i', this).toggleClass('fa-eye fa-eye-slash');
 		$($(this).data('pwd-toggle')).attr('type', function(k, v) {
 			return v == 'text' ? 'password' : 'text';
 		});
+
+		e.preventDefault();
 	});
 
 	$('.range-slider input[type="range"]').each(function() {
