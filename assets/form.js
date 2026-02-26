@@ -89,7 +89,7 @@ function showSignalSpinner(element)
 	document.querySelectorAll('.tooltip.show').forEach((tooltip) => tooltip.remove());
 
 	if (element.hasAttribute('data-overlay')) {
-		$('.app-wrapper > .overlay, .wrapper > .overlay').fadeIn();
+		$('.overlay-wrapper > .overlay, .app-wrapper > .overlay, .wrapper > .overlay').fadeIn();
 	}
 
 	if (element.matches('.spinner')) {
@@ -100,7 +100,7 @@ function showSignalSpinner(element)
 
 function hideSignalSpinner()
 {
-	$('.app-wrapper > .overlay, .wrapper > .overlay').fadeOut();
+	$('.overlay-wrapper > .overlay, .app-wrapper > .overlay, .wrapper > .overlay').fadeOut();
 	$('.spinner > i.fa-spin').removeClass('fa-spin');
 }
 
