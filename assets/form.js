@@ -27,6 +27,19 @@ function initFormControls()
 		e.preventDefault();
 	});
 
+	document.querySelectorAll('a[data-clear-input]').forEach((el) => {
+		el.addEventListener('click', ({currentTarget}) => {
+			let input = document.querySelector(currentTarget.dataset.clearInput);
+			input.value = '';
+
+			if ('tomselect' in input) {
+				input.tomselect.setValue('');
+			}
+
+			input.dispatchEvent(new Event('change'));
+		});
+	});
+
 	$('.range-slider input[type="range"]').each(function() {
 		let rangeValue = $(this).prev('.range-value');
 		rangeValue.html(this.value);
@@ -51,19 +64,6 @@ function initFormControls()
 		}
 
 		tomSelectInit(el);
-	});
-
-	document.querySelectorAll('a[data-clear-input]').forEach((el) => {
-		el.addEventListener('click', ({currentTarget}) => {
-			let input = document.querySelector(currentTarget.dataset.clearInput);
-			input.value = '';
-
-			if ('tomselect' in input) {
-				input.tomselect.setValue('');
-			}
-	
-			input.dispatchEvent(new Event('change'));
-		});
 	});
 }
 
@@ -107,10 +107,10 @@ function hideSignalSpinner()
 
 function findPrefixedUrlParams(prefix)
 {
-	let url = new URL(document.location);		
+	let url = new URL(document.location);
 	let urlSearch = new URLSearchParams(url.search);
 	let params = {};
-	
+
 	for (let key of urlSearch.keys()) {
 		if (!key.startsWith(prefix)) {
 			continue;
@@ -173,12 +173,12 @@ function tomSelectInit(el)
 			item: (data, escape) => tomSelectFormat('item', data, escape, el.multiple),
 			option: (data, escape) => tomSelectFormat('option', data, escape, el.multiple),
 			option_create: (data, escape) => `<div class="dropdown-item create">Add <strong>${escape(data.input)}</strong>&hellip;</div>`,
-			optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.text)}</div>`,
+			optgroup_header: (data, escape) => `<div class="dropdown-header">${escape(data.group)}</div>`,
 			no_results: (data, escape) => `<div class="dropdown-item disabled">No results found for "${escape(data.input)}"</div>`,
 			no_more_results: () => `<div class="dropdown-item disabled">No more results</div>`,
 			loading_more: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
 			loading: () => '<div class="dropdown-item disabled"><i class="fas fa-fw fa-rotate fa-spin"></i> Loading&hellip;</div>',
-			not_loading: () => {	
+			not_loading: () => {
 				if (Object.keys(el.tomselect.options).length > 0) {
 					return;
 				}
@@ -230,12 +230,12 @@ function tomSelectInit(el)
 			let url = new URL(window.location.href);
 			url.pathname = searchUrl[0];
 			url.search = searchUrl[1];
-	
+
 			let params = findPrefixedUrlParams(formName);
 			Object.entries(params).forEach(([key, value]) => {
 				url.searchParams.set(key, value);
 			});
-	
+
 			url.searchParams.append(formName+'term', query);
 			url.searchParams.append(formName+'page', 1);
 			return url;
@@ -287,6 +287,8 @@ function tomSelectFormat(type, data, escape, isMultiple)
 	text.classList.add('text-truncate');
 
 	let html = document.createElement('div');
+	html.classList.add('d-flex');
+	html.classList.add('gap-2');
 	html.append(text);
 
 	if (type === 'option') {
@@ -294,7 +296,10 @@ function tomSelectFormat(type, data, escape, isMultiple)
 	}
 
 	if (type === 'item' && data.group) {
-		html.prepend(escape(data.group), ' - ');
+		let group = document.createElement('span');
+		group.append(escape(data.group));
+
+		html.prepend(group, ' - ');
 	}
 
 	if (type === 'item' && isMultiple && data.color) {
