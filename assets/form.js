@@ -158,7 +158,7 @@ function tomSelectInit(el)
 	let formName = null;
 	let options = {
 		plugins: ['dropdown_input'],
-		searchField: ['text'],
+		searchField: ['text', 'group'],
 		labelField: 'text',
 		valueField: 'id',
 		create: 'tags' in el.dataset,
