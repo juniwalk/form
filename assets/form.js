@@ -65,6 +65,21 @@ function initFormControls()
 
 		tomSelectInit(el);
 	});
+
+	document.querySelectorAll('input, select, textarea').forEach((element) => {
+		if (!element.hasAttribute('required')) {
+			return;
+		}
+
+		const label = element.labels?.[0];
+
+		if (label && !label.querySelector('.required-indicator')) {
+			const indicator = document.createElement('span');
+			indicator.className = 'required-indicator sr-only';
+			indicator.textContent = ' (required)';
+			label.append(indicator);
+		}
+	});
 }
 
 
