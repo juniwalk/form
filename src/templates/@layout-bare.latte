@@ -1,13 +1,12 @@
 <div n:snippet="form">
 
 {default $contentClass = null}
-{default $contentPos = 'top'}
 
 <div id="{$control->getName()}">
 <form n:name="form" n:attr="...$formOptions">
 
 	<div class="mb-3" n:ifcontent>
-		<h3 n:ifset="block title" n:ifcontent>{include #title|noescape}</h3>
+		<h3 n:ifset="#title" n:ifcontent>{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
 
@@ -15,10 +14,8 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
-
-		{include #content}
-
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
+		{include #contentTop}
 	</div>
 
 	<div class="mb-3" n:ifcontent>
@@ -31,13 +28,11 @@
 
 	</div>
 
-	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
-
-		{include #content}
-
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
+		{include #contentBottom}
 	</div>
 
-	<div n:ifcontent>
+	<div class="btn-toolbar gap-2" n:ifcontent>
 
 		{ifset #buttons-bare}
 			{include #buttons-bare}

@@ -2,14 +2,13 @@
 
 {default $color = 'secondary'}
 {default $contentClass = null}
-{default $contentPos = 'top'}
 {default $headColor = null}
 
 <div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
 	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
-		<h3 class="card-title m-0" n:ifset="block title">{include #title|noescape}</h3>
+		<h3 class="card-title m-0" n:ifset="#title">{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
 
@@ -17,10 +16,8 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
-
-		{include #content}
-
+	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
+		{include #contentTop}
 	</div>
 
 	<div class="card-body" n:ifcontent>
@@ -33,10 +30,8 @@
 
 	</div>
 
-	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
-
-		{include #content}
-
+	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
+		{include #contentBottom}
 	</div>
 
 	<div class="card-footer" n:ifcontent>

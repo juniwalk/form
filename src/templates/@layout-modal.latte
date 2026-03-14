@@ -4,29 +4,26 @@
 
 <div n:snippet="form" n:class="modal-dialog, modal-dialog-centered, $size">
 
-{default $hasCloseButton = true}
 {default $color = 'secondary'}
+{default $closeButton = true}
 {default $contentClass = null}
-{default $contentPos = 'top'}
 
 <form n:name="form" class="w-100" n:attr="...$formOptions">
 
 	<div class="modal-content">
 
 		<div class="modal-header bg-{$color} text-bg-{$color}">
-			<h5 class="modal-title" n:ifset="block title">{include #title}</h5>
-			<button type="button" class="btn-close close" data-dismiss="modal" data-bs-dismiss="modal"></button>
+			<h5 class="modal-title" n:ifset="#title">{include #title}</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
 
-		<div class="alerts text-left" n:if="$form->hasErrors()" n:snippet="errors">
+		<div class="alerts text-start" n:if="$form->hasErrors()" n:snippet="errors">
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'top'">
-
-			{include #content}
-
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
+			{include #contentTop}
 		</div>
 
 		<div class="modal-body" n:ifcontent>
@@ -39,15 +36,13 @@
 
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#content" n:if="$contentPos == 'bottom'">
-
-			{include #content}
-
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
+			{include #contentBottom}
 		</div>
 
-		<div class="modal-footer bg-light bg-body-tertiary" n:ifcontent>
+		<div class="modal-footer bg-body-tertiary" n:ifcontent>
 
-			<button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal" n:if="$hasCloseButton">{_web.button.close|noescape}</button>
+			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" n:if="$closeButton">{_web.button.close|noescape}</button>
 
 			{ifset #buttons-modal}
 				{include #buttons-modal}
