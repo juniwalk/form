@@ -22,8 +22,8 @@
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
-			{include #contentTop}
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+			{include #beforeControls}
 		</div>
 
 		<div class="modal-body" n:ifcontent>
@@ -36,8 +36,8 @@
 
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
-			{include #contentBottom}
+		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+			{include #afterControls}
 		</div>
 
 		<div class="modal-footer bg-body-tertiary" n:ifcontent>

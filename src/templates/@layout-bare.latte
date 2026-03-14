@@ -14,8 +14,8 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
-		{include #contentTop}
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+		{include #beforeControls}
 	</div>
 
 	<div class="mb-3" n:ifcontent>
@@ -28,8 +28,8 @@
 
 	</div>
 
-	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
-		{include #contentBottom}
+	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+		{include #afterControls}
 	</div>
 
 	<div class="btn-toolbar gap-2" n:ifcontent>

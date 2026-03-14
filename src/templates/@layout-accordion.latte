@@ -20,8 +20,8 @@
 
 	<div id="{$control->getUniqueId()}-content" n:class="collapse, $form->hasErrors() ? show" data-bs-parent="#{$container}">
 
-		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#contentTop" n:ifcontent>
-			{include #contentTop}
+		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+			{include #beforeControls}
 		</div>
 
 		<div class="card-body" n:ifcontent>
@@ -34,8 +34,8 @@
 
 		</div>
 
-		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#contentBottom" n:ifcontent>
-			{include #contentBottom}
+		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+			{include #afterControls}
 		</div>
 
 		<div class="card-footer" n:ifcontent>
