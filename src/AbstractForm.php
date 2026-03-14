@@ -159,20 +159,15 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	/**
 	 * @param array<string, string> $pages
 	 */
-	public function findRedirectPage(array $pages, string $default = 'default'): string
+	public function matchSubmit(array $pages, string $default = 'default'): string
 	{
 		$form = $this->getForm();
 
-		foreach ($pages as $control => $page) {
-			if (!$button = $form->getComponent($control, false)) {
-				continue;
-			}
+		foreach ($pages as $submit => $page) {
+			$button = $form->getComponent($submit, false);
 
-			if (!$button instanceof SubmitButton) {
-				continue;
-			}
-
-			if (!$button->isSubmittedBy()) {
+			if (!$button instanceof SubmitButton
+			 || !$button->isSubmittedBy()) {
 				continue;
 			}
 
@@ -246,7 +241,6 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		} catch (Throwable $e) {
 			$form->addError($e->getMessage());
 			Debugger::log($e);
-
 		}
 
 		$this->redrawControl('form', $redraw ?? true);
