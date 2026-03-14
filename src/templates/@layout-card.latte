@@ -20,14 +20,8 @@
 		{include #beforeControls}
 	</div>
 
-	<div class="card-body" n:ifcontent>
-
-		{ifset #controls-card}
-			{include #controls-card}
-		{elseifset #controls}
-			{include #controls}
-		{/ifset}
-
+	<div class="card-body" n:ifset="#controls" n:ifcontent>
+		{include #controls}
 	</div>
 
 	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>

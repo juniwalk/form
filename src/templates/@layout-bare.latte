@@ -18,14 +18,8 @@
 		{include #beforeControls}
 	</div>
 
-	<div class="mb-3" n:ifcontent>
-
-		{ifset #controls-bare}
-			{include #controls-bare}
-		{elseifset #controls}
-			{include #controls}
-		{/ifset}
-
+	<div class="mb-3" n:ifset="#controls" n:ifcontent>
+		{include #controls}
 	</div>
 
 	<div n:class="mb-3, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>

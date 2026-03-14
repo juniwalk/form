@@ -26,14 +26,8 @@
 			{include #beforeControls}
 		</div>
 
-		<div class="modal-body" n:ifcontent>
-
-			{ifset #controls-modal}
-				{include #controls-modal}
-			{elseifset #controls}
-				{include #controls}
-			{/ifset}
-
+		<div class="modal-body" n:ifset="#controls" n:ifcontent>
+			{include #controls}
 		</div>
 
 		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
