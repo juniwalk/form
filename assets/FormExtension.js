@@ -8,15 +8,10 @@ class FormExtension
 {
 	initialize(naja) {
 		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
-		naja.addEventListener('success', ({detail}) => {
-			let element = document.getElementById(detail.payload.control);
-			let snippet = detail.payload.snippet;
-
-			if (!element || !snippet) {
-				return;
-			}
-
-			this.#insertAtCursor(element, snippet);
+		naja.addEventListener('success', (event) => this.#insertAtCursor(event));
+		naja.addEventListener('success', () => {
+			document.querySelectorAll('.tooltip.show')
+				.forEach(element => element.remove());
 		});
 
 		this.#attach(document);
@@ -159,7 +154,14 @@ class FormExtension
 	}
 
 
-	#insertAtCursor(element, value) {		
+	#insertAtCursor(event) {
+		let element = document.getElementById(event.detail.payload.control);
+		let snippet = event.detail.payload.snippet;
+
+		if (!element || !snippet) {
+			return;
+		}
+
 		let endPosition = element.selectionStart + value.length;
 
 		if (element.selectionStart || element.selectionStart == '0') {
