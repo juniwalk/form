@@ -4,7 +4,7 @@
 
 	<div class="modal-content">
 
-		<div n:class="modal-header $color->for('text-bg')">
+		<div n:class="modal-header, $color->for('text-bg')">
 			<h5 class="modal-title" n:ifset="#title">{include #title}</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			{ifset #tools}{include #tools}{/ifset}
