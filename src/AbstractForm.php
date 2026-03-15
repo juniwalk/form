@@ -268,7 +268,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
-	public function renderModal(bool $keyboard = false, bool|string $backdrop = 'static', ?string $size = null, bool $closeButton = true): void
+	public function renderModal(?string $size = null, bool $keyboard = false, bool|string $backdrop = 'static'): void
 	{
 		if ($size && !str_starts_with($size, 'modal')) {
 			$size = 'modal-'.$size;
@@ -276,7 +276,6 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$this->setLayout(Layout::Modal);
 		$this->when('render', fn($x, $t) => $t->setParameters([
-			'closeButton' => $closeButton,
 			'modalSize' => $size,
 			'modalOptions' => [
 				'data-bs-backdrop' => Format::stringify($backdrop),
