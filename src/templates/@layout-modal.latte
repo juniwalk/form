@@ -1,18 +1,10 @@
 <div class="modal fade" id="{$control->getName()}" n:attr="...$modalOptions" tabindex="-1">
-
-{default $size = null}
-
 <div n:snippet="form" n:class="modal-dialog, modal-dialog-centered, $size">
-
-{default $color = 'secondary'}
-{default $closeButton = true}
-{default $contentClass = null}
-
 <form n:name="form" class="w-100" n:attr="...$formOptions">
 
 	<div class="modal-content">
 
-		<div class="modal-header bg-{$color} text-bg-{$color}">
+		<div n:class="modal-header $color->for('text-bg')">
 			<h5 class="modal-title" n:ifset="#title">{include #title}</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			{ifset #tools}{include #tools}{/ifset}
@@ -22,7 +14,7 @@
 			<div class="alert alert-danger m-0 rounded-0" n:foreach="$form->getErrors() as $error">{$error}</div>
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+		<div class="modal-body pb-0" n:ifset="#beforeControls" n:ifcontent>
 			{include #beforeControls}
 		</div>
 
@@ -30,7 +22,7 @@
 			{include #controls}
 		</div>
 
-		<div n:class="modal-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+		<div class="modal-body pt-0" n:ifset="#afterControls" n:ifcontent>
 			{include #afterControls}
 		</div>
 

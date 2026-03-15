@@ -1,14 +1,9 @@
 <div n:snippet="form">
-
-{default $color = 'secondary'}
-{default $contentClass = null}
-{default $headColor = null}
-
-<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline, mb-3">
+<div id="{$control->getName()}" n:class="card, $color->for('card'), !$isFullColor ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
 	<a class="d-block w-100 collapsed" href="#{$control->getUniqueId()}-content" data-bs-toggle="collapse" data-bs-target="#{$control->getUniqueId()}-content">
-		<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
+		<div n:class="card-header, $isFullColor ? $color->for('bg')">
 			<h3 class="card-title m-0" n:ifset="#title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
@@ -20,7 +15,7 @@
 
 	<div id="{$control->getUniqueId()}-content" n:class="collapse, $form->hasErrors() ? show" data-bs-parent="#{$container}">
 
-		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+		<div class="card-body pb-0" n:ifset="#beforeControls" n:ifcontent>
 			{include #beforeControls}
 		</div>
 
@@ -28,7 +23,7 @@
 			{include #controls}
 		</div>
 
-		<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+		<div class="card-body pt-0" n:ifset="#afterControls" n:ifcontent>
 			{include #afterControls}
 		</div>
 

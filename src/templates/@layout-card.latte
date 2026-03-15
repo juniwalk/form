@@ -1,13 +1,8 @@
 <div n:snippet="form">
-
-{default $color = 'secondary'}
-{default $contentClass = null}
-{default $headColor = null}
-
-<div id="{$control->getName()}" n:class="card, 'card-'.$color, !isset($headColor) || $headColor != $color ? card-outline, mb-3">
+<div id="{$control->getName()}" n:class="card, $color->for('card'), !$isFullColor ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
-	<div n:class="card-header, isset($headColor) ? 'bg-'.$headColor">
+	<div n:class="card-header, $isFullColor ? $color->for('bg')">
 		<h3 class="card-title m-0" n:ifset="#title">{include #title|noescape}</h3>
 		{ifset #tools}{include #tools}{/ifset}
 	</div>
@@ -16,7 +11,7 @@
 		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 	</div>
 
-	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#beforeControls" n:ifcontent>
+	<div class="card-body pb-0" n:ifset="#beforeControls" n:ifcontent>
 		{include #beforeControls}
 	</div>
 
@@ -24,7 +19,7 @@
 		{include #controls}
 	</div>
 
-	<div n:class="card-body, isset($contentClass) ? $contentClass" n:ifset="#afterControls" n:ifcontent>
+	<div class="card-body pt-0" n:ifset="#afterControls" n:ifcontent>
 		{include #afterControls}
 	</div>
 

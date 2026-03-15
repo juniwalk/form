@@ -15,6 +15,7 @@ use JuniWalk\Form\Enums\Layout;
 use JuniWalk\Form\SearchPayload;
 use JuniWalk\ORM\Exceptions\EntityNotFoundException;
 use JuniWalk\Utils\Arrays;
+use JuniWalk\Utils\Enums\Color;
 use JuniWalk\Utils\Format;
 use JuniWalk\Utils\Interfaces\EventAutoWatch;
 use JuniWalk\Utils\Interfaces\EventHandler;
@@ -52,9 +53,11 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	use Events, RedirectAjaxHandler;
 
 	protected Layout $layout = Layout::Card;
+	protected Color $color = Color::Secondary;
 	protected HttpRequest $httpRequest;
 	protected Translator $translator;
 	protected ?string $templateFile = null;
+	protected bool $isFullColor = false;
 	protected bool $isModalOpen = false;
 
 
@@ -265,15 +268,19 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
-	public function renderModal(bool $keyboard = false, bool|string $backdrop = 'static'): void
+	public function renderModal(bool $keyboard = false, bool|string $backdrop = 'static', ?string $size = null, bool $closeButton = true): void
 	{
+		if ($size && !str_starts_with($size, 'modal')) {
+			$size = 'modal-'.$size;
+		}
+
 		$this->setLayout(Layout::Modal);
 		$this->when('render', fn($x, $t) => $t->setParameters([
+			'closeButton' => $closeButton,
+			'modalSize' => $size,
 			'modalOptions' => [
 				'data-bs-backdrop' => Format::stringify($backdrop),
-				'data-backdrop' => Format::stringify($backdrop),
 				'data-bs-keyboard' => Format::stringify($keyboard),
-				'data-keyboard' => Format::stringify($keyboard),
 			],
 		]));
 
@@ -306,7 +313,9 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		]);
 
 		$template->setParameters([
+			'isFullColor' => $this->isFullColor,
 			'layout' => $this->layout,
+			'color' => $this->color,
 			'form' => $form,
 
 			'formOptions' => [
