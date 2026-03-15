@@ -7,6 +7,14 @@
 class FormExtension
 {
 	initialize(naja) {
+		const validateControl = Nette.validateControl.bind(Nette);
+
+		Nette.validateControl = (...args) => {
+			const result = validateControl(...args);
+			return this.#validState(args[0], result);
+		};
+
+
 		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
 		naja.addEventListener('success', (event) => this.#insertAtCursor(event));
 		naja.addEventListener('success', () => {
@@ -19,6 +27,10 @@ class FormExtension
 
 
 	#attach(snippet) {
+		snippet.querySelectorAll('[data-invalid]')
+			.forEach(element => this.#validState(element, false));
+
+
 		snippet.querySelectorAll('.modal')
 			.forEach((element) => {
 				element.addEventListener('hidden.bs.modal', () => {
@@ -139,6 +151,22 @@ class FormExtension
 					label.append(indicator);
 				}
 			});
+	}
+
+
+	#validState(element, isValid = false) {
+		if (!isValid) {
+			element.setCustomValidity('Invalid field');
+			element.classList.add('is-invalid');
+		}
+
+		element.removeAttribute('data-invalid');
+		element.addEventListener('input', () => {
+			element.setCustomValidity('');
+			element.classList.remove('is-invalid');
+		});
+
+		return isValid;
 	}
 
 
