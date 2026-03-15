@@ -337,6 +337,16 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			$form->addProtection();
 		}
 
+		$form->onRender[] = function(Form $form): void {
+			foreach ($form->getControls() as $control) {
+				if (!$control instanceof BaseControl || !$control->hasErrors()) {
+					continue;
+				}
+
+				$control->setHtmlAttribute('data-invalid', 'true');
+			}
+		};
+
 		$form->onValidate[] = function(Form $form, ArrayHash $data): void {	// @phpstan-ignore assign.propertyType
 			$this->setLayout($data->_layout_);
 
