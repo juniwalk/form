@@ -48,5 +48,5 @@ class FormTextareaExtension
 
 // ? Auto register the extension in Naja.js
 if (typeof naja !== 'undefined') {
-	naja?.registerExtension(new SummernoteExtension);
+	naja?.registerExtension(new FormTextareaExtension);
 }
