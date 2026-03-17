@@ -242,6 +242,7 @@ textarea.code {
 .was-validated :invalid + .ts-wrapper.single {
 	--ts-image-count: 2;
 	background-image: var(--ts-image-caret), var(--ts-image-invalid);
+	border-color: var(--bs-danger) !important;
 }
 
 .ts-wrapper.is-valid.single,
