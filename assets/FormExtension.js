@@ -157,12 +157,14 @@ class FormExtension
 	#validState(element, isValid = false) {
 		if (!isValid) {
 			element.setCustomValidity('Invalid field');
+			element.tomselect?.wrapper.classList.add('is-invalid');
 			element.classList.add('is-invalid');
 		}
 
 		element.removeAttribute('data-invalid');
 		element.addEventListener('input', () => {
 			element.setCustomValidity('');
+			element.tomselect?.wrapper.classList.remove('is-invalid');
 			element.classList.remove('is-invalid');
 		});
 
