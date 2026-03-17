@@ -34,7 +34,7 @@ class FormExtension
 		snippet.querySelectorAll('.modal')
 			.forEach((element) => {
 				element.addEventListener('hidden.bs.modal', () => {
-					element.querySelector('form').reset?.();
+					element.querySelector('form')?.reset?.();
 				});
 			});
 
