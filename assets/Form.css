@@ -298,10 +298,10 @@ textarea.code {
 /**
  * Fixed rounding when in .input-group alone
  */
-.input-group .ts-hidden-accessible + .ts-wrapper {
+/* .input-group .ts-hidden-accessible + .ts-wrapper {
 	border-top-left-radius: var(--bs-border-radius-sm) !important;
 	border-bottom-left-radius: var(--bs-border-radius-sm) !important;
-}
+} */
 
 
 /**
