@@ -33,11 +33,6 @@
 
 	</div>
 
-	<script type="text/javascript" n:ifcontent n:inner-foreach="$form->getControls() as $input">
-		{continueIf !$input->hasErrors()}
-		document.getElementById({$input->getHtmlId()}).classList.add('is-invalid')
-	</script>
-
 	{ifset #javascript}{include #javascript}{/ifset}
 
 </form>
