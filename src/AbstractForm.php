@@ -58,6 +58,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	protected Translator $translator;
 	protected ?string $templateFile = null;
 	protected bool $isFullColor = false;
+	protected bool $isSubtle = false;
 	protected bool $isModalOpen = false;
 
 
@@ -313,6 +314,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$template->setParameters([
 			'isFullColor' => $this->isFullColor,
+			'isSubtle' => $this->isSubtle,
 			'layout' => $this->layout,
 			'color' => $this->color,
 			'form' => $form,

@@ -1,9 +1,9 @@
 <div n:snippet="form">
-<div id="{$control->getName()}" n:class="card, $color->for('card'), !$isFullColor ? card-outline, mb-3">
+<div id="{$control->getName()}" n:class="card, $color->for('card', $isSubtle), !$isFullColor ? card-outline, mb-3">
 <form n:name="form" n:attr="...$formOptions">
 
 	<a class="d-block w-100 collapsed" href="#{$control->getUniqueId()}-content" data-bs-toggle="collapse" data-bs-target="#{$control->getUniqueId()}-content">
-		<div n:class="card-header, $isFullColor ? $color->for('bg')">
+		<div n:class="card-header, $isFullColor ? $color->for('bg', $isSubtle)">
 			<h3 class="card-title m-0" n:ifset="#title">{include #title|noescape}</h3>
 			{ifset #tools}{include #tools}{/ifset}
 		</div>
