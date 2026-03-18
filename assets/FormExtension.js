@@ -18,7 +18,7 @@ class FormExtension
 		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
 		naja.addEventListener('success', (event) => this.#insertAtCursor(event));
 		naja.addEventListener('success', () => {
-			document.querySelectorAll('.tooltip.show')
+			document.querySelectorAll('.tooltip.show, .popover.show')
 				.forEach(element => element.remove());
 		});
 
