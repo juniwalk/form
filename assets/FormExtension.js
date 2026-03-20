@@ -136,6 +136,16 @@ class FormExtension
 			});
 
 
+		snippet.querySelectorAll('.range-slider input[type="range"]')
+			.forEach((element) => {
+				let rangeValue = element.closest('.range-slider')
+					.querySelector('.range-value');
+
+				element.addEventListener('input', () => rangeValue.innerHTML = element.value);
+				element.dispatchEvent(new Event('input'));
+			});
+
+
 		snippet.querySelectorAll('input, select, textarea')
 			.forEach((element) => {
 				if (!element.hasAttribute('required')) {
