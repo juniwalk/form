@@ -206,16 +206,16 @@ class FormExtension
 			return;
 		}
 
-		let endPosition = element.selectionStart + value.length;
+		let endPosition = element.selectionStart + snippet.length;
 
 		if (element.selectionStart || element.selectionStart == '0') {
 			let textStart = element.value.substring(0, element.selectionStart);
 			let textEnd = element.value.substring(element.selectionEnd);
 
-			element.value = textStart + value + textEnd;
+			element.value = textStart + snippet + textEnd;
 
 		} else {
-			element.value += value;
+			element.value += snippet;
 		}
 
 		element.value = element.value.trim();
