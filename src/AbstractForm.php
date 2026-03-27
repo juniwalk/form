@@ -258,10 +258,17 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
-	public function renderAccordion(string $container): void
+	public function renderAccordion(string|null|false $container = null): void
 	{
+		$container ??= $this->getParent()?->getName();
+
+		if (!empty($container)) {
+			$container = '#'.$container;
+		}
+
 		$this->setLayout(Layout::Accordion);
 		$this->when('render', fn($x, $t) => $t->setParameters([
+			'target' => $this->getUniqueId().'-content',
 			'container' => $container,
 		]));
 

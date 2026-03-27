@@ -1,33 +1,34 @@
-<div n:snippet="form">
-<div id="{$control->getName()}" n:class="card, $color->for('card', $isSubtle), !$isFullColor ? card-outline, mb-3">
-<form n:name="form" n:attr="...$formOptions">
+<div class="accordion-item bg-body-tertiary" n:snippet="form">
 
-	<a class="d-block w-100 collapsed" href="#{$control->getUniqueId()}-content" data-bs-toggle="collapse" data-bs-target="#{$control->getUniqueId()}-content">
-		<div n:class="card-header, $isFullColor ? $color->for('bg', $isSubtle)">
-			<h3 class="card-title m-0" n:ifset="#title">{include #title|noescape}</h3>
-			{ifset #tools}{include #tools}{/ifset}
+	<h2 class="accordion-header">
+		<button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}">
+			<span class="d-flex gap-2 justify-content-between align-items-center w-100 pe-2">
+				<span n:ifset="#title">{include #title|noescape}</span>
+				{ifset #tools}{include #tools}{/ifset}
+			</span>
+		</button>
+	</h2>
+
+	<form n:name="form" n:attr="...$formOptions">
+	<div id="{$target}" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container">
+
+		<div class="accordion-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+			<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 		</div>
-	</a>
 
-	<div class="card-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
-		<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
-	</div>
-
-	<div id="{$control->getUniqueId()}-content" n:class="collapse, $form->hasErrors() ? show" data-bs-parent="#{$container}">
-
-		<div class="card-body pb-0" n:ifset="#beforeControls" n:ifcontent>
+		<div class="accordion-body pb-0" n:ifset="#beforeControls" n:ifcontent>
 			{include #beforeControls}
 		</div>
 
-		<div class="card-body" n:ifset="#controls" n:ifcontent>
+		<div class="accordion-body" n:ifset="#controls" n:ifcontent>
 			{include #controls}
 		</div>
 
-		<div class="card-body pt-0" n:ifset="#afterControls" n:ifcontent>
+		<div class="accordion-body pt-0" n:ifset="#afterControls" n:ifcontent>
 			{include #afterControls}
 		</div>
 
-		<div class="card-footer" n:ifcontent>
+		<div class="accordion-body pt-0 d-flex gap-2" n:ifcontent>
 
 			{ifset #buttons-card}
 				{include #buttons-card}
@@ -35,12 +36,13 @@
 				{include #buttons}
 			{/ifset}
 
+			<button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#{$target}">{_web.button.close|noescape}</button>
+
 		</div>
 
 	</div>
+	</form>
 
 	{ifset #javascript}{include #javascript}{/ifset}
 
-</form>
-</div>
 </div>
