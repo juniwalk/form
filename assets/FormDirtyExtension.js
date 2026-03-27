@@ -34,23 +34,26 @@ class FormDirtyExtension
 
 	#attach(snippet) {
 		snippet.querySelectorAll(this.selector)
-			.forEach((element) => {
-				if (!element.matches('form')) {
+			.forEach((form) => {
+				if (!(form instanceof HTMLFormElement)) {
 					return;
 				}
 
-				element.addEventListener('submit', () => this.#initState(element));
-				element.addEventListener('reset', () => this.#initState(element));
-				element.addEventListener('change', () => this.#updateState(element));
-				element.addEventListener('input', () => this.#updateState(element));
+				form.addEventListener('submit', () => this.#initState(form));
+				form.addEventListener('reset', () => this.#initState(form));
+				form.addEventListener('change', () => this.#updateState(form));
+				form.addEventListener('input', () => this.#updateState(form));
 
-				this.#initState(element);
+				this.#initState(form);
 			});
 
 		snippet.querySelectorAll('.modal')
 			.forEach((element) => element.addEventListener('hide.bs.modal', (event) => {
-				const form = event.target.querySelector(this.selector);
-				this.#checkState(form, event);
+				const form = element.querySelector(this.selector);
+
+				if (form instanceof HTMLFormElement) {
+					this.#checkState(form, event);
+				}
 			}));
 	}
 
@@ -71,8 +74,6 @@ class FormDirtyExtension
 
 
 	#checkState(form, event) {
-		console.log('form check');
-
 		if (!form.dataset.isDirty || form.dataset.isDirty === 'false') {
 			return;
 		}
