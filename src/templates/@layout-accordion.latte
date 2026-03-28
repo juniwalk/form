@@ -12,7 +12,7 @@
 	<form n:name="form" n:attr="...$formOptions">
 	<div id="{$target}" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container">
 
-		<div class="accordion-body alerts" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+		<div class="accordion-body alerts pb-0" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
 			<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
 		</div>
 
