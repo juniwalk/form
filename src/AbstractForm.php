@@ -28,6 +28,7 @@ use Nette\Application\AbortException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\ChoiceControl;
@@ -160,6 +161,12 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	}
 
 
+	public function getFormUniqueId(): string
+	{
+		return 'frm-'.$this->getForm()->lookupPath(Presenter::class);
+	}
+
+
 	/**
 	 * @param array<string, string> $pages
 	 */
@@ -268,7 +275,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$this->setLayout(Layout::Accordion);
 		$this->when('render', fn($x, $t) => $t->setParameters([
-			'target' => $this->getUniqueId().'-content',
+			'target' => $this->getFormUniqueId(),
 			'container' => $container,
 		]));
 
