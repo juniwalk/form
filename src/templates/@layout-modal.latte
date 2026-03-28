@@ -1,13 +1,12 @@
-<div class="modal fade" id="{$control->getName()}" n:attr="...$modalOptions" tabindex="-1">
+<div id="{$control->getName()}" class="modal fade" tabindex="-1" n:attr="...$modalOptions">
 <div n:snippet="form" n:class="modal-dialog, modal-dialog-centered, $modalSize">
-<form n:name="form" class="w-100" n:attr="...$formOptions">
 
-	<div class="modal-content">
+	<form n:name="form" class="modal-content" n:attr="...$formOptions">
 
 		<div n:class="modal-header, $color->for('text-bg', $isSubtle)">
-			<h5 class="modal-title" n:ifset="#title">{include #title}</h5>
+			<h5 class="modal-title" n:ifcontent>{include #title}</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-			{ifset #tools}{include #tools}{/ifset}
+			{include #tools}
 		</div>
 
 		<div class="alerts text-start" n:if="$form->hasErrors()" n:snippet="errors">
@@ -38,10 +37,12 @@
 
 		</div>
 
-	</div>
+	</form>
 
 	{ifset #javascript}{include #javascript}{/ifset}
 
-</form>
 </div>
 </div>
+
+{define #title}{/define}
+{define #tools}{/define}

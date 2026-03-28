@@ -1,8 +1,8 @@
-<div class="accordion-item bg-body-tertiary" n:snippet="form">
+<div n:snippet="form" class="accordion-item bg-body-tertiary">
 
 	<h2 class="accordion-header">
 		<button type="button" n:class="accordion-button, !$form->hasErrors() ? collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
-			{include #title|noescape}
+			{include #title}
 		</button>
 	</h2>
 
