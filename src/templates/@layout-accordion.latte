@@ -1,19 +1,19 @@
 <div class="accordion-item bg-body-tertiary" n:snippet="form">
 
 	<h2 class="accordion-header">
-		<button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}">
-			<span class="d-flex gap-2 justify-content-between align-items-center w-100 pe-2">
-				<span n:ifset="#title">{include #title|noescape}</span>
-				{ifset #tools}{include #tools}{/ifset}
-			</span>
+		<button type="button" n:class="accordion-button, !$form->hasErrors() ? collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
+			{include #title|noescape}
 		</button>
 	</h2>
 
-	<form n:name="form" n:attr="...$formOptions">
-	<div id="{$target}" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container">
+	<form n:name="form" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container, ...$formOptions">
 
-		<div class="accordion-body alerts pb-0" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
-			<div n:class="alert, alert-danger, $iterator->isLast() ? mb-0">{$error}</div>
+		<div class="accordion-body bg-dark-subtle border-bottom py-2" n:ifcontent>
+			{include #tools}
+		</div>
+
+		<div class="accordion-body p-0 border-0" n:if="$form->hasErrors()" n:snippet="errors" n:inner-foreach="$form->getErrors() as $error">
+			<div n:class="alert, alert-danger, mb-0, px-4, rounded-0, border-start-0, border-end-0, !$iterator->isLast() ? border-bottom-0">{$error}</div>
 		</div>
 
 		<div class="accordion-body pb-0" n:ifset="#beforeControls" n:ifcontent>
@@ -28,7 +28,7 @@
 			{include #afterControls}
 		</div>
 
-		<div class="accordion-body pt-0 d-flex gap-2" n:ifcontent>
+		<div class="accordion-body bg-dark-subtle border-top d-flex gap-2 py-2" n:ifcontent>
 
 			{ifset #buttons-card}
 				{include #buttons-card}
@@ -40,9 +40,11 @@
 
 		</div>
 
-	</div>
 	</form>
 
 	{ifset #javascript}{include #javascript}{/ifset}
 
 </div>
+
+{define #title}{/define}
+{define #tools}{/define}
