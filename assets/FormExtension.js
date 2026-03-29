@@ -178,10 +178,6 @@ class FormExtension
 			element.classList.remove('is-invalid');
 		});
 
-		window.dispatchEvent(new CustomEvent('page.overlay.hide', {
-			detail: { target: element, isValid }
-		}));
-
 		return isValid;
 	}
 
