@@ -58,6 +58,46 @@ class FormExtension
 			});
 
 
+		snippet.querySelectorAll('[data-target][data-count]')
+			.forEach((element) => {
+				let input = document.getElementById(element.dataset.target);
+				let targetCount = element.dataset.count;
+
+				if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement)) {
+					return;
+				}
+
+				if (targetCount === 'maxlength') {
+					targetCount = input.getAttribute('maxlength');
+				} else {
+					targetCount = parseInt(targetCount, 10);
+				}
+
+				input.addEventListener('input', () => {
+					let currentLength = input.value.length;
+					let targetPercent = currentLength / targetCount * 100;
+
+					element.classList.remove('text-bg-success', 'text-bg-warning', 'text-bg-danger', 'text-bg-secondary');
+					element.textContent = targetCount - currentLength;
+
+					if (targetPercent === 100) {
+						element.classList.add('text-bg-secondary');
+
+					} else if (targetPercent > 75) {
+						element.classList.add('text-bg-danger');
+
+					} else if (targetPercent > 50) {
+						element.classList.add('text-bg-warning');
+
+					} else {
+						element.classList.add('text-bg-success');
+					}
+				});
+
+				input.dispatchEvent(new Event('input'));
+			});
+
+
 		snippet.querySelectorAll('input[type=password][data-toggle="password"]')
 			.forEach(element => {
 				let group = element.closest('.input-group');
