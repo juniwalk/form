@@ -16,7 +16,13 @@ class FormExtension
 
 
 		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
-		naja.addEventListener('success', (event) => this.#insertAtCursor(event));
+
+		naja.addEventListener('success', (event) => {
+			let element = document.getElementById(event.detail.payload.control);
+			let snippet = event.detail.payload.snippet;
+			this.#insertAtCursor(element, snippet);
+		});
+
 		naja.addEventListener('success', () => {
 			document.querySelectorAll('.tooltip.show, .popover.show')
 				.forEach(element => element.remove());
@@ -55,6 +61,19 @@ class FormExtension
 				else {
 					element.addEventListener('change', (event) => this.#handleSignal(event, element));
 				}
+			});
+
+
+		snippet.querySelectorAll('[data-target][data-insert]')
+			.forEach((element) => {
+				let input = document.getElementById(element.dataset.target);
+				let snippet = element.dataset.insert;
+
+				if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement)) {
+					return;
+				}
+
+				element.addEventListener('click', () => this.#insertAtCursor(input, snippet));
 			});
 
 
@@ -234,28 +253,16 @@ class FormExtension
 	}
 
 
-	#insertAtCursor(event) {
-		let element = document.getElementById(event.detail.payload.control);
-		let snippet = event.detail.payload.snippet;
-
-		if (!element || !snippet) {
+	#insertAtCursor(element, snippet) {
+		if (!snippet.length || !(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
 			return;
 		}
 
-		let endPosition = element.selectionStart + snippet.length;
+		const start = element.selectionStart;
+		const end = element.selectionEnd;
 
-		if (element.selectionStart || element.selectionStart == '0') {
-			let textStart = element.value.substring(0, element.selectionStart);
-			let textEnd = element.value.substring(element.selectionEnd);
-
-			element.value = textStart + snippet + textEnd;
-
-		} else {
-			element.value += snippet;
-		}
-
-		element.value = element.value.trim();
-		element.selectionEnd = endPosition;
+		// ! Firefox does not save this into history so it cannot be undone with Ctrl+Z
+		element.setRangeText(snippet, start, end, 'end');
 		element.focus();
 	}
 }
