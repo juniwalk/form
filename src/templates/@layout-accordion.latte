@@ -6,8 +6,8 @@
 		</button>
 	</h2>
 
-	<div n:snippet="form" n:class="accordion-collapse, collapse, $form->hasErrors() ? show">
-	<form n:name="form" n:attr="data-bs-parent: $container, ...$formOptions">
+	<div n:snippet="form" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container">
+	<form n:name="form" n:attr="...$formOptions">
 
 		<div class="accordion-body bg-dark-subtle border-bottom py-2" n:ifcontent>
 			{include #tools}
