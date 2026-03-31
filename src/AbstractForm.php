@@ -275,7 +275,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$this->setLayout(Layout::Accordion);
 		$this->when('render', fn($x, $t) => $t->setParameters([
-			'target' => $this->getFormUniqueId(),
+			'target' => $this->getSnippetId('form'),
 			'container' => $container,
 		]));
 
