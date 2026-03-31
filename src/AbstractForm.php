@@ -60,7 +60,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	protected ?string $templateFile = null;
 	protected bool $isFullColor = false;
 	protected bool $isSubtle = false;
-	protected bool $isModalOpen = false;
+	protected bool $isOpen = false;
 
 
 	public function setHttpRequest(HttpRequest $httpRequest): void
@@ -92,7 +92,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	public function setModalOpen(bool $open): void
 	{
-		$this->isModalOpen = $open;
+		$this->isOpen = $open;
 	}
 
 
@@ -254,13 +254,10 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			Debugger::log($e);
 		}
 
-		$this->redrawControl('form', $redraw ?? true);
 		$this->setLayout(Layout::make($data['_layout_']));
+		$this->setModalOpen(true);
 
-		if ($this->layout === Layout::Modal) {
-			$this->setModalOpen(true);
-		}
-
+		$this->redrawControl('form', $redraw ?? true);
 		$this->redirect('this');
 	}
 
@@ -275,7 +272,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 		$this->setLayout(Layout::Accordion);
 		$this->when('render', fn($x, $t) => $t->setParameters([
-			'target' => $this->getSnippetId('form'),
+			'target' => $this->getFormUniqueId(),
 			'container' => $container,
 		]));
 
@@ -311,7 +308,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	public function render(): void
 	{
-		if (!$this->isModalOpen && $this->layout === Layout::Modal) {
+		if (!$this->isOpen && $this->layout === Layout::Modal) {
 			return;
 		}
 
@@ -329,6 +326,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		$template->setParameters([
 			'isFullColor' => $this->isFullColor,
 			'isSubtle' => $this->isSubtle,
+			'isOpen' => $this->isOpen,
 			'layout' => $this->layout,
 			'color' => $this->color,
 			'form' => $form,
@@ -382,6 +380,8 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		};
 
 		$form->onError[] = function(Form $form): void {
+			$this->isOpen = true;
+
 			$this->trigger('error', $form, $this);
 			$this->redrawControl();
 			$this->reopenModal();

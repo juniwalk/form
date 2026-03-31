@@ -1,13 +1,12 @@
-<div class="accordion-item bg-body-tertiary">
+<div n:snippet="form" class="accordion-item bg-body-tertiary">
 
 	<h2 class="accordion-header">
-		<button type="button" n:class="accordion-button, !$form->hasErrors() ? collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}" aria-expanded="{$form->hasErrors() ? 'true' : 'false'}">
+		<button type="button" n:class="accordion-button, !$isOpen ? collapsed" data-bs-toggle="collapse" data-bs-target="#{$target}" aria-expanded="{$isOpen ? 'true' : 'false'}">
 			{include #title}
 		</button>
 	</h2>
 
-	<div n:snippet="form" n:class="accordion-collapse, collapse, $form->hasErrors() ? show" n:attr="data-bs-parent: $container">
-	<form n:name="form" n:attr="...$formOptions">
+	<form n:name="form" n:class="accordion-collapse, collapse, $isOpen ? show" n:attr="data-bs-parent: $container, ...$formOptions">
 
 		<div class="accordion-body bg-dark-subtle border-bottom py-2" n:ifcontent>
 			{include #tools}
@@ -42,7 +41,6 @@
 		</div>
 
 	</form>
-	</div>
 
 	{ifset #javascript}{include #javascript}{/ifset}
 
