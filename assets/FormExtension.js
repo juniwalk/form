@@ -254,7 +254,7 @@ class FormExtension
 
 
 	#insertAtCursor(element, snippet) {
-		if (!snippet.length || !(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
+		if (!snippet?.length || !(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
 			return;
 		}
 
