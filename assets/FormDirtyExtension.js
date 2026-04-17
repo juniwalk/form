@@ -13,22 +13,17 @@ class FormDirtyExtension
 
 
 	initialize(naja) {
-		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
-
-		this.#attach(document);
-
-
-		window.addEventListener('beforeunload', (event) => {
-			const isAnyFormDirty = this.forms.keys()
+		window.onbeforeunload = () => {
+			const isAnyFormDirty = [... this.forms.keys()]
 				.some(form => form.dataset.isDirty === 'true');
 
-			if (!isAnyFormDirty) {
-				return;
-			}
+			return isAnyFormDirty
+				? 'You have unsaved changes.'
+				: undefined;
+		};
 
-			event.preventDefault();
-			event.returnValue = '';
-		});
+		naja.snippetHandler.addEventListener('afterUpdate', (event) => this.#attach(event.detail.snippet));
+		this.#attach(document);
 	}
 
 
@@ -39,12 +34,12 @@ class FormDirtyExtension
 					return;
 				}
 
+				this.#initState(form);
+
 				form.addEventListener('submit', () => this.#initState(form));
 				form.addEventListener('reset', () => this.#initState(form));
 				form.addEventListener('change', () => this.#updateState(form));
 				form.addEventListener('input', () => this.#updateState(form));
-
-				this.#initState(form);
 			});
 
 		snippet.querySelectorAll('.modal')
