@@ -29,7 +29,7 @@ final class SelectBoxEnum extends SelectBox
 	 */
 	public function setEnumType(string $enumType): static
 	{
-		if (!is_subclass_of($enumType, LabeledEnum::class)) {	// @phpstan-ignore function.alreadyNarrowedType
+		if (!is_subclass_of($enumType, LabeledEnum::class)) {
 			throw new InvalidArgumentException('Enum has to implement '.LabeledEnum::class);
 		}
 
@@ -53,7 +53,7 @@ final class SelectBoxEnum extends SelectBox
 
 			$option = Html::optionEnum($enum, $badge);
 
-			if (method_exists($enum, 'group') && $group = $enum->group()) {
+			if (method_exists($enum, 'group') && $group = $enum->group()) {	// @phpstan-ignore function.alreadyNarrowedType (method_exists for BC compatibility with older versions of LabeledEnum)
 				$items[$group][$enum->value] = $option;
 			} else {
 				$items[$enum->value] = $option;
