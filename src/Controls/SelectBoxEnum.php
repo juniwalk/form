@@ -51,7 +51,13 @@ final class SelectBoxEnum extends SelectBox
 				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			$items[$enum->value] = Html::optionEnum($enum, $badge);
+			$option = Html::optionEnum($enum, $badge);
+
+			if (method_exists($enum, 'group') && $group = $enum->group()) {
+				$items[$group][$enum->value] = $option;
+			} else {
+				$items[$enum->value] = $option;
+			}
 		}
 
 		return parent::setItems($items, $useKeys);
