@@ -61,11 +61,38 @@ textarea.code {
 
 /**
  * ====================================
+ * Accordions
+ * ====================================
+ */
+.accordion .accordion-body > .flush {
+	padding: var(--bs-accordion-body-padding-y) var(--bs-accordion-body-padding-x);
+	margin: calc(-1 * var(--bs-accordion-body-padding-y)) calc(-1 * var(--bs-accordion-body-padding-x));
+}
+
+
+/**
+ * ====================================
+ * Cards
+ * ====================================
+ */
+.card .card-body > .flush {
+	padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+	margin: calc(-1 * var(--bs-card-spacer-y)) calc(-1 * var(--bs-card-spacer-x));
+}
+
+
+/**
+ * ====================================
  * Modals
  * ====================================
  */
 .modal .modal-dialog.modal-md {
 	max-width: 600px;
+}
+
+.modal .modal-body > .flush {
+	padding: var(--bs-modal-padding);
+	margin: calc(-1 * var(--bs-modal-padding));
 }
 
 
