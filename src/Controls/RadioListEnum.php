@@ -7,7 +7,6 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use Nette\Forms\Controls\RadioList;
 use InvalidArgumentException;
@@ -42,8 +41,7 @@ final class RadioListEnum extends RadioList
 	 */
 	public function getCases(): array
 	{
-		/** @var array<T> */
-		return Arrays::map($this->getItems(), fn($v, $k) => $this->enumType::make($k));
+		return array_map(fn($x) => $this->enumType::make($x), $this->getItems());
 	}
 
 
@@ -95,7 +93,7 @@ final class RadioListEnum extends RadioList
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($v) => $v->value);
+			$value = array_map(static fn($x) => $x->value, $value);
 		}
 
 		return parent::setDisabled($value);
@@ -106,11 +104,11 @@ final class RadioListEnum extends RadioList
 	{
 		$enum = $this->enumType::make($key, false);
 
-		if (!$enum || !is_array($this->disabled)) {		// @phpstan-ignore-line
+		if (!$enum || !is_array($this->disabled)) {
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$enum->value] ?? false;	// @phpstan-ignore-line
+		return $this->disabled[$enum->value] ?? false;
 	}
 
 

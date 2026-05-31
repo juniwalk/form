@@ -41,8 +41,7 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function getCases(): array
 	{
-		/** @var array<T> */
-		return Arrays::map($this->getItems(), fn($v, $k) => $this->enumType::make($k));
+		return array_map(fn($x) => $this->enumType::make($x), $this->getItems());
 	}
 
 
@@ -93,14 +92,13 @@ final class CheckboxListEnum extends CheckboxList
 	 * @return array<T>
 	 * @throws ValueError
 	 */
-	public function getValue(): array
+	public function getValue(): array	// @phpstan-ignore method.childReturnType (Return type mismatch with parent)
 	{
 		if (!is_iterable($this->value)) {
 			return [];
 		}
 
-		/** @var array<int|string, T> */
-		return Arrays::map($this->value, fn($v) => $this->enumType::make($v));
+		return array_map(fn($x) => $this->enumType::make($x), (array) $this->value);
 	}
 
 
@@ -110,7 +108,7 @@ final class CheckboxListEnum extends CheckboxList
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($item) => $item->value);
+			$value = array_map(static fn($x) => $x->value, $value);
 		}
 
 		return parent::setDisabled($value);
@@ -121,11 +119,11 @@ final class CheckboxListEnum extends CheckboxList
 	{
 		$enum = $this->enumType::make($key, false);
 
-		if (!$enum || !is_array($this->disabled)) {		// @phpstan-ignore-line
+		if (!$enum || !is_array($this->disabled)) {
 			return parent::isDisabled();
 		}
 
-		return $this->disabled[$enum->value] ?? false;	// @phpstan-ignore-line
+		return $this->disabled[$enum->value] ?? false;
 	}
 
 
