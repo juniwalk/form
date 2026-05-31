@@ -7,6 +7,7 @@
 
 namespace JuniWalk\Form\Controls;
 
+use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use JuniWalk\Utils\Html;
 use Nette\Forms\Controls\SelectBox;
@@ -92,7 +93,7 @@ final class SelectBoxEnum extends SelectBox
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = array_map(static fn($x) => $x->value, $value);
+			$value = Arrays::map($value, fn($v) => $v->value);
 		}
 
 		return parent::setDisabled($value);
@@ -101,7 +102,7 @@ final class SelectBoxEnum extends SelectBox
 
 	public function isDisabled(mixed $key = null): bool
 	{
-		if (!$key || !is_array($this->disabled)) {
+		if (!$key || !is_array($this->disabled)) {	// @phpstan-ignore-line
 			return parent::isDisabled();
 		}
 
