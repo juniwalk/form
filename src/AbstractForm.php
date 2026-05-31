@@ -32,6 +32,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\DefaultTemplate;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\ChoiceControl;
+use Nette\Forms\Controls\MultiChoiceControl;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Http\IRequest as HttpRequest;
 use Nette\InvalidArgumentException;
@@ -232,8 +233,12 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		foreach ($this->getComponents(true, ChoiceControl::class) as $field) {
-			/** @var ChoiceControl $field */
+		foreach ($this->getComponents() as $field) {
+			if (!$field instanceof ChoiceControl
+			 && !$field instanceof MultiChoiceControl) {
+				continue;
+			}
+
 			$field->checkDefaultValue(false);
 		}
 
