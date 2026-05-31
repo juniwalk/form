@@ -41,10 +41,7 @@ final class RadioListEnum extends RadioList
 	 */
 	public function getCases(): array
 	{
-		return array_map(
-			fn($x) => $this->enumType::make($x),
-			array_keys($this->getItems()),
-		);
+		return array_map(fn($x) => $this->enumType::make($x), $this->getItems());
 	}
 
 
