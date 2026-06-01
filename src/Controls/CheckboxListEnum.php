@@ -67,7 +67,7 @@ final class CheckboxListEnum extends CheckboxList
 
 
 	/**
-	 * @param  array<T> $values
+	 * @param  array<T|string|int> $values
 	 * @throws ValueError
 	 */
 	public function setValue(mixed $values): self
@@ -76,9 +76,8 @@ final class CheckboxListEnum extends CheckboxList
 			return parent::setValue(null);
 		}
 
-		/** @var array<T> */
 		$values = Arrays::map($values, function(mixed $value) {
-			if (isset($value) && !$value instanceof $this->enumType) {
+			if (!$value instanceof $this->enumType) {
 				$value = $this->enumType::make($value, $value !== '');
 			}
 
@@ -93,7 +92,7 @@ final class CheckboxListEnum extends CheckboxList
 	 * @return array<T>
 	 * @throws ValueError
 	 */
-	public function getValue(): array
+	public function getValue(): array	// @phpstan-ignore method.childReturnType
 	{
 		if (!is_iterable($this->value)) {
 			return [];
