@@ -89,34 +89,20 @@ class FormSelectExtension
 		if ('search' in element.dataset) {
 			options.plugins.push('virtual_scroll');
 			options.sortField = [{field:'$order'},{field:'$score'}];
-			options.searchField = [];
+			// options.searchField = [];	// ! Disabled hiding of entries
 			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
 
-			// todo: move into private handler
-			options.firstUrl = (query) => {
-				let searchUrl = element.dataset.search.split('?');
-				let url = new URL(window.location.href);
-				url.pathname = searchUrl[0];
-				url.search = searchUrl[1];
-
-				let params = this.#findPrefixedUrlParams(formName);
-				Object.entries(params).forEach(([key, value]) => {
-					url.searchParams.set(key, value);
-				});
-
-				url.searchParams.append(formName+'term', query);
-				url.searchParams.append(formName+'page', 1);
-				return url;
-			},
+			options.firstUrl = (query) => this.#searchFirstUrl(element.dataset.search, formName, query);
 
 			// todo: move into private handler
+			// todo: access to this will be lost
 			options.load = function(query, callback) {
 				let url = this.getUrl(query);
 				naja.makeRequest('GET', url, {}, {history: false})
 					.then((json) => {
-						if (json.pagination.more){
+						if (json.pagination.more) {
 							url.searchParams.set(formName+'page', json.pagination.page +1);
 							this.setNextUrl(query, url);
 						}
@@ -131,6 +117,11 @@ class FormSelectExtension
 
 						// this.clearOptions();
 						callback(items);
+
+						// ? Fetch more results if the first page has less than 5 items and scroll wont autoload more results
+						if (json.pagination.more && json.pagination.page == 1 && items.length <= 7) {
+							this.load(query, callback);
+						}
 					})
 					.catch(() => callback());
 			};
@@ -204,7 +195,22 @@ class FormSelectExtension
 	}
 
 
-	#findPrefixedUrlParams(prefix) {
+	#searchFirstUrl(searchUrl, prefix, query) {
+		let url = new URL(searchUrl, window.location.href);
+		let params = this.#findCurrentUrlParams(prefix);
+
+		// ? Pass current form prefixed url params to search url
+		Object.entries(params).forEach(([key, value]) => {
+			url.searchParams.set(key, value);
+		});
+
+		url.searchParams.append(prefix+'term', query);
+		url.searchParams.append(prefix+'page', 1);
+		return url;
+	}
+
+
+	#findCurrentUrlParams(prefix) {
 		let url = new URL(document.location);
 		let urlSearch = new URLSearchParams(url.search);
 		let params = {};

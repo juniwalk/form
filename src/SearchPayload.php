@@ -82,7 +82,12 @@ class SearchPayload implements JsonSerializable
 
 	public function getMaxResults(): ?int
 	{
-		return $this->maxResults;
+		if (is_null($this->maxResults)) {
+			return null;
+		}
+
+		// ? Add one to maxResults to check if there are more results available
+		return $this->maxResults + 1;
 	}
 
 
@@ -155,9 +160,9 @@ class SearchPayload implements JsonSerializable
 		});
 
 		return [
-			'results' => array_values($results),
+			'results' => array_slice($results, 0, $this->maxResults),
 			'pagination' => [
-				'more' => $this->maxResults && sizeof($results) >= $this->maxResults,
+				'more' => $this->maxResults && sizeof($results) > $this->maxResults,
 				'page' => $this->page,
 			],
 		];
