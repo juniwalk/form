@@ -233,7 +233,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			throw new InvalidStateException('HttpRequest has not been set, please call setHttpRequest method.');
 		}
 
-		foreach ($this->getComponents() as $field) {
+		foreach ($form->getComponentTree() as $field) {
 			if (!$field instanceof ChoiceControl
 			 && !$field instanceof MultiChoiceControl) {
 				continue;
