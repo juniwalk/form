@@ -159,6 +159,9 @@ class SearchPayload implements JsonSerializable
 			return $item;
 		});
 
+		// ? Somehow array_slice preserves keys
+		$results = array_values($results);
+
 		return [
 			'results' => array_slice($results, 0, $this->maxResults),
 			'pagination' => [
