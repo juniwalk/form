@@ -40,6 +40,7 @@ class SearchPayload implements JsonSerializable
 
 	/** @var array<int|string, mixed> */
 	private array $items = [];
+	private int $itemsCount = 0;
 
 	public function __construct(?int $page = null, ?int $maxResults = null)
 	{
@@ -136,12 +137,14 @@ class SearchPayload implements JsonSerializable
 
 		if (!$group = $this->createGroup($item)) {
 			$this->items[$key] = $item;
-			return;
+
+		} else {
+			/** @var Group */
+			$group = &$this->items[$group];
+			$group['children'][$key] = $item;
 		}
 
-		/** @var Group */
-		$group = &$this->items[$group];
-		$group['children'][$key] = $item;
+		$this->itemsCount += 1;
 	}
 
 
@@ -165,7 +168,8 @@ class SearchPayload implements JsonSerializable
 		return [
 			'results' => array_slice($results, 0, $this->maxResults),
 			'pagination' => [
-				'more' => $this->maxResults && sizeof($results) > $this->maxResults,
+				'more' => $this->maxResults && $this->itemsCount > $this->maxResults,
+				'found' => $this->itemsCount,
 				'page' => $this->page,
 			],
 		];
