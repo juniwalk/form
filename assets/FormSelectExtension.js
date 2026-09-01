@@ -89,42 +89,13 @@ class FormSelectExtension
 		if ('search' in element.dataset) {
 			options.plugins.push('virtual_scroll');
 			options.sortField = [{field:'$order'},{field:'$score'}];
-			// options.searchField = [];	// ! Disabled hiding of entries
 			options.allowEmptyOption = false;
 			options.loadThrottle = 150;
 			options.preload = 'focus';
 
-			options.firstUrl = (query) => this.#searchFirstUrl(element.dataset.search, formName, query);
-
-			// todo: move into private handler
-			// todo: access to this will be lost
-			options.load = function(query, callback) {
-				let url = this.getUrl(query);
-				naja.makeRequest('GET', url, {}, {history: false})
-					.then((json) => {
-						if (json.pagination.more) {
-							url.searchParams.set(formName+'page', json.pagination.page +1);
-							this.setNextUrl(query, url);
-						}
-
-						let items = json.results.map((item) => {
-							if (item.children) {
-								this.addOptionGroup(item.text, item);
-							}
-
-							return item.children || item;
-						});
-
-						// this.clearOptions();
-						callback(items);
-
-						// ? Fetch more results if the first page has less than 5 items and scroll wont autoload more results
-						if (json.pagination.more && json.pagination.page == 1 && items.length <= 7) {
-							this.load(query, callback);
-						}
-					})
-					.catch(() => callback());
-			};
+			options.load	 = (query, callback)	=> this.#searchLoad(element.tomselect, formName, query, callback);
+			options.firstUrl = (query)				=> this.#searchFirstUrl(element.dataset.search, formName, query);
+			options.score	 = () => () => 1;
 		}
 
 		// Allow dropup if there is no space for dropdown
@@ -139,6 +110,55 @@ class FormSelectExtension
 		}
 
 		return new TomSelect(element, options);
+	}
+
+
+	#searchLoad(tomselect, formName, query, callback) {
+		let url = tomselect.getUrl(query);
+		let isFirstPage = url.searchParams.get(formName+'page') === '1';
+
+		this.#searchRequestPage(tomselect, formName, url).then(({items, nextUrl}) => {
+			if (nextUrl) {
+				tomselect.setNextUrl(query, nextUrl);
+			}
+
+			if (!isFirstPage || items.length > 7) {
+				return callback(items);
+			}
+
+			// ? Preload the next page immediately to ensure enough items are available for virtual scrolling
+			return this.#searchRequestPage(tomselect, formName, nextUrl).then((page) => {
+				if (page.nextUrl) {
+					tomselect.setNextUrl(query, page.nextUrl);
+				}
+
+				callback(items.concat(page.items));
+			})
+			.catch(() => callback(items));
+		})
+		.catch(() => callback());
+	}
+
+
+	#searchRequestPage(tomselect, formName, url) {
+		return naja.makeRequest('GET', url, {}, {history: false}).then((json) => {
+			let items = json.results.map((item) => {
+				if (item.children) {
+					tomselect.addOptionGroup(item.text, item);
+				}
+
+				return item.children || item;
+			});
+
+			let nextUrl = null;
+
+			if (json.pagination.more) {
+				nextUrl = new URL(url);
+				nextUrl.searchParams.set(formName+'page', json.pagination.page +1);
+			}
+
+			return {items, nextUrl};
+		});
 	}
 
 
