@@ -15,6 +15,9 @@ use Nette\Forms\Container as Form;
 use Nette\Forms\Control;
 use Throwable;
 
+use function class_exists;
+use function method_exists;
+
 final class ControlFactory
 {
 	public static function registerControls(): void

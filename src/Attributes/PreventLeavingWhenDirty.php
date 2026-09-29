@@ -10,6 +10,8 @@ namespace JuniWalk\Form\Attributes;
 use Attribute;
 use JuniWalk\Form\Enums\Layout;
 
+use function in_array;
+
 #[Attribute(Attribute::TARGET_CLASS)]
 class PreventLeavingWhenDirty
 {

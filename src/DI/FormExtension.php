@@ -13,12 +13,15 @@ use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\PhpGenerator\ClassType;
 
+use function array_filter;
+use function is_a;
+
 final class FormExtension extends CompilerExtension
 {
 	public function beforeCompile(): void
 	{
 		$definitions = $this->getContainerBuilder()->getDefinitions();
-		$definitions = array_filter($definitions, function($stmt): bool {
+		$definitions = array_filter($definitions, static function($stmt): bool {
 			if (is_a($stmt->getType() ?? '', AbstractForm::class, true)) {
 				return true;
 			}

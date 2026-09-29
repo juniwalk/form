@@ -21,7 +21,6 @@ use JuniWalk\Utils\Interfaces\EventAutoWatch;
 use JuniWalk\Utils\Interfaces\EventHandler;
 use JuniWalk\Utils\Interfaces\Modal;
 use JuniWalk\Utils\Interfaces\ModalHandler;
-use JuniWalk\Utils\Strings;
 use JuniWalk\Utils\Traits\Events;
 use JuniWalk\Utils\Traits\RedirectAjaxHandler;
 use Nette\Application\AbortException;
@@ -39,10 +38,18 @@ use Nette\InvalidArgumentException;
 use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 use ReflectionClass;
 use Stringable;
 use Throwable;
 use Tracy\Debugger;
+
+use function array_keys;
+use function dirname;
+use function implode;
+use function method_exists;
+use function sprintf;
+use function str_starts_with;
 
 /**
  * @property callable[] $onRender
@@ -211,8 +218,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			$form->addError($e->getMessage());
 			Debugger::log($e);
 
-			// todo: If error displaying is solved in future
-			// todo: remove this statement as it would trigger Tracy
+			// todo: Remove if error displaying is solved in future
 			throw $e;
 		}
 
@@ -292,7 +298,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		}
 
 		$this->setLayout(Layout::Modal);
-		$this->when('render', fn($x, $t) => $t->setParameters([
+		$this->when('render', static fn($x, $t) => $t->setParameters([
 			'modalSize' => $size,
 			'modalOptions' => [
 				'data-bs-backdrop' => Format::stringify($backdrop),
@@ -356,7 +362,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 			$form->addProtection();
 		}
 
-		$form->onRender[] = function(Form $form): void {
+		$form->onRender[] = static function(Form $form): void {
 			foreach ($form->getControls() as $control) {
 				if (!$control instanceof BaseControl || !$control->hasErrors()) {
 					continue;
@@ -409,21 +415,22 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 		?callable $callback = null,
 		array $fieldMap = [],
 	): void {
-		$callback ??= fn() => null;
+		$callback ??= static fn() => null;
 		$form = $this->getForm();
 
 		$matched = Strings::match($e->getMessage(), '/\((?<field>[^\)]+)\)=\((?<value>[^\)]+)\)/i');
 		$defaultMessage = $callback(null) ?? $e->getMessage();
+		$fields = [];
 
 		if (empty($matched)) {
 			$form->addError($defaultMessage);
 			return;
 		}
 
-		$fields = array_fill_keys(Strings::split($matched['field'], '/,\s/'), null);
-		$fields = Arrays::walk($fields, fn($value, $field) =>
-			yield $fieldMap[$field] ?? Format::camelCase($field) => $form->getComponent($field, false)?->getValue() ?? $value
-		);
+		foreach (Strings::split($matched['field'], '/,\s/') as $field) {
+			$field = $fieldMap[$field] ?? Format::camelCase($field);
+			$fields[$field] = $form->getComponent($field, false)?->getValue() ?? null;
+		}
 
 		$fieldKey = implode('-', array_keys($fields));
 		$message = $callback($fieldKey) ?? $defaultMessage;
@@ -486,7 +493,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 
 	private function reopenModal(): void
 	{
-		$presenter = $this->getPresenterIfExists();
+		$presenter = $this->getPresenter(throw: false);
 
 		if ($this->layout <> Layout::Modal ||
 			!$presenter instanceof ModalHandler ||

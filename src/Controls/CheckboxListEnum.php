@@ -7,11 +7,17 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
 use Nette\Forms\Controls\CheckboxList;
 use InvalidArgumentException;
 use ValueError;
+
+use function array_map;
+use function in_array;
+use function is_array;
+use function is_iterable;
+use function is_subclass_of;
+use function iterator_to_array;
 
 /**
  * @template T of LabeledEnum
@@ -41,8 +47,13 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function getCases(): array
 	{
-		/** @var array<T> */
-		return Arrays::map($this->getItems(), fn($v, $k) => $this->enumType::make($k));
+		$cases = [];
+
+		foreach ($this->getItems() as $key => $label) {
+			$cases[$key] = $this->enumType::make($key);
+		}
+
+		return $cases;
 	}
 
 
@@ -76,13 +87,13 @@ final class CheckboxListEnum extends CheckboxList
 			return parent::setValue(null);
 		}
 
-		$values = Arrays::map($values, function(mixed $value) {
+		foreach ($values as $key => $value) {
 			if (!$value instanceof $this->enumType) {
 				$value = $this->enumType::make($value, $value !== '');
 			}
 
-			return $value?->value;
-		});
+			$values[$key] = $value?->value;
+		}
 
 		return parent::setValue($values);
 	}
@@ -94,12 +105,17 @@ final class CheckboxListEnum extends CheckboxList
 	 */
 	public function getValue(): array	// @phpstan-ignore method.childReturnType
 	{
+		$values = [];
+
 		if (!is_iterable($this->value)) {
-			return [];
+			return $values;
 		}
 
-		/** @var array<int|string, T> */
-		return Arrays::map($this->value, fn($v) => $this->enumType::make($v));
+		foreach ($this->value as $key => $case) {
+			$values[$key] = $this->enumType::make($case);
+		}
+
+		return $values;
 	}
 
 
@@ -109,7 +125,7 @@ final class CheckboxListEnum extends CheckboxList
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($item) => $item->value);
+			$value = array_map(static fn($x) => $x->value, $value);
 		}
 
 		return parent::setDisabled($value);

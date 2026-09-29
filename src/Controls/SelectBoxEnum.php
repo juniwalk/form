@@ -7,12 +7,16 @@
 
 namespace JuniWalk\Form\Controls;
 
-use JuniWalk\Utils\Arrays;
 use JuniWalk\Utils\Enums\Interfaces\LabeledEnum;
-use JuniWalk\Utils\Html;
+use JuniWalk\Utils\Html as CustomHtml;
 use Nette\Forms\Controls\SelectBox;
 use InvalidArgumentException;
 use ValueError;
+
+use function array_map;
+use function is_array;
+use function is_subclass_of;
+use function method_exists;
 
 /**
  * @template T of LabeledEnum
@@ -51,7 +55,7 @@ final class SelectBoxEnum extends SelectBox
 				throw new InvalidArgumentException('Enum does not match items of type '.$this->enumType);
 			}
 
-			$option = Html::optionEnum($enum, $badge);
+			$option = CustomHtml::optionEnum($enum, $badge);
 
 			if (method_exists($enum, 'group') && $group = $enum->group()) {	// @phpstan-ignore function.alreadyNarrowedType (method_exists for BC compatibility with older versions of LabeledEnum)
 				$items[$group][$enum->value] = $option;
@@ -93,7 +97,7 @@ final class SelectBoxEnum extends SelectBox
 	public function setDisabled(array|bool $value = true): static
 	{
 		if (is_array($value)) {
-			$value = Arrays::map($value, fn($v) => $v->value);
+			$value = array_map(static fn($x) => $x->value, $value);
 		}
 
 		return parent::setDisabled($value);

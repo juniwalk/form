@@ -13,6 +13,9 @@ use Nette\Utils\DateTime;
 use Nette\Utils\Html;
 use Throwable;
 
+use function is_int;
+use function strtotime;
+
 final class DateTimePicker extends TextBase
 {
 	private string $format = 'Y-m-d H:i:s';
