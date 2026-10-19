@@ -223,7 +223,15 @@ textarea.code {
 }
 
 
-.ts-wrapper.single .ts-control .item { color: var(--bs-body-color); flex-grow: 1; }
+.ts-wrapper.single .ts-control .item {
+	color: var(--bs-body-color);
+	display: flex !important;
+	align-items: center;
+	flex-grow: 1;
+	min-width: 0;
+	width: 100%;
+}
+
 .ts-wrapper.flex-column .ts-control .item { width: 100%; justify-content: space-between; }
 .ts-wrapper.multi .ts-control .item {
 	background-color: var(--bs-secondary);
