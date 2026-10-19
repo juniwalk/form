@@ -98,6 +98,13 @@ class FormSelectExtension
 			options.score	 = () => () => 1;
 		}
 
+		if ('clearOnSelect' in element.dataset) {
+			options.onItemAdd = function() {
+				this.setTextboxValue('');
+				this.refreshOptions(false);
+			};
+		}
+
 		// Allow dropup if there is no space for dropdown
 		if (typeof Popper !== 'undefined') {
 			options.onInitialize = function() {
