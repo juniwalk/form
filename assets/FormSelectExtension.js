@@ -99,9 +99,18 @@ class FormSelectExtension
 		}
 
 		// Allow dropup if there is no space for dropdown
-		if (typeof Popper !== 'function') {
+		if (typeof Popper !== 'undefined') {
 			options.onInitialize = function() {
 				this.popper = Popper.createPopper(this.control, this.dropdown);
+
+				// Control grows or shrinks when items are added/removed (or input autogrows)
+				this.popperObserver = new ResizeObserver(() => this.popper.update());
+				this.popperObserver.observe(this.control);
+			};
+
+			options.onDestroy = function() {
+				this.popperObserver?.disconnect();
+				this.popper?.destroy();
 			};
 
 			options.onDropdownOpen = function() {
