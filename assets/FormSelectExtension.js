@@ -31,6 +31,7 @@ class FormSelectExtension
 
 		let formName = null;
 		let options = {
+			mode: 'single',
 			plugins: ['dropdown_input'],
 			searchField: ['text', 'group'],
 			labelField: 'text',
@@ -72,6 +73,7 @@ class FormSelectExtension
 
 		if ('delimiter' in element.dataset) {
 			options.delimiter = element.dataset.delimiter;
+			options.mode = 'multi';
 		}
 
 		if ('noSearch' in element.dataset) {
@@ -80,6 +82,7 @@ class FormSelectExtension
 		}
 
 		if (element.hasAttribute('multiple')) {
+			options.mode = 'multi';
 			options.plugins = [];
 			options.plugins.push('caret_position');
 			options.plugins.push('input_autogrow');
