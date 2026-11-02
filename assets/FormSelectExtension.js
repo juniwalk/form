@@ -161,12 +161,13 @@ class FormSelectExtension
 
 	#searchRequestPage(tomselect, formName, url) {
 		return naja.makeRequest('GET', url, {}, {history: false}).then((json) => {
-			let items = json.results.map((item) => {
-				if (item.children) {
-					tomselect.addOptionGroup(item.text, item);
-				}
+			let items = json.results;
 
-				return item.children || item;
+			// ? Options reference their optgroup by `group`, the group itself has to be registered
+			items.forEach((item) => {
+				if (item.group) {
+					tomselect.addOptionGroup(item.group, {group: item.group});
+				}
 			});
 
 			let nextUrl = null;
