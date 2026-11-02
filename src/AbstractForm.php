@@ -201,7 +201,7 @@ abstract class AbstractForm extends Control implements Modal, EventHandler, Even
 	 */
 	public function handleSearch(string $type, ?int $maxResults = null, ?string $term = null, ?int $page = null): void
 	{
-		$search = new SearchPayload($page, $maxResults);
+		$search = new SearchPayload($page, $maxResults, $term);
 		$method = 'search'.Strings::firstUpper($type);
 		$form = $this->getForm();
 
