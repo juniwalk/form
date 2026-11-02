@@ -162,23 +162,34 @@ class FormExtension
 					group.insertBefore(toolbar, group.firstChild);
 				}
 
+				const isCheckable = element.type === 'checkbox' || element.type === 'radio';
 				const button = document.createElement('button');
 				button.type = 'button';
 				button.className = 'btn btn-outline-danger btn-xs d-none';
 				button.innerHTML = '<i class="fa-solid fa-times fa-fw"></i>';
 
 				button.addEventListener('click', function() {
-					element.tomselect?.setValue('');
-					element.value = '';
+					if (element.tomselect) {
+						// ? Tom Select dispatches change on the original element itself
+						element.tomselect.clear();
+					} else if (isCheckable) {
+						element.checked = false;
+						element.dispatchEvent(new Event('change', {bubbles: true}));
+					} else {
+						element.value = '';
+						element.dispatchEvent(new Event('input', {bubbles: true}));
+						element.dispatchEvent(new Event('change', {bubbles: true}));
+					}
 
-					element.dispatchEvent(new Event('input'));
 					toggleClearButton();
 				});
 
 				toolbar.appendChild(button);
 
 				function toggleClearButton() {
-					if (element.value !== '') {
+					const hasValue = isCheckable ? element.checked : element.value !== '';
+
+					if (hasValue) {
 						button.classList.remove('d-none');
 						button.classList.add('d-inline-block');
 					} else {
